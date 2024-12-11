@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Dinas;
 use App\Http\Controllers\Kota;
 use App\Http\Controllers\Provinsi;
 use Illuminate\Support\Facades\Route;
@@ -38,4 +39,12 @@ Route::middleware('auth')->group(function () {
     Route::post('kota/hapus', [Kota::class, 'hapus'])->name('kota.hapus');
     Route::post('kota/update', [Kota::class, 'update'])->name('kota.update');
     Route::post('kota/getDataProvinsi', [Kota::class, 'getDataProvinsi'])->name('kota.getDataProvinsi');
+
+    Route::get('dinas', [Dinas::class, 'index'])->name('dinas');
+    Route::post('dinas/simpan', [Dinas::class, 'simpan'])->name('dinas.simpan');
+    Route::post('dinas/getData', [Dinas::class, 'getData'])->name('dinas.getData');
+    Route::post('dinas/edit', [Dinas::class, 'edit'])->name('dinas.edit');
+    Route::post('dinas/hapus', [Dinas::class, 'hapus'])->name('dinas.hapus');
+    Route::post('dinas/update', [Dinas::class, 'update'])->name('dinas.update');
+    Route::post('dinas/getDataKota', [Dinas::class, 'getDataKota'])->name('dinas.getDataKota');
 });
