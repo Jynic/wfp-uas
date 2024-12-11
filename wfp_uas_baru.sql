@@ -43,14 +43,15 @@ CREATE TABLE IF NOT EXISTS `m_dinas` (
   `iddinas` int NOT NULL AUTO_INCREMENT,
   `idkota_kabupaten` int NOT NULL,
   `nama` text,
+  `status_aktif` int DEFAULT '1',
   PRIMARY KEY (`iddinas`,`idkota_kabupaten`),
   KEY `fk_m_dinas_m_kota_kabupaten1_idx` (`idkota_kabupaten`),
   CONSTRAINT `fk_m_dinas_m_kota_kabupaten1` FOREIGN KEY (`idkota_kabupaten`) REFERENCES `m_kota_kabupaten` (`idkota_kabupaten`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
 
 -- Dumping data for table wfp_project.m_dinas: ~0 rows (approximately)
-INSERT IGNORE INTO `m_dinas` (`iddinas`, `idkota_kabupaten`, `nama`) VALUES
-	(1, 1, 'Dinas Rungkut');
+INSERT IGNORE INTO `m_dinas` (`iddinas`, `idkota_kabupaten`, `nama`, `status_aktif`) VALUES
+	(1, 1, 'Dinas Rungkut', 1);
 
 -- Dumping structure for table wfp_project.m_fasum
 CREATE TABLE IF NOT EXISTS `m_fasum` (
@@ -64,6 +65,7 @@ CREATE TABLE IF NOT EXISTS `m_fasum` (
   `lat` text,
   `lng` text,
   `gambar` text,
+  `status_aktif` int DEFAULT '1',
   PRIMARY KEY (`idfasum`,`m_dinas_iddinas`),
   KEY `fk_m_fasum_m_dinas_idx` (`m_dinas_iddinas`),
   KEY `fk_m_fasum_m_jenis_fasum1_idx` (`idjenis_fasum`),
@@ -89,11 +91,15 @@ INSERT IGNORE INTO `m_jabatan` (`idjabatan`, `nama`, `status_aktif`) VALUES
 CREATE TABLE IF NOT EXISTS `m_jenis_fasum` (
   `idjenis_fasum` int NOT NULL AUTO_INCREMENT,
   `nama` text,
-  `status_aktif` int DEFAULT NULL,
+  `status_aktif` int DEFAULT '1',
   PRIMARY KEY (`idjenis_fasum`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
 
 -- Dumping data for table wfp_project.m_jenis_fasum: ~0 rows (approximately)
+INSERT IGNORE INTO `m_jenis_fasum` (`idjenis_fasum`, `nama`, `status_aktif`) VALUES
+	(1, 'Rumah Sakit', 1),
+	(2, 'Poliklinik', 1),
+	(3, 'Jalan Raya', 1);
 
 -- Dumping structure for table wfp_project.m_kategori_fasum
 CREATE TABLE IF NOT EXISTS `m_kategori_fasum` (
@@ -121,16 +127,21 @@ CREATE TABLE IF NOT EXISTS `m_kategori_fasum_has_m_fasum` (
 -- Dumping structure for table wfp_project.m_kota_kabupaten
 CREATE TABLE IF NOT EXISTS `m_kota_kabupaten` (
   `idkota_kabupaten` int NOT NULL AUTO_INCREMENT,
+  `kode` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci,
   `nama` text,
+  `jenis` text,
+  `status_aktif` int DEFAULT '1',
   `m_provinsi_idprovinsi` int NOT NULL,
   PRIMARY KEY (`idkota_kabupaten`,`m_provinsi_idprovinsi`),
   KEY `fk_m_kota_kabupaten_m_provinsi1_idx` (`m_provinsi_idprovinsi`),
   CONSTRAINT `FK_m_kota_kabupaten_m_provinsi` FOREIGN KEY (`m_provinsi_idprovinsi`) REFERENCES `m_provinsi` (`idprovinsi`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
 
 -- Dumping data for table wfp_project.m_kota_kabupaten: ~0 rows (approximately)
-INSERT IGNORE INTO `m_kota_kabupaten` (`idkota_kabupaten`, `nama`, `m_provinsi_idprovinsi`) VALUES
-	(1, 'Kota Surabaya', 1);
+INSERT IGNORE INTO `m_kota_kabupaten` (`idkota_kabupaten`, `kode`, `nama`, `jenis`, `status_aktif`, `m_provinsi_idprovinsi`) VALUES
+	(1, 'Sby', 'Kota Surabaya', 'kota', 1, 1),
+	(2, 'Gto', 'Gorontalo', 'kota', 0, 1),
+	(3, 'PRE', 'Pare', 'kabupaten', 1, 1);
 
 -- Dumping structure for table wfp_project.m_provinsi
 CREATE TABLE IF NOT EXISTS `m_provinsi` (
@@ -141,7 +152,7 @@ CREATE TABLE IF NOT EXISTS `m_provinsi` (
   PRIMARY KEY (`idprovinsi`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3;
 
--- Dumping data for table wfp_project.m_provinsi: ~2 rows (approximately)
+-- Dumping data for table wfp_project.m_provinsi: ~0 rows (approximately)
 INSERT IGNORE INTO `m_provinsi` (`idprovinsi`, `kode`, `nama`, `status_aktif`) VALUES
 	(1, 'Jatim', 'Jawa Timur', 1),
 	(2, 'Jateng', 'Jawa Tengah', 1),
@@ -158,6 +169,7 @@ CREATE TABLE IF NOT EXISTS `m_staff` (
   `nama` text,
   `username` text,
   `password` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci,
+  `status_aktif` int DEFAULT '1',
   PRIMARY KEY (`idm_staff`,`iddinas`,`idjabatan`),
   KEY `fk_m_staff_m_dinas1_idx` (`iddinas`),
   KEY `fk_m_staff_m_jabatan1_idx` (`idjabatan`),
@@ -166,8 +178,8 @@ CREATE TABLE IF NOT EXISTS `m_staff` (
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
 
 -- Dumping data for table wfp_project.m_staff: ~0 rows (approximately)
-INSERT IGNORE INTO `m_staff` (`idm_staff`, `iddinas`, `idjabatan`, `nama`, `username`, `password`) VALUES
-	(6, 1, 1, 'ivano', 'ivano', '$2y$10$k80JDnb1t9rg4HtQgKrc.uWc0I16XzSbxQxanCqLxjPJBSROfLohG');
+INSERT IGNORE INTO `m_staff` (`idm_staff`, `iddinas`, `idjabatan`, `nama`, `username`, `password`, `status_aktif`) VALUES
+	(6, 1, 1, 'ivano', 'ivano', '$2y$10$k80JDnb1t9rg4HtQgKrc.uWc0I16XzSbxQxanCqLxjPJBSROfLohG', 1);
 
 -- Dumping structure for table wfp_project.m_user
 CREATE TABLE IF NOT EXISTS `m_user` (
@@ -210,6 +222,7 @@ CREATE TABLE IF NOT EXISTS `t_pelaporan` (
   `iduser` int NOT NULL,
   `status_pelaporan` text,
   `keterangan` text,
+  `status_aktif` int DEFAULT '1',
   PRIMARY KEY (`idpelaporan`),
   KEY `fk_t_pelaporan_m_staff1_idx` (`idm_staff`),
   KEY `fk_t_pelaporan_m_user1_idx` (`iduser`),

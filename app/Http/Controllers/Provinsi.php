@@ -29,27 +29,7 @@ class Provinsi extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->all();
-        if (isset($data['form']) && is_array($data['form'])) {
-            $dataAssoc = [];
-            foreach ($data['form'] as $item) {
-                $dataAssoc[$item['name']] = $item['value'];
-            }
-
-            $kode = $dataAssoc['kode'] ?? null;
-            $nama = $dataAssoc['nama'] ?? null;
-        } else {
-            $kode = $data['kode'] ?? null;
-            $nama = $data['nama'] ?? null;
-        }
-        echo $nama;
-        // $citizen = new Citizen_model();
-        // $citizen->citizen_id = $citizen_id;
-        // $citizen->name = $name;
-        // $citizen->address = $address;
-        // $citizen->save();
-
-        // echo json_encode(array("status" => TRUE));
+        //
     }
 
     /**
@@ -147,7 +127,7 @@ class Provinsi extends Controller
                 <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="edit(' . $value['idprovinsi'] . ')">
                     <i class="bx bx-edit-alt"></i>
                 </a>
-                <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="hapus(' . $value['idprovinsi'] . ')">
+                <a href="javascript:void(0)" class="btn btn-danger btn-sm ms-3" onclick="hapus(' . $value['idprovinsi'] . ')">
                     <i class="bx bx-trash"></i>
                 </a>
             </div>'

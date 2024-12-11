@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Kota;
 use App\Http\Controllers\Provinsi;
 use Illuminate\Support\Facades\Route;
 
@@ -29,4 +30,12 @@ Route::middleware('auth')->group(function () {
     Route::post('provinsi/edit', [Provinsi::class, 'edit'])->name('provinsi.edit');
     Route::post('provinsi/hapus', [Provinsi::class, 'hapus'])->name('provinsi.hapus');
     Route::post('provinsi/update', [Provinsi::class, 'update'])->name('provinsi.update');
+
+    Route::get('kota', [Kota::class, 'index'])->name('kota');
+    Route::post('kota/simpan', [Kota::class, 'simpan'])->name('kota.simpan');
+    Route::post('kota/getData', [Kota::class, 'getData'])->name('kota.getData');
+    Route::post('kota/edit', [Kota::class, 'edit'])->name('kota.edit');
+    Route::post('kota/hapus', [Kota::class, 'hapus'])->name('kota.hapus');
+    Route::post('kota/update', [Kota::class, 'update'])->name('kota.update');
+    Route::post('kota/getDataProvinsi', [Kota::class, 'getDataProvinsi'])->name('kota.getDataProvinsi');
 });
