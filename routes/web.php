@@ -23,5 +23,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/', function () {
         return view('dashboard_v');
     });
-    Route::get('/provinsi', [Provinsi::class, 'index'])->name('provinsi');
+    Route::get('provinsi', [Provinsi::class, 'index'])->name('provinsi');
+    Route::post('provinsi/simpan', [Provinsi::class, 'simpan'])->name('provinsi.simpan');
+    Route::post('provinsi/getData', [Provinsi::class, 'getData'])->name('provinsi.getData');
+    Route::post('provinsi/edit', [Provinsi::class, 'edit'])->name('provinsi.edit');
+    Route::post('provinsi/hapus', [Provinsi::class, 'hapus'])->name('provinsi.hapus');
+    Route::post('provinsi/update', [Provinsi::class, 'update'])->name('provinsi.update');
 });
