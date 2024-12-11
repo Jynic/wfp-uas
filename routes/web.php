@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Provinsi;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/', function () {
+        return view('dashboard_v');
+    });
+    Route::get('/provinsi', [Provinsi::class, 'index'])->name('provinsi');
 });
