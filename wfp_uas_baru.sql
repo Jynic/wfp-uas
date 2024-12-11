@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS `m_dinas` (
   `iddinas` int NOT NULL AUTO_INCREMENT,
   `idkota_kabupaten` int NOT NULL,
   `nama` text,
+  `alamat` text,
   `status_aktif` int DEFAULT '1',
   PRIMARY KEY (`iddinas`,`idkota_kabupaten`),
   KEY `fk_m_dinas_m_kota_kabupaten1_idx` (`idkota_kabupaten`),
@@ -50,8 +51,8 @@ CREATE TABLE IF NOT EXISTS `m_dinas` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
 
 -- Dumping data for table wfp_project.m_dinas: ~0 rows (approximately)
-INSERT IGNORE INTO `m_dinas` (`iddinas`, `idkota_kabupaten`, `nama`, `status_aktif`) VALUES
-	(1, 1, 'Dinas Rungkut', 1);
+INSERT IGNORE INTO `m_dinas` (`iddinas`, `idkota_kabupaten`, `nama`, `alamat`, `status_aktif`) VALUES
+	(1, 1, 'Dinas Rungkut', NULL, 1);
 
 -- Dumping structure for table wfp_project.m_fasum
 CREATE TABLE IF NOT EXISTS `m_fasum` (
