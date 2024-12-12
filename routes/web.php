@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Dinas;
+use App\Http\Controllers\Fasum;
+use App\Http\Controllers\Jenisfasum;
 use App\Http\Controllers\Kota;
 use App\Http\Controllers\Provinsi;
 use Illuminate\Support\Facades\Route;
@@ -47,4 +49,20 @@ Route::middleware('auth')->group(function () {
     Route::post('dinas/hapus', [Dinas::class, 'hapus'])->name('dinas.hapus');
     Route::post('dinas/update', [Dinas::class, 'update'])->name('dinas.update');
     Route::post('dinas/getDataKota', [Dinas::class, 'getDataKota'])->name('dinas.getDataKota');
+
+    Route::get('jenisfasum', [Jenisfasum::class, 'index'])->name('jenisfasum');
+    Route::post('jenisfasum/simpan', [Jenisfasum::class, 'simpan'])->name('jenisfasum.simpan');
+    Route::post('jenisfasum/getData', [Jenisfasum::class, 'getData'])->name('jenisfasum.getData');
+    Route::post('jenisfasum/edit', [Jenisfasum::class, 'edit'])->name('jenisfasum.edit');
+    Route::post('jenisfasum/hapus', [Jenisfasum::class, 'hapus'])->name('jenisfasum.hapus');
+    Route::post('jenisfasum/update', [Jenisfasum::class, 'update'])->name('jenisfasum.update');
+    Route::post('jenisfasum/getDataKota', [Jenisfasum::class, 'getDataKota'])->name('jenisfasum.getDataKota');
+
+    Route::get('fasum', [Fasum::class, 'index'])->name('fasum');
+    Route::post('fasum/simpan', [Fasum::class, 'simpan'])->name('fasum.simpan');
+    Route::post('fasum/getData', [Fasum::class, 'getData'])->name('fasum.getData');
+    Route::post('fasum/edit', [Fasum::class, 'edit'])->name('fasum.edit');
+    Route::post('fasum/hapus', [Fasum::class, 'hapus'])->name('fasum.hapus');
+    Route::post('fasum/update', [Fasum::class, 'update'])->name('fasum.update');
+    Route::post('fasum/getDataKota', [Fasum::class, 'getDataKota'])->name('fasum.getDataKota');
 });

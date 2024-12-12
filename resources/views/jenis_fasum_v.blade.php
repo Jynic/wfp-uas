@@ -36,11 +36,11 @@
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>Dinas</h1>
+      <h1>Jenis Fasilitas Umum</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-          <li class="breadcrumb-item active">Dinas</li>
+          <li class="breadcrumb-item active">Jenis Fasilitas Umum</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
@@ -51,12 +51,10 @@
 
           <div class="card">
             <div class="card-body p-3">
-              <table id="tableDinas" class="table table-striped wrapped" style="width:100%">
+              <table id="tableJenisFasum" class="table table-striped wrapped" style="width:100%">
                 <thead>
                   <tr>
                     <th>Nama</th>
-                    <th>Kota / Kabupaten</th>
-                    <th>Alamat</th>
                     <th>Status Aktif</th>
                     <th>Aksi</th>
                   </tr>
@@ -77,21 +75,9 @@
                   <form action="#" id="form">
                     <input type="hidden" id="id" name="id">
                     <div class="row">
-                      <div class="form-group col-md-6 mb-3">
-                        <label for="nama">Nama Dinas</label>
-                        <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukan Dinas">
-                      </div>
-                      <div class="form-group col-md-6 mb-3">
-                        <label for="kota_kabupaten">Kota / Kabupaten</label>
-                        <select name="kota_kabupaten" id="kota_kabupaten" class="form-control" style="width: 100%">
-                          <option value="">Pilih Kota / Kabupaten</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="row">
                       <div class="form-group col-md-12 mb-3">
-                        <label for="nama" class="form-label">Masukan Alamat</label>
-                        <textarea name="alamat" id="alamat" class="form-control" rows="3" placeholder="Masukan Alamat"></textarea>
+                        <label for="nama">Nama Jenis Fasilitas Umum</label>
+                        <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukan Jenis Fasilitas Umum">
                       </div>
                     </div>
                   </form>
@@ -115,7 +101,7 @@
 
   </main><!-- End #main -->
   <script>
-    var table = $('#tableDinas').DataTable({
+    var table = $('#tableJenisFasum').DataTable({
       "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 col-lg-3 d-flex align-items-center justify-content-sm-start justify-content-center custom-button'><'col-10 col-sm-6 d-flex align-items-center justify-content-sm-start justify-content-center 'l><'col-12 col-sm-3 d-flex align-items-center justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
         "<'table-responsive'tr>" +
         "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count mb-sm-0 mb-3'i><'dt--pagination'p>>",
@@ -135,14 +121,13 @@
     });
     $(document).ready(function() {
       getData();
-      initializeSelect2('#kota_kabupaten', "{{ route('dinas.getDataKota') }}", 'Pilih Kota / Kabupaten');
 
       var customButton = $('<button/>', {
-        text: 'Tambah Dinas', // Button text
+        text: 'Tambah Jenis Fasilitas Umum', // Button text
         id: 'myCustomButton', // Button ID
         class: 'btn btn-primary', // Additional classes for styling if needed
         click: function() {
-          tambah_dinas(); // Call the function directly here
+          tambah_jenis_fasum(); // Call the function directly here
         }
       });
       $('.custom-button').append(customButton);
@@ -150,9 +135,9 @@
 
     function save(id) {
       if (id == 0) {
-        var url = "{{ route('dinas.simpan') }}";
+        var url = "{{ route('jenisfasum.simpan') }}";
       } else {
-        var url = "{{ route('dinas.update') }}";
+        var url = "{{ route('jenisfasum.update') }}";
       }
       $.ajax({
         type: 'POST',
@@ -190,7 +175,7 @@
     function getData() {
       $.ajax({
         type: 'POST',
-        url: "{{ route('dinas.getData') }}",
+        url: "{{ route('jenisfasum.getData') }}",
         data: {
           '_token': '<?php echo csrf_token() ?>'
         },
@@ -212,13 +197,10 @@
       });
     }
 
-    function tambah_dinas() {
+    function tambah_jenis_fasum() {
       $("#id").val('');
       $("#nama").val('');
-      $("#alamat").val('');
-      var option = new Option("Belum dipilih", "-1", true, true);
-      $('#kota_kabupaten').append(option).trigger('change');
-      $("#modal-title").text('Tambah Dinas');
+      $("#modal-title").text('Tambah Jenis Fasilitas Umum');
       $('#modal_form').modal('show');
       $('#btnSave').text('Simpan');
       $("#btnSave").attr("onclick", "save(0)");
@@ -227,7 +209,7 @@
     function edit(id) {
       $.ajax({
         type: 'POST',
-        url: "{{ route('dinas.edit') }}",
+        url: "{{ route('jenisfasum.edit') }}",
         data: {
           '_token': '<?php echo csrf_token() ?>',
           'id': id
@@ -244,12 +226,9 @@
         success: function(data) {
           Swal.close();
           var data = JSON.parse(data);
-          $("#modal-title").text('Edit Dinas');
+          $("#modal-title").text('Edit Jenis Fasulitas Umum');
           $('#id').val(data[0].id);
           $('#nama').val(data[0].nama);
-          var option = new Option(data[0].kota_nama, data[0].kota_id, true, true);
-          $('#kota_kabupaten').append(option).trigger('change');
-          $("#alamat").val(data[0].alamat);
           $('#modal_form').modal('show');
           $('#btnSave').text('Update');
           $("#btnSave").attr("onclick", "save(1)");
@@ -265,7 +244,7 @@
       }).then((result) => {
         if (result.isConfirmed) {
           $.ajax({
-            url: "{{Route('dinas.hapus')}}",
+            url: "{{Route('jenisfasum.hapus')}}",
             type: "POST",
             data: {
               id: id,
