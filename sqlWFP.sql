@@ -149,12 +149,15 @@ CREATE TABLE IF NOT EXISTS `m_staff` (
   `username` text,
   `password` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci,
   `status_aktif` int DEFAULT '1',
+  `alamat` text,
+  `email` text,
+  `idkota_kabupaten` int DEFAULT NULL,
   PRIMARY KEY (`idm_staff`,`iddinas`,`idjabatan`),
   KEY `fk_m_staff_m_dinas1_idx` (`iddinas`),
   KEY `fk_m_staff_m_jabatan1_idx` (`idjabatan`),
   CONSTRAINT `fk_m_staff_m_dinas1` FOREIGN KEY (`iddinas`) REFERENCES `m_dinas` (`iddinas`),
   CONSTRAINT `fk_m_staff_m_jabatan1` FOREIGN KEY (`idjabatan`) REFERENCES `m_jabatan` (`idjabatan`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3;
 
 -- Data exporting was unselected.
 
@@ -170,12 +173,15 @@ CREATE TABLE IF NOT EXISTS `m_user` (
   `no_hp` text,
   `email` text,
   `status_aktif` int DEFAULT NULL,
+  `idstaff` int DEFAULT NULL,
   PRIMARY KEY (`iduser`,`idjabatan`),
   KEY `fk_m_user_m_kota_kabupaten1_idx` (`idkota_kabupaten`),
   KEY `fk_m_user_m_jabatan1_idx` (`idjabatan`),
+  KEY `idstaff` (`idstaff`),
   CONSTRAINT `fk_m_user_m_jabatan1` FOREIGN KEY (`idjabatan`) REFERENCES `m_jabatan` (`idjabatan`),
-  CONSTRAINT `fk_m_user_m_kota_kabupaten1` FOREIGN KEY (`idkota_kabupaten`) REFERENCES `m_kota_kabupaten` (`idkota_kabupaten`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+  CONSTRAINT `fk_m_user_m_kota_kabupaten1` FOREIGN KEY (`idkota_kabupaten`) REFERENCES `m_kota_kabupaten` (`idkota_kabupaten`),
+  CONSTRAINT `FK_m_user_m_staff` FOREIGN KEY (`idstaff`) REFERENCES `m_staff` (`idm_staff`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
 
 -- Data exporting was unselected.
 

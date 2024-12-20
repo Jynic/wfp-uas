@@ -91,6 +91,22 @@ class User extends Controller
         $user->email = $formData['email'] ?? $user->email;
         $user->save();
 
+        $idstaff = $user->idstaff;
+
+        $staff = Staff_model::find($idstaff);
+        if (!$staff) {
+            return response()->json(['error' => 'Data tidak ditemukan'], 404);
+        }
+        $staff->nama = $formData['nama'] ?? $staff->nama;
+        $staff->iddinas = $formData['dinas'] ?? $staff->iddinas;
+        $staff->idjabatan = $formData['jabatan'] ?? $staff->idjabatan;
+        $staff->username = $formData['username'] ?? $staff->username;
+        $staff->password = Hash::make($formData['password']) ?? $staff->password;
+        $staff->alamat = $formData['alamat'] ?? '';
+        $staff->email = $formData['email'] ?? '';
+        $staff->idkota_kabupaten = $formData['asal'] ?? 1;
+        $staff->save();
+
         // Berikan respons sukses
         return response()->json(['status' => true, 'message' => 'Data berhasil diperbarui']);
     }
@@ -191,6 +207,19 @@ class User extends Controller
         // Proses data form
         $formData = $request->all();
         $password = Hash::make($formData['password']);
+
+        $staff = new Staff_model();
+        $staff->nama = $formData['nama'] ?? '';
+        $staff->iddinas = 1;
+        $staff->idjabatan = $formData['jabatan'] ?? 0;
+        $staff->username = $formData['username'] ?? '';
+        $staff->password = $password ?? '';
+        $staff->alamat = $formData['alamat'] ?? '';
+        $staff->email = $formData['email'] ?? '';
+        $staff->idkota_kabupaten = $formData['asal'] ?? 1;
+        $staff->save();
+        $id = $staff->getKey();
+
         $user = new User_model();
         $user->nama = $formData['nama'] ?? '';
         $user->idkota_kabupaten = $formData['asal'] ?? 1;
@@ -200,8 +229,12 @@ class User extends Controller
         $user->alamat = $formData['alamat'] ?? '';
         $user->no_hp = $formData['no_hp'] ?? '';
         $user->email = $formData['email'] ?? '';
+        $user->idstaff = $id;
         $user->status_aktif = 1;
         $user->save();
+
+
+
         return response()->json(['status' => true, 'message' => 'Data berhasil disimpan']);
     }
 

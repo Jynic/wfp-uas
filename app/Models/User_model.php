@@ -11,9 +11,12 @@ class User_model extends Model
     protected $table = 'm_user';
     protected $primaryKey = 'iduser';
     public $timestamps = false;
-    protected $fillable = ['nama', 'idkota_kabupaten', 'idjabatan', 'username', 'password','alamat','no_hp','email', 'status_aktif'];
+    protected $fillable = ['nama', 'idkota_kabupaten', 'idjabatan', 'username', 'password','alamat','no_hp','email', 'status_aktif', 'idstaff'];
 
     public function kota(){
         return $this->belongsTo(Kota_model::class, 'idkota_kabupaten');
+    }
+    public function staff(){
+        return $this->belongsTo(Staff_model::class, 'idstaff');
     }
 }
