@@ -5,6 +5,8 @@ use App\Http\Controllers\Fasum;
 use App\Http\Controllers\Jenisfasum;
 use App\Http\Controllers\Kota;
 use App\Http\Controllers\Provinsi;
+use App\Http\Controllers\Staff;
+use App\Http\Controllers\User;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -64,5 +66,24 @@ Route::middleware('auth')->group(function () {
     Route::post('fasum/edit', [Fasum::class, 'edit'])->name('fasum.edit');
     Route::post('fasum/hapus', [Fasum::class, 'hapus'])->name('fasum.hapus');
     Route::post('fasum/update', [Fasum::class, 'update'])->name('fasum.update');
-    Route::post('fasum/getDataKota', [Fasum::class, 'getDataKota'])->name('fasum.getDataKota');
+    Route::post('fasum/getDataKategori', [Fasum::class, 'getDataKategori'])->name('fasum.getDataKategori');
+    Route::post('fasum/getDataDinas', [Fasum::class, 'getDataDinas'])->name('fasum.getDataDinas');
+
+    Route::get('staff', [Staff::class, 'index'])->name('staff');
+    Route::post('staff/simpan', [Staff::class, 'simpan'])->name('staff.simpan');
+    Route::post('staff/getData', [Staff::class, 'getData'])->name('staff.getData');
+    Route::post('staff/edit', [Staff::class, 'edit'])->name('staff.edit');
+    Route::post('staff/hapus', [Staff::class, 'hapus'])->name('staff.hapus');
+    Route::post('staff/update', [Staff::class, 'update'])->name('staff.update');
+    Route::post('staff/getDataJabatan', [Staff::class, 'getDataJabatan'])->name('staff.getDataJabatan');
+    Route::post('staff/getDataDinas', [Staff::class, 'getDataDinas'])->name('staff.getDataDinas');
+
+    Route::get('user', [User::class, 'index'])->name('user');
+    Route::post('user/simpan', [User::class, 'simpan'])->name('user.simpan');
+    Route::post('user/getData', [User::class, 'getData'])->name('user.getData');
+    Route::post('user/edit', [User::class, 'edit'])->name('user.edit');
+    Route::post('user/hapus', [User::class, 'hapus'])->name('user.hapus');
+    Route::post('user/update', [User::class, 'update'])->name('user.update');
+    Route::post('user/getDataJabatan', [User::class, 'getDataJabatan'])->name('user.getDataJabatan');
+    Route::post('user/getKota', [User::class, 'getKota'])->name('user.getKota');
 });

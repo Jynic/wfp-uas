@@ -10,10 +10,10 @@
         </li><!-- End Dashboard Nav -->
 
         <li class="nav-item">
-            <a class="nav-link {{request()->segment(1) == 'provinsi' ? '' : 'collapsed'}} {{request()->segment(1) == 'kota' ? '' : 'collapsed'}} {{request()->segment(1) == 'dinas' ? '' : 'collapsed'}} {{request()->segment(1) == 'jenisfasum' ? '' : 'collapsed'}} {{request()->segment(1) == 'fasum' ? '' : 'collapsed'}}" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+            <a class="nav-link {{request()->segment(1) == 'provinsi' ? '' : 'collapsed'}} {{request()->segment(1) == 'kota' ? '' : 'collapsed'}} {{request()->segment(1) == 'dinas' ? '' : 'collapsed'}} {{request()->segment(1) == 'jenisfasum' ? '' : 'collapsed'}} {{request()->segment(1) == 'fasum' ? '' : 'collapsed'}} {{request()->segment(1) == 'staff' ? '' : 'collapsed'}} {{request()->segment(1) == 'user' ? '' : 'collapsed'}}" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
                 <i class="bi bi-menu-button-wide"></i><span>Master</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
-            <ul id="components-nav" class="nav-content collapse {{request()->segment(1) == 'provinsi' ? 'show' : ''}} {{request()->segment(1) == 'kota' ? 'show' : ''}} {{request()->segment(1) == 'dinas' ? 'show' : ''}} {{request()->segment(1) == 'jenisfasum' ? 'show' : ''}} {{request()->segment(1) == 'fasum' ? 'show' : ''}}" data-bs-parent="#sidebar-nav">
+            <ul id="components-nav" class="nav-content collapse {{request()->segment(1) == 'provinsi' ? 'show' : ''}} {{request()->segment(1) == 'kota' ? 'show' : ''}} {{request()->segment(1) == 'dinas' ? 'show' : ''}} {{request()->segment(1) == 'jenisfasum' ? 'show' : ''}} {{request()->segment(1) == 'fasum' ? 'show' : ''}} {{request()->segment(1) == 'staff' ? 'show' : ''}} {{request()->segment(1) == 'user' ? 'show' : ''}}" data-bs-parent="#sidebar-nav">
                 <li>
                     <a href="{{ route('provinsi') }}" class="{{request()->segment(1) == 'provinsi' ? 'active' : ''}}">
                         <i class="bi bi-circle"></i><span>Provinsi</span>
@@ -40,12 +40,12 @@
                     </a>
                 </li>
                 <li>
-                    <a href="">
+                    <a href="{{ route('staff') }}" class="{{request()->segment(1) == 'staff' ? 'active' : ''}}">
                         <i class="bi bi-circle"></i><span>Staff</span>
                     </a>
                 </li>
                 <li>
-                    <a href="">
+                    <a href="{{ route('user') }}" class="{{request()->segment(1) == 'user' ? 'active' : ''}}">
                         <i class="bi bi-circle"></i><span>User</span>
                     </a>
                 </li>

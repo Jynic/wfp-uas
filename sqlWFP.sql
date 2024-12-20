@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `m_fasum` (
   PRIMARY KEY (`idfasum`,`m_dinas_iddinas`),
   KEY `fk_m_fasum_m_dinas_idx` (`m_dinas_iddinas`),
   CONSTRAINT `fk_m_fasum_m_dinas` FOREIGN KEY (`m_dinas_iddinas`) REFERENCES `m_dinas` (`iddinas`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb3;
 
 -- Data exporting was unselected.
 
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS `m_jabatan` (
   `nama` text,
   `status_aktif` int DEFAULT NULL,
   PRIMARY KEY (`idjabatan`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
 
 -- Data exporting was unselected.
 
@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS `m_kategori_fasum` (
   `nama` text,
   `status_aktif` int DEFAULT '1',
   PRIMARY KEY (`idkategori_fasum`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3;
 
 -- Data exporting was unselected.
 
@@ -154,7 +154,7 @@ CREATE TABLE IF NOT EXISTS `m_staff` (
   KEY `fk_m_staff_m_jabatan1_idx` (`idjabatan`),
   CONSTRAINT `fk_m_staff_m_dinas1` FOREIGN KEY (`iddinas`) REFERENCES `m_dinas` (`iddinas`),
   CONSTRAINT `fk_m_staff_m_jabatan1` FOREIGN KEY (`idjabatan`) REFERENCES `m_jabatan` (`idjabatan`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3;
 
 -- Data exporting was unselected.
 
@@ -164,6 +164,8 @@ CREATE TABLE IF NOT EXISTS `m_user` (
   `idkota_kabupaten` int NOT NULL,
   `idjabatan` int NOT NULL,
   `nama` text,
+  `username` text,
+  `password` text,
   `alamat` text,
   `no_hp` text,
   `email` text,
