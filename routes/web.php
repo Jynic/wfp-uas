@@ -92,6 +92,7 @@ Route::middleware('auth')->group(function () {
     Route::post('pelaporan/simpan', [Pelaporan::class, 'simpan'])->name('pelaporan.simpan');
     Route::post('pelaporan/getData', [Pelaporan::class, 'getData'])->name('pelaporan.getData');
     Route::post('pelaporan/edit', [Pelaporan::class, 'edit'])->name('pelaporan.edit');
+    Route::post('pelaporan/detail', [Pelaporan::class, 'detail'])->name('pelaporan.detail');
     Route::post('pelaporan/hapus', [Pelaporan::class, 'hapus'])->name('pelaporan.hapus');
     Route::post('pelaporan/update', [Pelaporan::class, 'update'])->name('pelaporan.update');
     Route::post('pelaporan/getDataStaff', [Pelaporan::class, 'getDataStaff'])->name('pelaporan.getDataStaff');

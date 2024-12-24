@@ -221,6 +221,13 @@
       info: false,
       searching: false
     });
+
+    var tableDetail = $("#tabelDetail").DataTable({
+      paging: false,
+      ordering: false,
+      info: false,
+      searching: false
+    });
     $(document).ready(function() {
       getData();
       initFlatPic();
@@ -291,6 +298,37 @@
         }
       });
     }
+
+    function detail(id) {
+      $.ajax({
+        type: 'POST',
+        url: "{{ route('pelaporan.detail') }}",
+        data: {
+          '_token': '<?php echo csrf_token() ?>',
+          'id': id
+        },
+        beforeSend: function() {
+          Swal.fire({
+            title: 'Loading',
+            html: 'Memproses data',
+            didOpen: () => {
+              Swal.showLoading()
+            }
+          })
+        },
+        success: function(data) {
+          Swal.close();
+          var data = JSON.parse(data);
+          $(".modal-title").text('Detail Pelaporan');
+          tableDetail.clear();
+          tableDetail.rows.add(data).draw();
+          $('#modal_detail').modal('show');
+          $('#btnSave').text('Update');
+          $("#btnSave").attr("onclick", "save(1)");
+        }
+      });
+    }
+
 
     function generateSTCode() {
       const currentDate = new Date();

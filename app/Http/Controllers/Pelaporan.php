@@ -229,7 +229,10 @@ class Pelaporan extends Controller
                     '<span class="badge bg-success">Active</span>' :
                     '<span class="badge bg-danger">Inactive</span>',
                 '<div class="d-flex justify-content-center">
-                <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="edit(' . $value->id . ')">
+                <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="detail(' . $value->id . ')">
+                    <i class="bx bx-info-circle"></i>
+                </a>
+                <a href="javascript:void(0)" class="btn btn-primary btn-sm ms-3" onclick="edit(' . $value->id . ')">
                     <i class="bx bx-edit-alt"></i>
                 </a>
                 <a href="javascript:void(0)" class="btn btn-danger btn-sm ms-3" onclick="hapus(' . $value->id . ')">
@@ -387,5 +390,62 @@ class Pelaporan extends Controller
     {
         $nomor = DB::select('SELECT count(idpelaporan) + 1 as nomor FROM t_pelaporan ORDER BY idpelaporan DESC');
         return intval($nomor[0]->nomor);
+    }
+    public function detail(Request $request)
+    {
+        $data = $request->all();
+        $id = $data['id'];
+        $data = DB::select("
+        SELECT 
+        p.idpelaporan AS id,
+        p.nomor,
+        p.tgl_pelaporan,
+        p.status_pelaporan,
+        p.keterangan,
+        p.status_aktif,
+        s.nama AS nama_staff,
+        s.idm_staff AS id_staff,
+        u.nama AS nama_user,
+        u.iduser AS id_user,
+        f.nama AS nama_fasum,
+        f.idfasum AS id_fasum,
+        pd.status_perbaikkan AS status_perbaikkan,
+        pd.foto_fasum AS foto_fasum,
+        pd.keterangan AS keterangan_fasum,
+        s1.idm_staff AS id_staff_detail,
+        s1.nama as nama_staff_detail
+        FROM 
+            t_pelaporan p
+        INNER JOIN 
+            t_pelaporan_detail pd ON p.idpelaporan = pd.t_pelaporan_idpelaporan
+        INNER JOIN 
+            m_staff s ON p.idm_staff = s.idm_staff
+        INNER JOIN 
+            m_user u ON p.iduser = u.iduser
+        INNER JOIN 
+            m_fasum f ON pd.m_fasum_idfasum = f.idfasum
+            INNER JOIN m_staff s1 ON pd.idstaff=s1.idm_staff
+        WHERE 
+            p.status_aktif = 1 and p.idpelaporan = :id;", ['id' => $id]);
+
+        $pelaporan = [];
+        foreach ($data as $key => $value) {
+            $pelaporan[] = array(
+                $value->nama_fasum,
+                $value->status_perbaikkan,
+                '<img src="' . asset($value->foto_fasum) . '" alt="Gambar Fasum" style="max-width: 100px; max-height: 100px;">',
+                $value->keterangan_fasum,
+                '<div class="d-flex justify-content-center">
+                <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="edit(' . $value->id . ')">
+                    <i class="bx bx-edit-alt"></i>
+                </a>
+                <a href="javascript:void(0)" class="btn btn-danger btn-sm ms-3" onclick="hapus(' . $value->id . ')">
+                    <i class="bx bx-trash"></i>
+                </a>
+                </div>'
+            );
+        }
+        // Kirim data dalam format JSON
+        echo json_encode($pelaporan);
     }
 }
