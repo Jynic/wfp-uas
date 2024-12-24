@@ -62,7 +62,7 @@
 
           <div class="card">
             <div class="card-body p-3">
-              <table id="tableUser" class="table table-striped wrapped" style="width:100%" enctype="multipart/form-data">
+              <table id="tabelPelaporan" class="table table-striped wrapped" style="width:100%" enctype="multipart/form-data">
                 <thead>
                   <tr>
                     <th>Nama</th>
@@ -159,13 +159,45 @@
               </div>
             </div>
           </div>
+          <div class="modal fade text-left modal-borderless" id="modal_detail" tabindex="-1"
+            role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable" role="document">
+              <div class="modal-content overflow">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="modal-title">Form Input Pelaporan</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <table id="tabelDetail" class="table dt-table-hover wrapped" style="width:100%">
+                    <thead>
+                      <th>Fasum</th>
+                      <th>Status Perbaikkan</th>
+                      <th>Gambar</th>
+                      <th>Keterangan</th>
+                      <th>Aksi</th>
+                    </thead>
+                  </table>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-light-primary" data-bs-dismiss="modal">
+                    <i class="bx bx-x d-block d-sm-none"></i>
+                    <span class="d-none d-sm-block">Tutup</span>
+                  </button>
+                  <button type="button" class="btn btn-primary ms-1" onclick="save(1)" id="btnSave">
+                    <i class="bx bx-check d-block d-sm-none"></i>
+                    <span class="d-none d-sm-block">Simpan</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
   </main><!-- End #main -->
   <script>
-    var table = $('#tableUser').DataTable({
+    var table = $('#tabelPelaporan').DataTable({
       "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 col-lg-3 d-flex align-items-center justify-content-sm-start justify-content-center custom-button'><'col-10 col-sm-6 d-flex align-items-center justify-content-sm-start justify-content-center 'l><'col-12 col-sm-3 d-flex align-items-center justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
         "<'table-responsive'tr>" +
         "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count mb-sm-0 mb-3'i><'dt--pagination'p>>",
@@ -217,7 +249,7 @@
         var rowData = [];
         rowData.push('<select class="form-control form-control-user fasum" id="fasum[' + i + ']" style="width:150px" name="fasum[]"></select>');
         rowData.push('<select class="form-control form-control-user pic_fasum" id="pic_fasum[' + i + ']" style="width:150px" name="pic_fasum[]"></select>');
-        rowData.push('<input type="file" class="form-control" id="gambarFasum" name="gambarFasum">');
+        rowData.push('<input type="file" class="form-control" id="gambarFasum" name="gambarFasum[]" style="width:300px">');
         rowData.push('<input type="text" class="form-control form-control-user keterangan_detail" style="width:200px" id="keterangan_detail" name="keterangan_detail[]" placeholder="Keterangan" >');
         rowData.push('<button type="button" class="btn btn-danger btnHapusBaris">Hapus</button>');
         t.row.add(rowData).draw(false);
@@ -413,7 +445,7 @@
             var info = t.page.info();
             rowData.push('<select class="form-control form-control-user" id="fasum[' + key + ']" style="width:150px" name="fasum[]"><option value="' + item.id_fasum + '">' + item.nama_fasum + '</option></select>');
             rowData.push('<select class="form-control form-control-user" id="pic_fasum[' + key + ']" style="width:150px" name="pic_fasum[]"><option value="' + item.id_staff_detail + '">' + item.nama_staff_detail + '</option></select>');
-            rowData.push('<input type="file" class="form-control" id="gambarFasum" name="gambarFasum">');
+            rowData.push('<input type="file" class="form-control" id="gambarFasum" name="gambarFasum[]" style="width:300px">');
             rowData.push('<input type="text" class="form-control form-control-user " style="width:200px" id="keterangan_detail" name="keterangan_detail[]" value="' + item.keterangan_fasum + '" placeholder="Keterangan">');
             rowData.push('<button type="button" class="btn btn-danger btnHapusBaris">Hapus</button>');
             t.row.add(rowData).draw();
