@@ -4,6 +4,7 @@ use App\Http\Controllers\Dinas;
 use App\Http\Controllers\Fasum;
 use App\Http\Controllers\Jenisfasum;
 use App\Http\Controllers\Kota;
+use App\Http\Controllers\Pelaporan;
 use App\Http\Controllers\Provinsi;
 use App\Http\Controllers\Staff;
 use App\Http\Controllers\User;
@@ -86,4 +87,15 @@ Route::middleware('auth')->group(function () {
     Route::post('user/update', [User::class, 'update'])->name('user.update');
     Route::post('user/getDataJabatan', [User::class, 'getDataJabatan'])->name('user.getDataJabatan');
     Route::post('user/getKota', [User::class, 'getKota'])->name('user.getKota');
+
+    Route::get('pelaporan', [Pelaporan::class, 'index'])->name('pelaporan');
+    Route::post('pelaporan/simpan', [Pelaporan::class, 'simpan'])->name('pelaporan.simpan');
+    Route::post('pelaporan/getData', [Pelaporan::class, 'getData'])->name('pelaporan.getData');
+    Route::post('pelaporan/edit', [Pelaporan::class, 'edit'])->name('pelaporan.edit');
+    Route::post('pelaporan/hapus', [Pelaporan::class, 'hapus'])->name('pelaporan.hapus');
+    Route::post('pelaporan/update', [Pelaporan::class, 'update'])->name('pelaporan.update');
+    Route::post('pelaporan/getDataStaff', [Pelaporan::class, 'getDataStaff'])->name('pelaporan.getDataStaff');
+    Route::post('pelaporan/getDataUser', [Pelaporan::class, 'getDataUser'])->name('pelaporan.getDataUser');
+    Route::post('pelaporan/getDataFasum', [Pelaporan::class, 'getDataFasum'])->name('pelaporan.getDataFasum');
+    Route::get('pelaporan/GetNomor', [Pelaporan::class, 'GetNomor'])->name('pelaporan.GetNomor');
 });

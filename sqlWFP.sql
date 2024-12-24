@@ -189,7 +189,7 @@ CREATE TABLE IF NOT EXISTS `m_user` (
 CREATE TABLE IF NOT EXISTS `t_history_perbaikan` (
   `idhistory_perbaikan` int NOT NULL AUTO_INCREMENT,
   `idpelaporan` int NOT NULL,
-  `tgl` date DEFAULT NULL,
+  `tgl` datetime DEFAULT NULL,
   `keterangan` text,
   PRIMARY KEY (`idhistory_perbaikan`,`idpelaporan`),
   KEY `fk_t_history_perbaikan_t_pelaporan1_idx` (`idpelaporan`),
@@ -202,10 +202,10 @@ CREATE TABLE IF NOT EXISTS `t_history_perbaikan` (
 CREATE TABLE IF NOT EXISTS `t_pelaporan` (
   `idpelaporan` int NOT NULL AUTO_INCREMENT,
   `nomor` text,
-  `tgl_pelaporan` date DEFAULT NULL,
+  `tgl_pelaporan` datetime DEFAULT NULL,
   `idm_staff` int NOT NULL,
   `iduser` int NOT NULL,
-  `status_pelaporan` text,
+  `status_pelaporan` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci COMMENT '''Antri'', ''Dikerjakan'', ''Outsource'',''Selesai'',''Tidak Terselesaikan',
   `keterangan` text,
   `status_aktif` int DEFAULT '1',
   PRIMARY KEY (`idpelaporan`),
@@ -213,23 +213,27 @@ CREATE TABLE IF NOT EXISTS `t_pelaporan` (
   KEY `fk_t_pelaporan_m_user1_idx` (`iduser`),
   CONSTRAINT `fk_t_pelaporan_m_staff1` FOREIGN KEY (`idm_staff`) REFERENCES `m_staff` (`idm_staff`),
   CONSTRAINT `fk_t_pelaporan_m_user1` FOREIGN KEY (`iduser`) REFERENCES `m_user` (`iduser`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb3;
 
 -- Data exporting was unselected.
 
 -- Dumping structure for table wfp_project.t_pelaporan_detail
 CREATE TABLE IF NOT EXISTS `t_pelaporan_detail` (
+  `iddetail` int NOT NULL AUTO_INCREMENT,
   `t_pelaporan_idpelaporan` int NOT NULL,
   `m_fasum_idfasum` int NOT NULL,
-  `status_perbaikkan` text,
+  `status_perbaikkan` text CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci COMMENT '''Sedang dikerjakan''',
   `foto_fasum` text,
   `keterangan` text,
-  PRIMARY KEY (`t_pelaporan_idpelaporan`,`m_fasum_idfasum`),
+  `idstaff` int DEFAULT NULL,
+  PRIMARY KEY (`iddetail`) USING BTREE,
   KEY `fk_t_pelaporan_has_m_fasum_m_fasum1_idx` (`m_fasum_idfasum`),
   KEY `fk_t_pelaporan_has_m_fasum_t_pelaporan1_idx` (`t_pelaporan_idpelaporan`),
+  KEY `idstaff` (`idstaff`),
+  CONSTRAINT `FK_t_pelaporan_detail_m_staff` FOREIGN KEY (`idstaff`) REFERENCES `m_staff` (`idm_staff`),
   CONSTRAINT `fk_t_pelaporan_has_m_fasum_m_fasum1` FOREIGN KEY (`m_fasum_idfasum`) REFERENCES `m_fasum` (`idfasum`),
   CONSTRAINT `fk_t_pelaporan_has_m_fasum_t_pelaporan1` FOREIGN KEY (`t_pelaporan_idpelaporan`) REFERENCES `t_pelaporan` (`idpelaporan`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3;
 
 -- Data exporting was unselected.
 

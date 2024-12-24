@@ -53,12 +53,12 @@
         </li><!-- End Components Nav -->
 
         <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+            <a class="nav-link {{request()->segment(1) == 'pelaporan' ? '' : 'collapsed'}}" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
                 <i class="bi bi-journal-text"></i><span>Transaksi</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="forms-elements.html">
+                    <a href="{{ route('pelaporan') }}" class="{{request()->segment(1) == 'pelaporan' ? 'active' : ''}}">
                         <i class="bi bi-circle"></i><span>Pelaporan</span>
                     </a>
                 </li>

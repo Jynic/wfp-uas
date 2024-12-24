@@ -8,6 +8,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.css">
   <style>
     #map {
       height: 300px;
@@ -38,17 +39,19 @@
   <script src="https://cdn.datatables.net/2.1.5/js/dataTables.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/flatpickr.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr@4.6.13/dist/l10n/id.js"></script>
 
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
   <main id="main" class="main">
 
     <div class="pagetitle">
-      <h1>Fasilitas Umum</h1>
+      <h1>Pelaporan</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-          <li class="breadcrumb-item active">Fasilitas Umum</li>
+          <li class="breadcrumb-item active">Pelaporan</li>
         </ol>
       </nav>
     </div><!-- End Page Title -->
@@ -59,18 +62,15 @@
 
           <div class="card">
             <div class="card-body p-3">
-              <table id="tableJenisFasum" class="table table-striped wrapped" style="width:100%" enctype="multipart/form-data">
+              <table id="tableUser" class="table table-striped wrapped" style="width:100%" enctype="multipart/form-data">
                 <thead>
                   <tr>
                     <th>Nama</th>
-                    <th>Ketegori</th>
-                    <th>Dinas</th>
-                    <th>Asal Kota</th>
-                    <th>Luas Fasilitas Umum</th>
-                    <th>Kondisi Fasilitas Umum</th>
-                    <th>Asal Fasisilitas Umum</th>
-                    <th>Lokasi</th>
-                    <th>Gambar Fasum</th>
+                    <th>Tanggal</th>
+                    <th>Status Pelaporan</th>
+                    <th>Keterangan Pelaporan</th>
+                    <th>Nama Pelapor</th>
+                    <th>Fasilitas Umum</th>
                     <th>Status Aktif</th>
                     <th>Aksi</th>
                   </tr>
@@ -85,76 +85,63 @@
             <div class="modal-dialog modal-dialog-scrollable" role="document">
               <div class="modal-content overflow">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="modal-title">Form Input Fasilitas Umum</h5>
+                  <h5 class="modal-title" id="modal-title">Form Input Pelaporan</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                   <form id="form">
                     <input type="hidden" id="id" name="id">
                     <div class="row mb-3">
-                      <div class="col-md-12">
-                        <label for="nama" class="form-label">Nama Fasum</label>
-                        <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan Nama Fasilitas Umum" required>
+                      <div class="col-md-6">
+                        <label for="nomor" class="form-label">Nomor Pelaporan</label>
+                        <input type="text" class="form-control" id="nomor" name="nomor" placeholder="Masukkan Nomor Pelaporan" required>
+                      </div>
+                      <div class="col-md-6">
+                        <label for="tgl" class="form-label">Tanggal</label>
+                        <input type="text" class="form-control" id="tgl" name="tgl" required>
                       </div>
                     </div>
                     <div class="row mb-3">
                       <div class="col-md-6">
-                        <label for="dinas" class="form-label">Dinas</label>
-                        <select name="dinas" class="form-control" id="dinas" style="width: 100%">
+                        <label for="user" class="form-label">Pelapor</label>
+                        <select name="user" class="form-control" id="user" style="width: 100%">
                         </select>
                       </div>
                       <div class="col-md-6">
-                        <label for="kategori" class="form-label">Kategori Fasum</label>
-                        <select name="kategori[]" class="form-control" id="kategori" style="width: 100%">
-                        </select>
-                      </div>
-                    </div>
-                    <div class="row mb-3">
-                      <div class="col-md-6">
-                        <label for="luasFasum" class="form-label">Luas Fasum (m<sup>2</sup>)</label>
-                        <input type="number" class="form-control" id="luasFasum" name="luasFasum" placeholder="Masukkan Luas Fasilitas Umum" required>
-                      </div>
-                      <div class="col-md-6">
-                        <label for="asalFasum" class="form-label">Asal Fasum</label>
-                        <select name="asalFasum" class="form-control" id="asalFasum">
-                          <option value="APBN" selected>APBN</option>
-                          <option value="APBD">APBD</option>
-                          <option value="Swasta">Swasta</option>
+                        <label for="pic_utama" class="form-label">PIC Utama</label>
+                        <select name="pic_utama" class="form-control" id="pic_utama" style="width: 100%">
                         </select>
                       </div>
                     </div>
                     <div class="row mb-3">
-                      <div class="col-md-12">
-                        <label for="kondisiFasum" class="form-label">Kondisi Fasum</label>
-                        <textarea name="kondisiFasum" class="form-control" id="kondisiFasum" rows="3" placeholder="Masukkan Kondisi Fasilitas Umum"></textarea>
-                      </div>
-                    </div>
-                    <div class="row mb-3">
-                      <label for="searchAddress" class="form-label">Cari Alamat</label>
-                      <div class="input-group">
-                        <input type="text" class="form-control" id="searchAddress" placeholder="Masukkan alamat atau lokasi">
-                        <button type="button" class="btn btn-primary" id="searchButton">Cari</button>
-                      </div>
-                      <small id="addressSearchStatus" class="form-text text-muted"></small>
-                    </div>
-                    <div class="row mb-3">
-                      <div class="mb-3">
-                        <label for="map" class="form-label">Lokasi (Klik pada peta untuk mendapatkan Lat & Lng)</label>
-                        <div id="map"></div>
-                        <div class="row mt-2">
-                          <div class="col">
-                            <input type="text" class="form-control" id="latitude" name="latitude" placeholder="Latitude" readonly>
-                          </div>
-                          <div class="col">
-                            <input type="text" class="form-control" id="longitude" name="longitude" placeholder="Longitude" readonly>
-                          </div>
+                      <div class="form-group col-md-12 mb-3 text-center">
+                        <label for="tabelDetailPelaporan" class="form-label">Detail Pelaporan</label>
+                        <div class="table-responsive ">
+                          <table id="tabelDetailPelaporan" class="table dt-table-hover wrapped" style="width:100%">
+                            <thead>
+                              <tr>
+                                <th>Fasilitas Umum</th>
+                                <th>PIC Fasum</th>
+                                <th>Gambar</th>
+                                <th>Keterangan</th>
+                                <th>Action</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                          </table>
                         </div>
                       </div>
                     </div>
                     <div class="row mb-3">
+                      <div class="form-group col-md-12 mb-auto">
+                        <button type="button" id="btnTambahBaris" id="btnTambahBaris" onclick="" class="btn btn-primary">Tambah Baris</button>
+                      </div>
+                    </div>
+                    <div class="row mb-3">
                       <div class="col-md-12">
-                        <label for="gambarFasum" class="form-label">Upload Gambar</label>
-                        <input type="file" class="form-control" id="gambarFasum" name="gambarFasum">
+                        <label for="keterangan" class="form-label">Keterangan</label>
+                        <textarea name="keterangan" class="form-control" id="keterangan" rows="3" placeholder="Masukkan Keterangan"></textarea>
                       </div>
                     </div>
                   </form>
@@ -178,7 +165,7 @@
 
   </main><!-- End #main -->
   <script>
-    var table = $('#tableJenisFasum').DataTable({
+    var table = $('#tableUser').DataTable({
       "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 col-lg-3 d-flex align-items-center justify-content-sm-start justify-content-center custom-button'><'col-10 col-sm-6 d-flex align-items-center justify-content-sm-start justify-content-center 'l><'col-12 col-sm-3 d-flex align-items-center justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
         "<'table-responsive'tr>" +
         "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count mb-sm-0 mb-3'i><'dt--pagination'p>>",
@@ -196,189 +183,121 @@
       "lengthMenu": [7, 10, 20, 50],
       "pageLength": 10
     });
+    var t = $('#tabelDetailPelaporan').DataTable({
+      paging: false,
+      ordering: false,
+      info: false,
+      searching: false
+    });
     $(document).ready(function() {
       getData();
-      initializeSelect2Kategori('#kategori', "{{ route('fasum.getDataKategori') }}", 'Pilih Kategori');
-      initializeSelect2('#dinas', "{{ route('fasum.getDataDinas') }}", 'Pilih Dinas');
+      initFlatPic();
+      generateSTCode();
+      initializeSelect2('#user', "{{ route('pelaporan.getDataUser') }}", 'Pilih User');
+      initializeSelect2('#pic_utama', "{{ route('pelaporan.getDataStaff') }}", 'Pilih Staff');
+      initializeSelect2('select[name=\'pic_fasum[]\']', "{{ route('pelaporan.getDataStaff') }}", 'Pilih Staff');
+      initializeSelect2('select[name=\'fasum[]\']', "{{ route('pelaporan.getDataFasum') }}", 'Pilih Fasum');
       let map;
       let marker;
       var customButton = $('<button/>', {
-        text: 'Tambah Fasilitas Umum', // Button text
+        text: 'Tambah Pelaporan', // Button text  
         id: 'myCustomButton', // Button ID
         class: 'btn btn-primary', // Additional classes for styling if needed
         click: function() {
-          tambah_jenis_fasum(); // Call the function directly here
+          tambah_staff(); // Call the function directly here
         }
       });
       $('.custom-button').append(customButton);
-
-      function updateLocation(lat, lng, updateMarker = true) {
-        $('#latitude').val(lat);
-        $('#longitude').val(lng);
-
-        if (map && typeof map.setView === 'function') { // Pastikan `map` valid
-          map.setView([lat, lng], 15);
-
-          if (updateMarker) {
-            if (marker) {
-              map.removeLayer(marker);
-            }
-            marker = L.marker([lat, lng]).addTo(map);
-          }
-        } else {
-          console.error('Map is not initialized correctly.');
-        }
-      }
-      $('#modal_form').on('shown.bs.modal', function() {
-        if (!map) {
-          // Create map centered on a default location
-          map = L.map('map').setView([-6.200000, 106.816666], 13);
-
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '© OpenStreetMap'
-          }).addTo(map);
-
-          // Map click event to set coordinates
-          map.on('click', function(e) {
-            const {
-              lat,
-              lng
-            } = e.latlng;
-            updateLocation(lat, lng);
-          });
-        }
-
-        // Try to get current location
-        if ("geolocation" in navigator) {
-          $('#addressSearchStatus')
-            .text('Mencari lokasi saat ini...')
-            .removeClass('text-danger text-success')
-            .addClass('text-info');
-
-          navigator.geolocation.getCurrentPosition(
-            function(position) {
-              const lat = position.coords.latitude;
-              const lng = position.coords.longitude;
-
-              // Update location on map and form
-              updateLocation(lat, lng);
-
-              $('#addressSearchStatus')
-                .text('Lokasi saat ini berhasil ditemukan')
-                .removeClass('text-info text-danger')
-                .addClass('text-success');
-            },
-            function(error) {
-              // Handle geolocation errors
-              let errorMessage = '';
-              switch (error.code) {
-                case error.PERMISSION_DENIED:
-                  errorMessage = 'Izin akses lokasi ditolak';
-                  break;
-                case error.POSITION_UNAVAILABLE:
-                  errorMessage = 'Informasi lokasi tidak tersedia';
-                  break;
-                case error.TIMEOUT:
-                  errorMessage = 'Waktu permintaan lokasi habis';
-                  break;
-                default:
-                  errorMessage = 'Gagal mendapatkan lokasi saat ini';
-              }
-
-              $('#addressSearchStatus')
-                .text(errorMessage)
-                .removeClass('text-info text-success')
-                .addClass('text-danger');
-            }
-          );
-        } else {
-          // Geolocation is not supported
-          $('#addressSearchStatus')
-            .text('Geolokasi tidak didukung di peramban ini')
-            .removeClass('text-info text-success')
-            .addClass('text-danger');
-        }
+      var i = 10;
+      $('#tabelDetailPelaporan tbody').on("click", ".btnHapusBaris", function() {
+        var dtRow = $(this).closest("tr");
+        t.row(dtRow).remove().draw(false);
       });
+      $("#btnTambahBaris").click(function() {
+        var rowData = [];
+        rowData.push('<select class="form-control form-control-user fasum" id="fasum[' + i + ']" style="width:150px" name="fasum[]"></select>');
+        rowData.push('<select class="form-control form-control-user pic_fasum" id="pic_fasum[' + i + ']" style="width:150px" name="pic_fasum[]"></select>');
+        rowData.push('<input type="file" class="form-control" id="gambarFasum" name="gambarFasum">');
+        rowData.push('<input type="text" class="form-control form-control-user keterangan_detail" style="width:200px" id="keterangan_detail" name="keterangan_detail[]" placeholder="Keterangan" >');
+        rowData.push('<button type="button" class="btn btn-danger btnHapusBaris">Hapus</button>');
+        t.row.add(rowData).draw(false);
 
-
-      // Address search with Nominatim API
-      $('#searchButton').on('click', function() {
-        const address = $('#searchAddress').val().trim();
-
-        if (!address) {
-          $('#addressSearchStatus')
-            .text('Masukkan alamat terlebih dahulu')
-            .removeClass('text-success text-info')
-            .addClass('text-danger');
-          return;
-        }
-
-        // Clear previous status
-        $('#addressSearchStatus')
-          .text('Mencari alamat...')
-          .removeClass('text-danger text-success')
-          .addClass('text-info');
-
-        // Nominatim API request
-        $.ajax({
-          url: 'https://nominatim.openstreetmap.org/search',
-          method: 'GET',
-          dataType: 'json',
-          data: {
-            q: address,
-            format: 'json',
-            limit: 1,
-            addressdetails: 1
-          },
-          success: function(results) {
-            if (results && results.length > 0) {
-              const location = results[0];
-              const lat = parseFloat(location.lat);
-              const lon = parseFloat(location.lon);
-
-              // Update location on map and form
-              updateLocation(lat, lon);
-
-              // Success message
-              $('#addressSearchStatus')
-                .text('Alamat berhasil ditemukan')
-                .removeClass('text-info text-danger')
-                .addClass('text-success');
-            } else {
-              // No results found
-              $('#addressSearchStatus')
-                .text('Alamat tidak ditemukan')
-                .removeClass('text-info text-success')
-                .addClass('text-danger');
-            }
-          },
-          error: function(xhr, status, error) {
-            // Error handling
-            $('#addressSearchStatus')
-              .text('Terjadi kesalahan saat mencari alamat')
-              .removeClass('text-info text-success')
-              .addClass('text-danger');
-            console.error('Geocoding error:', error);
-          }
+        // Event handler untuk tombol hapus baris
+        $('#tableDetailSTBPB tbody').on('click', '.btnHapusBaris', function() {
+          var dtRow = $(this).parents("tr");
+          t.row(dtRow).remove().draw(false);
         });
+
+        initializeSelect2('#user', "{{ route('pelaporan.getDataUser') }}", 'Pilih User');
+        initializeSelect2('#pic_utama', "{{ route('pelaporan.getDataStaff') }}", 'Pilih Staff');
+        initializeSelect2('select[name=\'pic_fasum[]\']', "{{ route('pelaporan.getDataStaff') }}", 'Pilih Staff');
+        initializeSelect2('select[name=\'fasum[]\']', "{{ route('pelaporan.getDataFasum') }}", 'Pilih Fasum');
+        i++;
       });
     });
 
-    function tambah_jenis_fasum() {
+    function initFlatPic() {
+      $('input[name="tgl"]').flatpickr({
+        locale: 'id', // Bahasa Indonesia
+        altInput: true,
+        altFormat: "F j, Y",
+        defaultDate: new Date(),
+        dateFormat: "Y-m-d H:i:s",
+        onReady: function(selectedDates, dateStr, instance) {
+          var date = new Date(selectedDates[0]);
+          var day = date.getDate();
+          var month = date.getMonth() + 1;
+          var year = date.getFullYear();
+          var formattedDate = year + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day);
+        },
+        onChange: function(selectedDates, dateStr, instance) {
+          var date = new Date(selectedDates[0]);
+          var day = date.getDate();
+          var month = date.getMonth() + 1;
+          var year = date.getFullYear();
+          var formattedDate = year + '-' + (month < 10 ? '0' + month : month) + '-' + (day < 10 ? '0' + day : day);
+        }
+      });
+    }
+
+    function generateSTCode() {
+      const currentDate = new Date();
+      const year = currentDate.getFullYear().toString().substr(-2);
+      const month = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+
+      $.ajax({
+        url: 'pelaporan/GetNomor',
+        method: 'GET',
+        dataType: 'json',
+        success: function(response) {
+          console.log(response);
+          const nomor = response.toString().padStart(4, '0');
+          const stCode = `P/${year}${month}/${nomor}`;
+
+          // Assuming you have an input field with id 'stCodeInput'
+          $('#nomor').val(stCode);
+        },
+        error: function(xhr, status, error) {
+          console.error('Error fetching nomor:', error);
+          alert('Terjadi kesalahan saat mengambil nomor. Silakan coba lagi.');
+        }
+      });
+    }
+
+    function tambah_staff() {
       $("#id").val('');
       $("#nama").val('');
       var option = new Option('', '', true, true);
-      $("#dinas").append(option).trigger('change');
-      $('#kategori').empty().trigger('change');
+      $("#asal").append(option).trigger('change');
+      var option = new Option('', '', true, true);
+      $('#jabatan').append(option).trigger('change');
+      $("#username").val('');
+      $("#password").val('');
+      $("#alamat").val('');
+      $("#no_hp").val('');
+      $("#email").val('');
 
-      $("#luasFasum").val('');
-      $("#kondisiFasum").val('');
-      $("#asalFasum").val('APBN');
-      $("#latitude").val('');
-      $("#longitude").val('');
-      $('#gambarFasum').val('');
-      $("#modal-title").text('Tambah Jenis Fasilitas Umum');
+      $("#modal-title").text('Tambah Pelaporan');
       $('#modal_form').modal('show');
       $('#btnSave').text('Simpan');
       $("#btnSave").attr("onclick", "save(0)");
@@ -386,9 +305,9 @@
 
     function save(id) {
       if (id == 0) {
-        var url = "{{ route('fasum.simpan') }}";
+        var url = "{{ route('pelaporan.simpan') }}";
       } else {
-        var url = "{{ route('fasum.update') }}";
+        var url = "{{ route('pelaporan.update') }}";
       }
       let formData = new FormData($('#form')[0]);
       formData.append('_token', '<?php echo csrf_token() ?>');
@@ -427,7 +346,7 @@
     function getData() {
       $.ajax({
         type: 'POST',
-        url: "{{ route('fasum.getData') }}",
+        url: "{{ route('pelaporan.getData') }}",
         data: {
           '_token': '<?php echo csrf_token() ?>'
         },
@@ -452,7 +371,7 @@
     function edit(id) {
       $.ajax({
         type: 'POST',
-        url: "{{ route('fasum.edit') }}",
+        url: "{{ route('pelaporan.edit') }}",
         data: {
           '_token': '<?php echo csrf_token() ?>',
           'id': id
@@ -468,30 +387,48 @@
         },
         success: function(data) {
           Swal.close();
-          var data = JSON.parse(data)[0];
-          $("#modal-title").text('Edit Jenis Fasulitas Umum');
-          $("#id").val(data.id);
-          $("#nama").val(data.nama);
-          $("#luasFasum").val(data.luas_fasum);
-          $("#kondisiFasum").val(data.kondisi_fasum);
-          $("#asalFasum").val(data.asal_fasum);
-          $("#latitude").val(data.latitude);
-          $("#longitude").val(data.longitude);
-          $('#kategori').empty().trigger('change');
-          var option = new Option(data.dinas, data.dinas_id, true, true);
-          $("#dinas").append(option).trigger('change');
-          var kategori = data.kategori.split(',').map(function(item) {
-            return item.trim();
+          var data = JSON.parse(data);
+          $("#modal-title").text('Edit Pelaporan');
+          $("#id").val(data[0]['id']);
+          $("#nomor").val(data[0]['nomor']);
+          $('#tgl').get(0)._flatpickr.setDate(data[0]['tgl_pelaporan'], true);
+          var option = new Option(data[0]['nama_staff'], data[0]['id_staff'], true, true);
+          $("#pic_utama").append(option).trigger('change');
+          var option = new Option(data[0]['nama_user'], data[0]['id_user'], true, true);
+          $("#user").append(option).trigger('change');
+          $("#keterangan").val(data[0]['keterangan']);
+          // var t = $('#tabelDetailPelaporan').DataTable({
+          //   paging: false,
+          //   ordering: false,
+          //   info: false,
+          //   searching: false
+          // });
+          initializeSelect2('#user', "{{ route('pelaporan.getDataUser') }}", 'Pilih User');
+          initializeSelect2('#pic_utama', "{{ route('pelaporan.getDataStaff') }}", 'Pilih Staff');
+          initializeSelect2('select[name=\'pic_fasum[]\']', "{{ route('pelaporan.getDataStaff') }}", 'Pilih Staff');
+          initializeSelect2('select[name=\'fasum[]\']', "{{ route('pelaporan.getDataFasum') }}", 'Pilih Fasum');
+          t.clear();
+          $.each(data, function(key, item) {
+            var rowData = [];
+            var info = t.page.info();
+            rowData.push('<select class="form-control form-control-user" id="fasum[' + key + ']" style="width:150px" name="fasum[]"><option value="' + item.id_fasum + '">' + item.nama_fasum + '</option></select>');
+            rowData.push('<select class="form-control form-control-user" id="pic_fasum[' + key + ']" style="width:150px" name="pic_fasum[]"><option value="' + item.id_staff_detail + '">' + item.nama_staff_detail + '</option></select>');
+            rowData.push('<input type="file" class="form-control" id="gambarFasum" name="gambarFasum">');
+            rowData.push('<input type="text" class="form-control form-control-user " style="width:200px" id="keterangan_detail" name="keterangan_detail[]" value="' + item.keterangan_fasum + '" placeholder="Keterangan">');
+            rowData.push('<button type="button" class="btn btn-danger btnHapusBaris">Hapus</button>');
+            t.row.add(rowData).draw();
+
+            $('#tableDetailSTBPB tbody').on('click', '.btnHapusBaris', function() {
+              var dtRow = $(this).parents("tr");
+              t.row(dtRow).remove().draw(false);
+            });
+
+            initializeSelect2('#user', "{{ route('pelaporan.getDataUser') }}", 'Pilih User');
+            initializeSelect2('#pic_utama', "{{ route('pelaporan.getDataStaff') }}", 'Pilih Staff');
+            initializeSelect2('select[name=\'pic_fasum[]\']', "{{ route('pelaporan.getDataStaff') }}", 'Pilih Staff');
+            initializeSelect2('select[name=\'fasum[]\']', "{{ route('pelaporan.getDataFasum') }}", 'Pilih Fasum');
           });
-          var kategori_id = data.kategori_id.split(',').map(function(item) {
-            return item.trim();
-          })
-          kategori.forEach(function(index, value) {
-            if ($("#kategori option[value='" + value + "']").length === 0) {
-              var newOption = new Option(index, kategori_id[value], true, true);
-              $("#kategori").append(newOption);
-            }
-          });
+
           $('#modal_form').modal('show');
           $('#btnSave').text('Update');
           $("#btnSave").attr("onclick", "save(1)");
@@ -507,7 +444,7 @@
       }).then((result) => {
         if (result.isConfirmed) {
           $.ajax({
-            url: "{{Route('fasum.hapus')}}",
+            url: "{{Route('pelaporan.hapus')}}",
             type: "POST",
             data: {
               id: id,

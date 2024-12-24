@@ -214,6 +214,7 @@ class Fasum extends Controller
                 $value->kondisi_fasum,
                 $value->asal_fasum,
                 $value->lokasi,
+                '<img src="' . asset($value->gambar) . '" alt="Gambar" style="max-width: 100px; max-height: 100px;">',
                 ($value->status_aktif == 1) ?
                     '<span class="badge bg-success">Active</span>' :
                     '<span class="badge bg-danger">Inactive</span>',
