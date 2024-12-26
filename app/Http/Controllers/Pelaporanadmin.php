@@ -233,7 +233,7 @@ class Pelaporanadmin extends Controller
             $pelaporan[] = array(
                 $value->nomor,
                 $value->tgl_pelaporan,
-                '<select class="form-select" id="status_utama" name="status_utama">
+                '<select class="form-select" id="status_utama" name="status_utama" onchange="updateStatus(' . $value->id . ', this)">
                     <option value="Antri" ' . ($value->status_pelaporan == "Antri" ? 'selected' : '') . '>Antri</option>
                     <option value="Dikerjakan" ' . ($value->status_pelaporan == "Dikerjakan" ? 'selected' : '') . '>Dikerjakan</option>
                     <option value="Outsource" ' . ($value->status_pelaporan == "Outsource" ? 'selected' : '') . '>Outsource</option>
@@ -247,19 +247,21 @@ class Pelaporanadmin extends Controller
                     '<span class="badge bg-success">Active</span>' :
                     '<span class="badge bg-danger">Inactive</span>',
                 '<div class="d-flex justify-content-center">
-                <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="detail(' . $value->id . ')">
-                    <i class="bx bx-info-circle"></i>
-                </a>
-                <a href="javascript:void(0)" class="btn btn-success btn-sm ms-3" onclick="status_selesai(' . $value->id . ', this)">
-                    <i class="bx bx-check-circle"></i>
-                </a>
-                <a href="javascript:void(0)" class="btn btn-primary btn-sm ms-3" onclick="edit(' . $value->id . ')">
-                    <i class="bx bx-edit-alt"></i>
-                </a>
-                <a href="javascript:void(0)" class="btn btn-danger btn-sm ms-3" onclick="hapus(' . $value->id . ')">
-                    <i class="bx bx-trash"></i>
-                </a>
-                </div>'
+                    <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="detail(' . $value->id . ')">
+                        <i class="bx bx-info-circle"></i>
+                    </a>
+                    '
+                    . ($value->status_pelaporan != "Selesai" ? '
+                    <a href="javascript:void(0)" class="btn btn-success btn-sm ms-3" onclick="status_selesai(' . $value->id . ', this)">
+                        <i class="bx bx-check-circle"></i>
+                    </a>
+                    <a href="javascript:void(0)" class="btn btn-primary btn-sm ms-3" onclick="edit(' . $value->id . ')">
+                        <i class="bx bx-edit-alt"></i>
+                    </a>
+                    <a href="javascript:void(0)" class="btn btn-danger btn-sm ms-3" onclick="hapus(' . $value->id . ')">
+                        <i class="bx bx-trash"></i>
+                    </a>' : '') .
+                    '</div>'
             );
         }
         // Kirim data dalam format JSON
@@ -464,6 +466,9 @@ class Pelaporanadmin extends Controller
             }
             $statusSelect .= '</select>';
 
+            // Cek apakah status_pelaporan adalah "Selesai"
+            $isDisabled = ($value->status_pelaporan == "Selesai") ? 'disabled' : '';
+
             // Isi array pelaporan
             $pelaporan[] = array(
                 $value->nama_fasum,
@@ -471,16 +476,16 @@ class Pelaporanadmin extends Controller
                 '<img src="' . asset($value->foto_fasum) . '" alt="Gambar Fasum" style="max-width: 100px; max-height: 100px;">',
                 $value->keterangan_fasum,
                 '<div class="d-flex justify-content-center">
-                <a href="javascript:void(0)" class="btn btn-success btn-sm" onclick="saveDetail(' . $value->id_detail . ', this)">
-                    <i class="bx bx-check-circle"></i>
-
-                </a>
+                    <a href="javascript:void(0)" class="btn btn-success btn-sm ' . $isDisabled . '" onclick="saveDetail(' . $value->id_detail . ', this)">
+                        <i class="bx bx-check-circle"></i>
+                    </a>
                 </div>'
             );
             $id_detail[] = array(
                 $value->id
             );
         }
+
 
         // Kirim data dalam format JSON
         echo json_encode(array("data" => $pelaporan, "id_detail" => $id_detail));
@@ -502,5 +507,14 @@ class Pelaporanadmin extends Controller
         DB::table('t_pelaporan')
             ->where('idpelaporan', $id)
             ->update(['status_pelaporan' => $status]);
+
+        if ($status == "Selesai") {
+            $data = [
+                'idpelaporan' => $id,
+                'tgl' => date('Y-m-d H:i:s'),
+                'keterangan' => 'Pelaporan Selesai'
+            ];
+            DB::table('t_history_perbaikan')->insert($data);
+        }
     }
 }
