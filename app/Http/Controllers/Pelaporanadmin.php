@@ -6,20 +6,21 @@ use App\Models\Fasum_model;
 use App\Models\Jenisfasum_model;
 use App\Models\Kota_model;
 use App\Models\Pelaporan_model;
+use App\Models\Pelaporanadmin_model;
 use App\Models\Staff_model;
 use App\Models\User_model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class Pelaporan extends Controller
+class Pelaporanadmin extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('pelaporan_v');
+        return view('pelaporanadmin_v');
     }
 
     /**
@@ -103,8 +104,7 @@ class Pelaporan extends Controller
         $dataPelaporan = [
             'nomor' => $formData['nomor'],
             'tgl_pelaporan' => $tgl,
-            'idm_staff' => 8,
-            // 'idm_staff' => $formData['pic_utama'],
+            'idm_staff' => $formData['pic_utama'],
             'iduser' => $formData['user'],
             'keterangan' => $formData['keterangan']
         ];
@@ -113,8 +113,8 @@ class Pelaporan extends Controller
             ->where('idpelaporan', $id) // Asumsi primary key bernama idpelaporan
             ->update($dataPelaporan);
 
-        $dataold = DB::table('t_pelaporan_detail')->where('t_pelaporan_idpelaporan', $id)->get()[0];
-        $gambarPath = $dataold->foto_fasum;
+        $dataold = DB::table('t_pelaporan_detail')->where('t_pelaporan_idpelaporan', $id)->get();
+        $gambarPath = $dataold;
 
         // Hapus detail yang ada sebelumnya
         DB::table('t_pelaporan_detail')
@@ -129,9 +129,9 @@ class Pelaporan extends Controller
             mkdir($folder, 0755, true);
         }
         $dataDetail = [];
-
         // Insert ulang detail baru
         foreach ($formData['fasum'] as $key => $value) {
+
             // Proses file gambar jika ada
             if (isset($request->file('gambarFasum')[$key])) {
                 $gambar = $request->file('gambarFasum')[$key];
@@ -164,7 +164,7 @@ class Pelaporan extends Controller
                     't_pelaporan_idpelaporan' => $id,
                     'm_fasum_idfasum' => $value,
                     'status_perbaikkan' => $formData['status_perbaikkan'][$key] ?? 'Antri',
-                    'foto_fasum' => $gambarPath,
+                    'foto_fasum' => $gambarPath[$key]->foto_fasum,
                     'keterangan' => $formData['keterangan_detail'][$key],
                     'idstaff' => 8
                     // 'idstaff' => $formData['pic_fasum'][$key]
@@ -185,9 +185,8 @@ class Pelaporan extends Controller
     {
         //
     }
-    public function getData(Request $request)
+    public function getData()
     {
-        $id = $request->input('id');
         $data = DB::select("SELECT 
     p.idpelaporan AS id,
     p.nomor,
@@ -242,18 +241,16 @@ class Pelaporan extends Controller
                     '<span class="badge bg-success">Active</span>' :
                     '<span class="badge bg-danger">Inactive</span>',
                 '<div class="d-flex justify-content-center">
-                    <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="detail(' . $value->id . ')">
-                        <i class="bx bx-info-circle"></i>
-                    </a>' .
-                    // Pengecekan untuk id_user = 3
-                    ($value->id_user == $id ? '
-                    <a href="javascript:void(0)" class="btn btn-primary btn-sm ms-3" onclick="edit(' . $value->id . ')">
-                        <i class="bx bx-edit-alt"></i>
-                    </a>
-                    <a href="javascript:void(0)" class="btn btn-danger btn-sm ms-3" onclick="hapus(' . $value->id . ')">
-                        <i class="bx bx-trash"></i>
-                    </a>' : '') .
-                    '</div>'
+                <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="detail(' . $value->id . ')">
+                    <i class="bx bx-info-circle"></i>
+                </a>
+                <a href="javascript:void(0)" class="btn btn-primary btn-sm ms-3" onclick="edit(' . $value->id . ')">
+                    <i class="bx bx-edit-alt"></i>
+                </a>
+                <a href="javascript:void(0)" class="btn btn-danger btn-sm ms-3" onclick="hapus(' . $value->id . ')">
+                    <i class="bx bx-trash"></i>
+                </a>
+                </div>'
             );
         }
         // Kirim data dalam format JSON
@@ -338,10 +335,8 @@ class Pelaporan extends Controller
         $data = [
             'nomor' => $formData['nomor'],
             'tgl_pelaporan' => $tgl,
-            'idm_staff' => 8,
-            // 'idm_staff' => $formData['pic_utama'],
+            'idm_staff' => $formData['pic_utama'],
             'iduser' => $formData['user'],
-            // 'iduser' => $formData['user'],
             'status_pelaporan' => 'Antri',
             'keterangan' => $formData['keterangan']
         ];
@@ -385,8 +380,7 @@ class Pelaporan extends Controller
                 'status_perbaikkan' => 'Antri',
                 'foto_fasum' => $gambarPath,
                 'keterangan' => $formData['keterangan_detail'][$key],
-                'idstaff' => 8
-                // 'idstaff' => $formData['pic_fasum'][$key]
+                'idstaff' => $formData['pic_fasum'][$key]
             ];
             DB::table('t_pelaporan_detail')->insert($data);
         }

@@ -5,6 +5,7 @@ use App\Http\Controllers\Fasum;
 use App\Http\Controllers\Jenisfasum;
 use App\Http\Controllers\Kota;
 use App\Http\Controllers\Pelaporan;
+use App\Http\Controllers\Pelaporanadmin;
 use App\Http\Controllers\Provinsi;
 use App\Http\Controllers\Staff;
 use App\Http\Controllers\User;
@@ -99,4 +100,16 @@ Route::middleware('auth')->group(function () {
     Route::post('pelaporan/getDataUser', [Pelaporan::class, 'getDataUser'])->name('pelaporan.getDataUser');
     Route::post('pelaporan/getDataFasum', [Pelaporan::class, 'getDataFasum'])->name('pelaporan.getDataFasum');
     Route::get('pelaporan/GetNomor', [Pelaporan::class, 'GetNomor'])->name('pelaporan.GetNomor');
+
+    Route::get('pelaporanadmin', [Pelaporanadmin::class, 'index'])->name('pelaporanadmin');
+    Route::post('pelaporanadmin/simpan', [Pelaporanadmin::class, 'simpan'])->name('pelaporanadmin.simpan');
+    Route::post('pelaporanadmin/getData', [Pelaporanadmin::class, 'getData'])->name('pelaporanadmin.getData');
+    Route::post('pelaporanadmin/edit', [Pelaporanadmin::class, 'edit'])->name('pelaporanadmin.edit');
+    Route::post('pelaporanadmin/detail', [Pelaporanadmin::class, 'detail'])->name('pelaporanadmin.detail');
+    Route::post('pelaporanadmin/hapus', [Pelaporanadmin::class, 'hapus'])->name('pelaporanadmin.hapus');
+    Route::post('pelaporanadmin/update', [Pelaporanadmin::class, 'update'])->name('pelaporanadmin.update');
+    Route::post('pelaporanadmin/getDataStaff', [Pelaporanadmin::class, 'getDataStaff'])->name('pelaporanadmin.getDataStaff');
+    Route::post('pelaporanadmin/getDataUser', [Pelaporanadmin::class, 'getDataUser'])->name('pelaporanadmin.getDataUser');
+    Route::post('pelaporanadmin/getDataFasum', [Pelaporanadmin::class, 'getDataFasum'])->name('pelaporanadmin.getDataFasum');
+    Route::get('pelaporanadmin/GetNomor', [Pelaporanadmin::class, 'GetNomor'])->name('pelaporanadmin.GetNomor');
 });

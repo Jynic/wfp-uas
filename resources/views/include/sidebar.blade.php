@@ -52,14 +52,19 @@
             </ul>
         </li><!-- End Components Nav -->
 
-        <li class="nav-item">
-            <a class="nav-link {{request()->segment(1) == 'pelaporan' ? '' : 'collapsed'}}" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+        <li class="nav-item {{request()->segment(1) == 'pelaporan' ? '' : 'collapsed'}} {{request()->segment(1) == 'pelaporanadmin' ? '' : 'collapsed'}}">
+            <a class="nav-link {{request()->segment(1) == 'pelaporan' ? '' : 'collapsed'}} {{request()->segment(1) == 'pelaporanadmin' ? '' : 'collapsed'}}" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
                 <i class="bi bi-journal-text"></i><span>Transaksi</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
                     <a href="{{ route('pelaporan') }}" class="{{request()->segment(1) == 'pelaporan' ? 'active' : ''}}">
                         <i class="bi bi-circle"></i><span>Pelaporan</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('pelaporanadmin') }}" class="{{request()->segment(1) == 'pelaporanadmin' ? 'active' : ''}}">
+                        <i class="bi bi-circle"></i><span>Pelaporan Admin</span>
                     </a>
                 </li>
             </ul>

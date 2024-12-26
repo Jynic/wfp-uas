@@ -91,16 +91,26 @@
                 <div class="modal-body">
                   <form id="form">
                     <input type="hidden" id="id" name="id">
-                    <input type="text" id="user" name="user" hidden>
-                    </select>
                     <div class="row mb-3">
                       <div class="col-md-6">
                         <label for="nomor" class="form-label">Nomor Pelaporan</label>
-                        <input type="text" class="form-control" id="nomor" name="nomor" placeholder="Masukkan Nomor Pelaporan" required readonly>
+                        <input type="text" class="form-control" id="nomor" name="nomor" placeholder="Masukkan Nomor Pelaporan" required>
                       </div>
                       <div class="col-md-6">
                         <label for="tgl" class="form-label">Tanggal</label>
-                        <input type="text" class="form-control" id="tgl" name="tgl" required readonly>
+                        <input type="text" class="form-control" id="tgl" name="tgl" required>
+                      </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col-md-6">
+                        <label for="user" class="form-label">Pelapor</label>
+                        <select name="user" class="form-control" id="user" style="width: 100%">
+                        </select>
+                      </div>
+                      <div class="col-md-6">
+                        <label for="pic_utama" class="form-label">PIC Utama</label>
+                        <select name="pic_utama" class="form-control" id="pic_utama" style="width: 100%">
+                        </select>
                       </div>
                     </div>
                     <div class="row mb-3">
@@ -111,6 +121,7 @@
                             <thead>
                               <tr>
                                 <th>Fasilitas Umum</th>
+                                <th>PIC Fasum</th>
                                 <th>Gambar</th>
                                 <th>Keterangan</th>
                                 <th>Action</th>
@@ -172,6 +183,10 @@
                     <i class="bx bx-x d-block d-sm-none"></i>
                     <span class="d-none d-sm-block">Tutup</span>
                   </button>
+                  <button type="button" class="btn btn-primary ms-1" onclick="save(1)" id="btnSave">
+                    <i class="bx bx-check d-block d-sm-none"></i>
+                    <span class="d-none d-sm-block">Simpan</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -214,12 +229,13 @@
       searching: false
     });
     $(document).ready(function() {
-      $("#user").val("{{Auth::user()->iduser}}");
-      getData("{{Auth::user()->iduser}}");
+      getData();
       initFlatPic();
       generateSTCode();
-      initializeSelect2('select[name=\'pic_fasum[]\']', "{{ route('pelaporan.getDataStaff') }}", 'Pilih Staff');
-      initializeSelect2('select[name=\'fasum[]\']', "{{ route('pelaporan.getDataFasum') }}", 'Pilih Fasum');
+      initializeSelect2('#user', "{{ route('pelaporanadmin.getDataUser') }}", 'Pilih User');
+      initializeSelect2('#pic_utama', "{{ route('pelaporanadmin.getDataStaff') }}", 'Pilih Staff');
+      initializeSelect2('select[name=\'pic_fasum[]\']', "{{ route('pelaporanadmin.getDataStaff') }}", 'Pilih Staff');
+      initializeSelect2('select[name=\'fasum[]\']', "{{ route('pelaporanadmin.getDataFasum') }}", 'Pilih Fasum');
       let map;
       let marker;
       var customButton = $('<button/>', {
@@ -239,6 +255,7 @@
       $("#btnTambahBaris").click(function() {
         var rowData = [];
         rowData.push('<select class="form-control form-control-user fasum" id="fasum[' + i + ']" style="width:150px" name="fasum[]"></select>');
+        rowData.push('<select class="form-control form-control-user pic_fasum" id="pic_fasum[' + i + ']" style="width:150px" name="pic_fasum[]"></select>');
         rowData.push('<input type="file" class="form-control" id="gambarFasum" name="gambarFasum[]" style="width:300px">');
         rowData.push('<input type="text" class="form-control form-control-user keterangan_detail" style="width:200px" id="keterangan_detail" name="keterangan_detail[]" placeholder="Keterangan" >');
         rowData.push('<button type="button" class="btn btn-danger btnHapusBaris">Hapus</button>');
@@ -250,8 +267,10 @@
           t.row(dtRow).remove().draw(false);
         });
 
-        initializeSelect2('select[name=\'pic_fasum[]\']', "{{ route('pelaporan.getDataStaff') }}", 'Pilih Staff');
-        initializeSelect2('select[name=\'fasum[]\']', "{{ route('pelaporan.getDataFasum') }}", 'Pilih Fasum');
+        initializeSelect2('#user', "{{ route('pelaporanadmin.getDataUser') }}", 'Pilih User');
+        initializeSelect2('#pic_utama', "{{ route('pelaporanadmin.getDataStaff') }}", 'Pilih Staff');
+        initializeSelect2('select[name=\'pic_fasum[]\']', "{{ route('pelaporanadmin.getDataStaff') }}", 'Pilih Staff');
+        initializeSelect2('select[name=\'fasum[]\']', "{{ route('pelaporanadmin.getDataFasum') }}", 'Pilih Fasum');
         i++;
       });
     });
@@ -283,7 +302,7 @@
     function detail(id) {
       $.ajax({
         type: 'POST',
-        url: "{{ route('pelaporan.detail') }}",
+        url: "{{ route('pelaporanadmin.detail') }}",
         data: {
           '_token': '<?php echo csrf_token() ?>',
           'id': id
@@ -321,6 +340,7 @@
         method: 'GET',
         dataType: 'json',
         success: function(response) {
+          console.log(response);
           const nomor = response.toString().padStart(4, '0');
           const stCode = `P/${year}${month}/${nomor}`;
 
@@ -355,9 +375,9 @@
 
     function save(id) {
       if (id == 0) {
-        var url = "{{ route('pelaporan.simpan') }}";
+        var url = "{{ route('pelaporanadmin.simpan') }}";
       } else {
-        var url = "{{ route('pelaporan.update') }}";
+        var url = "{{ route('pelaporanadmin.update') }}";
       }
       let formData = new FormData($('#form')[0]);
       formData.append('_token', '<?php echo csrf_token() ?>');
@@ -380,12 +400,12 @@
           Swal.close();
           if (id == 0) {
             Swal.fire('Simpan!', '', 'success').then(() => {
-              getData("{{Auth::user()->iduser}}");
+              getData();
               $('#modal_form').modal('hide');
             });
           } else {
             Swal.fire('Update!', '', 'success').then(() => {
-              getData("{{Auth::user()->iduser}}");
+              getData();
               $('#modal_form').modal('hide');
             })
           }
@@ -393,13 +413,12 @@
       });
     }
 
-    function getData(id = null) {
+    function getData() {
       $.ajax({
         type: 'POST',
-        url: "{{ route('pelaporan.getData') }}",
+        url: "{{ route('pelaporanadmin.getData') }}",
         data: {
-          '_token': '<?php echo csrf_token() ?>',
-          'id': id
+          '_token': '<?php echo csrf_token() ?>'
         },
         beforeSend: function() {
           Swal.fire({
@@ -422,7 +441,7 @@
     function edit(id) {
       $.ajax({
         type: 'POST',
-        url: "{{ route('pelaporan.edit') }}",
+        url: "{{ route('pelaporanadmin.edit') }}",
         data: {
           '_token': '<?php echo csrf_token() ?>',
           'id': id
@@ -443,6 +462,10 @@
           $("#id").val(data[0]['id']);
           $("#nomor").val(data[0]['nomor']);
           $('#tgl').get(0)._flatpickr.setDate(data[0]['tgl_pelaporan'], true);
+          var option = new Option(data[0]['nama_staff'], data[0]['id_staff'], true, true);
+          $("#pic_utama").append(option).trigger('change');
+          var option = new Option(data[0]['nama_user'], data[0]['id_user'], true, true);
+          $("#user").append(option).trigger('change');
           $("#keterangan").val(data[0]['keterangan']);
           // var t = $('#tabelDetailPelaporan').DataTable({
           //   paging: false,
@@ -450,13 +473,16 @@
           //   info: false,
           //   searching: false
           // });
-          initializeSelect2('select[name=\'pic_fasum[]\']', "{{ route('pelaporan.getDataStaff') }}", 'Pilih Staff');
-          initializeSelect2('select[name=\'fasum[]\']', "{{ route('pelaporan.getDataFasum') }}", 'Pilih Fasum');
+          initializeSelect2('#user', "{{ route('pelaporanadmin.getDataUser') }}", 'Pilih User');
+          initializeSelect2('#pic_utama', "{{ route('pelaporanadmin.getDataStaff') }}", 'Pilih Staff');
+          initializeSelect2('select[name=\'pic_fasum[]\']', "{{ route('pelaporanadmin.getDataStaff') }}", 'Pilih Staff');
+          initializeSelect2('select[name=\'fasum[]\']', "{{ route('pelaporanadmin.getDataFasum') }}", 'Pilih Fasum');
           t.clear();
           $.each(data, function(key, item) {
             var rowData = [];
             var info = t.page.info();
             rowData.push('<select class="form-control form-control-user" id="fasum[' + key + ']" style="width:150px" name="fasum[]"><option value="' + item.id_fasum + '">' + item.nama_fasum + '</option></select>');
+            rowData.push('<select class="form-control form-control-user" id="pic_fasum[' + key + ']" style="width:150px" name="pic_fasum[]"><option value="' + item.id_staff_detail + '">' + item.nama_staff_detail + '</option></select>');
             rowData.push('<input type="file" class="form-control" id="gambarFasum" name="gambarFasum[]" style="width:300px">');
             rowData.push('<input type="text" class="form-control form-control-user " style="width:200px" id="keterangan_detail" name="keterangan_detail[]" value="' + item.keterangan_fasum + '" placeholder="Keterangan">');
             rowData.push('<button type="button" class="btn btn-danger btnHapusBaris">Hapus</button>');
@@ -467,8 +493,10 @@
               t.row(dtRow).remove().draw(false);
             });
 
-            initializeSelect2('select[name=\'pic_fasum[]\']', "{{ route('pelaporan.getDataStaff') }}", 'Pilih Staff');
-            initializeSelect2('select[name=\'fasum[]\']', "{{ route('pelaporan.getDataFasum') }}", 'Pilih Fasum');
+            initializeSelect2('#user', "{{ route('pelaporanadmin.getDataUser') }}", 'Pilih User');
+            initializeSelect2('#pic_utama', "{{ route('pelaporanadmin.getDataStaff') }}", 'Pilih Staff');
+            initializeSelect2('select[name=\'pic_fasum[]\']', "{{ route('pelaporanadmin.getDataStaff') }}", 'Pilih Staff');
+            initializeSelect2('select[name=\'fasum[]\']', "{{ route('pelaporanadmin.getDataFasum') }}", 'Pilih Fasum');
           });
 
           $('#modal_form').modal('show');
@@ -486,7 +514,7 @@
       }).then((result) => {
         if (result.isConfirmed) {
           $.ajax({
-            url: "{{Route('pelaporan.hapus')}}",
+            url: "{{Route('pelaporanadmin.hapus')}}",
             type: "POST",
             data: {
               id: id,
@@ -496,7 +524,7 @@
             success: function(data) {
               if (data.status) {
                 Swal.fire('Hapus!', '', 'success').then(() => {
-                  getData("{{Auth::user()->iduser}}");
+                  getData();
                 });
               } else {
                 Swal.fire('Gagal menghapus!', data.message, 'error');
