@@ -161,31 +161,31 @@
           </div>
           <div class="modal fade text-left modal-borderless" id="modal_detail" tabindex="-1"
             role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
               <div class="modal-content overflow">
                 <div class="modal-header">
                   <h5 class="modal-title" id="modal-title">Form Input Pelaporan</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                  <table id="tabelDetail" class="table dt-table-hover wrapped" style="width:100%">
-                    <thead>
-                      <th>Fasum</th>
-                      <th>Status Perbaikkan</th>
-                      <th>Gambar</th>
-                      <th>Keterangan</th>
-                      <th>Aksi</th>
-                    </thead>
+                  <form id="form_detail">
+                    <table id="tabelDetail" class="table dt-table-hover wrapped" style="width:100%">
+                      <thead>
+                        <th>Fasum</th>
+                        <th>Status Perbaikkan</th>
+                        <th>Gambar</th>
+                        <th>Keterangan</th>
+                        <th>Aksi</th>
+                      </thead>
+                      <tbody>
+                      </tbody>
+                  </form>
                   </table>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-light-primary" data-bs-dismiss="modal">
                     <i class="bx bx-x d-block d-sm-none"></i>
                     <span class="d-none d-sm-block">Tutup</span>
-                  </button>
-                  <button type="button" class="btn btn-primary ms-1" onclick="save(1)" id="btnSave">
-                    <i class="bx bx-check d-block d-sm-none"></i>
-                    <span class="d-none d-sm-block">Simpan</span>
                   </button>
                 </div>
               </div>
@@ -318,13 +318,12 @@
         },
         success: function(data) {
           Swal.close();
-          var data = JSON.parse(data);
+          var resp = JSON.parse(data);
+          var data = resp['data'];
           $(".modal-title").text('Detail Pelaporan');
           tableDetail.clear();
           tableDetail.rows.add(data).draw();
           $('#modal_detail').modal('show');
-          $('#btnSave').text('Update');
-          $("#btnSave").attr("onclick", "save(1)");
         }
       });
     }
@@ -340,7 +339,6 @@
         method: 'GET',
         dataType: 'json',
         success: function(response) {
-          console.log(response);
           const nomor = response.toString().padStart(4, '0');
           const stCode = `P/${year}${month}/${nomor}`;
 
@@ -409,6 +407,81 @@
               $('#modal_form').modal('hide');
             })
           }
+        }
+      });
+    }
+
+    function saveDetail(id, button) {
+      var url = "{{ route('pelaporanadmin.updateDetail') }}";
+
+      let row = $(button).closest('tr');
+      let formData = new FormData();
+      row.find('input, select, textarea').each(function() {
+        formData.append($(this).attr('name'), $(this).val());
+      });
+      formData.append('id', id);
+
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: formData,
+        processData: false, // Jangan memproses data
+        contentType: false, // Jangan atur Content-Type secara manual
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Ambil token dari meta tag
+        },
+        beforeSend: function() {
+          Swal.fire({
+            title: 'Loading',
+            html: 'Memproses data',
+            didOpen: () => {
+              Swal.showLoading()
+            }
+          })
+        },
+        success: function(data) {
+          Swal.close();
+          Swal.fire('Simpan!', '', 'success').then(() => {
+            getData();
+            $('#modal_detail').modal('hide');
+          });
+        }
+      });
+    }
+
+    function status_selesai(id, button) {
+      var url = "{{ route('pelaporanadmin.updateStatus') }}";
+
+      let row = $(button).closest('tr');
+      let formData = new FormData();
+      row.find('input, select, textarea').each(function() {
+        formData.append($(this).attr('name'), $(this).val());
+      });
+      formData.append('id', id);
+
+      $.ajax({
+        type: 'POST',
+        url: url,
+        data: formData,
+        processData: false, // Jangan memproses data
+        contentType: false, // Jangan atur Content-Type secara manual
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // Ambil token dari meta tag
+        },
+        beforeSend: function() {
+          Swal.fire({
+            title: 'Loading',
+            html: 'Memproses data',
+            didOpen: () => {
+              Swal.showLoading()
+            }
+          })
+        },
+        success: function(data) {
+          Swal.close();
+          Swal.fire('Simpan!', '', 'success').then(() => {
+            getData();
+          });
         }
       });
     }

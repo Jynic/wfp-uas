@@ -112,4 +112,6 @@ Route::middleware('auth')->group(function () {
     Route::post('pelaporanadmin/getDataUser', [Pelaporanadmin::class, 'getDataUser'])->name('pelaporanadmin.getDataUser');
     Route::post('pelaporanadmin/getDataFasum', [Pelaporanadmin::class, 'getDataFasum'])->name('pelaporanadmin.getDataFasum');
     Route::get('pelaporanadmin/GetNomor', [Pelaporanadmin::class, 'GetNomor'])->name('pelaporanadmin.GetNomor');
+    Route::post('pelaporanadmin/updateDetail', [Pelaporanadmin::class, 'updateDetail'])->name('pelaporanadmin.updateDetail');
+    Route::post('pelaporanadmin/updateStatus', [Pelaporanadmin::class, 'updateStatus'])->name('pelaporanadmin.updateStatus');
 });

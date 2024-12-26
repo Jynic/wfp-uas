@@ -233,7 +233,13 @@ class Pelaporanadmin extends Controller
             $pelaporan[] = array(
                 $value->nomor,
                 $value->tgl_pelaporan,
-                $value->status_pelaporan,
+                '<select class="form-select" id="status_utama" name="status_utama">
+                    <option value="Antri" ' . ($value->status_pelaporan == "Antri" ? 'selected' : '') . '>Antri</option>
+                    <option value="Dikerjakan" ' . ($value->status_pelaporan == "Dikerjakan" ? 'selected' : '') . '>Dikerjakan</option>
+                    <option value="Outsource" ' . ($value->status_pelaporan == "Outsource" ? 'selected' : '') . '>Outsource</option>
+                    <option value="Selesai" ' . ($value->status_pelaporan == "Selesai" ? 'selected' : '') . '>Selesai</option>
+                    <option value="Tidak Terselesaikan" ' . ($value->status_pelaporan == "Tidak Terselesaikan" ? 'selected' : '') . '>Tidak Terselesaikan</option>
+                </select>',
                 $value->keterangan,
                 $value->nama_user,
                 $value->nama_fasum,
@@ -243,6 +249,9 @@ class Pelaporanadmin extends Controller
                 '<div class="d-flex justify-content-center">
                 <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="detail(' . $value->id . ')">
                     <i class="bx bx-info-circle"></i>
+                </a>
+                <a href="javascript:void(0)" class="btn btn-success btn-sm ms-3" onclick="status_selesai(' . $value->id . ', this)">
+                    <i class="bx bx-check-circle"></i>
                 </a>
                 <a href="javascript:void(0)" class="btn btn-primary btn-sm ms-3" onclick="edit(' . $value->id . ')">
                     <i class="bx bx-edit-alt"></i>
@@ -421,6 +430,7 @@ class Pelaporanadmin extends Controller
         u.iduser AS id_user,
         f.nama AS nama_fasum,
         f.idfasum AS id_fasum,
+        pd.iddetail as id_detail,
         pd.status_perbaikkan AS status_perbaikkan,
         pd.foto_fasum AS foto_fasum,
         pd.keterangan AS keterangan_fasum,
@@ -441,23 +451,56 @@ class Pelaporanadmin extends Controller
             p.status_aktif = 1 and p.idpelaporan = :id;", ['id' => $id]);
 
         $pelaporan = [];
+        $id_detail = [];
         foreach ($data as $key => $value) {
+            // Array opsi status
+            $statusOptions = ['Antri', 'Dikerjakan', 'Outsource', 'Selesai', 'Tidak Terselesaikan'];
+
+            // Bangun elemen <select>
+            $statusSelect = '<select class="form-control" name="status">';
+            foreach ($statusOptions as $status) {
+                $selected = ($value->status_perbaikkan == $status) ? 'selected' : '';
+                $statusSelect .= '<option value="' . $status . '" ' . $selected . '>' . $status . '</option>';
+            }
+            $statusSelect .= '</select>';
+
+            // Isi array pelaporan
             $pelaporan[] = array(
                 $value->nama_fasum,
-                $value->status_perbaikkan,
+                $statusSelect,
                 '<img src="' . asset($value->foto_fasum) . '" alt="Gambar Fasum" style="max-width: 100px; max-height: 100px;">',
                 $value->keterangan_fasum,
                 '<div class="d-flex justify-content-center">
-                <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="edit(' . $value->id . ')">
-                    <i class="bx bx-edit-alt"></i>
-                </a>
-                <a href="javascript:void(0)" class="btn btn-danger btn-sm ms-3" onclick="hapus(' . $value->id . ')">
-                    <i class="bx bx-trash"></i>
+                <a href="javascript:void(0)" class="btn btn-success btn-sm" onclick="saveDetail(' . $value->id_detail . ', this)">
+                    <i class="bx bx-check-circle"></i>
+
                 </a>
                 </div>'
             );
+            $id_detail[] = array(
+                $value->id
+            );
         }
+
         // Kirim data dalam format JSON
-        echo json_encode($pelaporan);
+        echo json_encode(array("data" => $pelaporan, "id_detail" => $id_detail));
+    }
+    public function updateDetail(Request $request)
+    {
+        $data = $request->all();
+        $status = $data['status'];
+        $id = $data['id'];
+        DB::table('t_pelaporan_detail')
+            ->where('iddetail', $id)
+            ->update(['status_perbaikkan' => $status]);
+    }
+    public function updateStatus(Request $request)
+    {
+        $data = $request->all();
+        $status = $data['status_utama'];
+        $id = $data['id'];
+        DB::table('t_pelaporan')
+            ->where('idpelaporan', $id)
+            ->update(['status_pelaporan' => $status]);
     }
 }
