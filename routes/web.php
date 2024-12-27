@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Dinas;
 use App\Http\Controllers\Fasum;
+use App\Http\Controllers\Historypelaporan;
 use App\Http\Controllers\Jenisfasum;
 use App\Http\Controllers\Kota;
 use App\Http\Controllers\Pelaporan;
@@ -114,4 +115,16 @@ Route::middleware('auth')->group(function () {
     Route::get('pelaporanadmin/GetNomor', [Pelaporanadmin::class, 'GetNomor'])->name('pelaporanadmin.GetNomor');
     Route::post('pelaporanadmin/updateDetail', [Pelaporanadmin::class, 'updateDetail'])->name('pelaporanadmin.updateDetail');
     Route::post('pelaporanadmin/updateStatus', [Pelaporanadmin::class, 'updateStatus'])->name('pelaporanadmin.updateStatus');
+
+    Route::get('historypelaporan', [Historypelaporan::class, 'index'])->name('historypelaporan');
+    Route::post('historypelaporan/simpan', [Historypelaporan::class, 'simpan'])->name('historypelaporan.simpan');
+    Route::post('historypelaporan/getData', [Historypelaporan::class, 'getData'])->name('historypelaporan.getData');
+    Route::post('historypelaporan/edit', [Historypelaporan::class, 'edit'])->name('historypelaporan.edit');
+    Route::post('historypelaporan/detail', [Historypelaporan::class, 'detail'])->name('historypelaporan.detail');
+    Route::post('historypelaporan/hapus', [Historypelaporan::class, 'hapus'])->name('historypelaporan.hapus');
+    Route::post('historypelaporan/update', [Historypelaporan::class, 'update'])->name('historypelaporan.update');
+    Route::post('historypelaporan/getDataStaff', [Historypelaporan::class, 'getDataStaff'])->name('historypelaporan.getDataStaff');
+    Route::post('historypelaporan/getDataUser', [Historypelaporan::class, 'getDataUser'])->name('historypelaporan.getDataUser');
+    Route::post('historypelaporan/getDataFasum', [Historypelaporan::class, 'getDataFasum'])->name('historypelaporan.getDataFasum');
+    Route::get('historypelaporan/GetNomor', [Historypelaporan::class, 'GetNomor'])->name('historypelaporan.GetNomor');
 });
