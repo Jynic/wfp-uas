@@ -192,7 +192,7 @@
       let map;
       let marker;
       var customButton = $('<button/>', {
-        text: 'Tambah Pelaporan', // Button text  
+        text: 'Tambah Hak Akses', // Button text  
         id: 'myCustomButton', // Button ID
         class: 'btn btn-primary', // Additional classes for styling if needed
         click: function() {
