@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Dinas;
 use App\Http\Controllers\Fasum;
+use App\Http\Controllers\Hakakses;
 use App\Http\Controllers\Historypelaporan;
 use App\Http\Controllers\Jenisfasum;
 use App\Http\Controllers\Kota;
@@ -127,4 +128,16 @@ Route::middleware('auth')->group(function () {
     Route::post('historypelaporan/getDataUser', [Historypelaporan::class, 'getDataUser'])->name('historypelaporan.getDataUser');
     Route::post('historypelaporan/getDataFasum', [Historypelaporan::class, 'getDataFasum'])->name('historypelaporan.getDataFasum');
     Route::get('historypelaporan/GetNomor', [Historypelaporan::class, 'GetNomor'])->name('historypelaporan.GetNomor');
+
+    Route::get('hakakses', [Hakakses::class, 'index'])->name('hakakses');
+    Route::post('hakakses/simpan', [Hakakses::class, 'simpan'])->name('hakakses.simpan');
+    Route::post('hakakses/getData', [Hakakses::class, 'getData'])->name('hakakses.getData');
+    Route::post('hakakses/edit', [Hakakses::class, 'edit'])->name('hakakses.edit');
+    Route::post('hakakses/detail', [Hakakses::class, 'detail'])->name('hakakses.detail');
+    Route::post('hakakses/hapus', [Hakakses::class, 'hapus'])->name('hakakses.hapus');
+    Route::post('hakakses/update', [Hakakses::class, 'update'])->name('hakakses.update');
+    Route::post('hakakses/getDataStaff', [Hakakses::class, 'getDataStaff'])->name('hakakses.getDataStaff');
+    Route::post('hakakses/getDetailJabatan', [Hakakses::class, 'getDetailJabatan'])->name('hakakses.getDetailJabatan');
+    Route::post('hakakses/getDataJabatan', [Hakakses::class, 'getDataJabatan'])->name('hakakses.getDataJabatan');
+    Route::post('hakakses/getDataListHakakses', [Hakakses::class, 'getDataListHakakses'])->name('hakakses.getDataListHakakses');
 });

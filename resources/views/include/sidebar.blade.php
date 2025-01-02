@@ -88,7 +88,7 @@
             </a>
             <ul id="setting-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a href="setting-elements.html">
+                    <a href="{{ route('hakakses') }}">
                         <i class="bi bi-circle"></i><span>Hak Akses</span>
                     </a>
                 </li>
