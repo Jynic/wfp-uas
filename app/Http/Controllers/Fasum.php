@@ -6,6 +6,7 @@ use App\Models\Fasum_model;
 use App\Models\Jenisfasum_model;
 use App\Models\Kota_model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class Fasum extends Controller
@@ -15,7 +16,14 @@ class Fasum extends Controller
      */
     public function index()
     {
-        return view('fasum_v');
+        $idjabatan = Auth::user()->idjabatan;
+        $data = DB::select('select ha.idjabatan, ha2.kode_fitur, ha2.nama_fitur from a_hak_akses_jabatan ha inner join a_hak_akses ha2 on ha.idhak_akses=ha2.idhak_akses where idjabatan = :idjabat', ['idjabat' => $idjabatan]);
+        foreach ($data as $key => $row) {
+            if ($row->nama_fitur == "master_fasum") {
+                return view('fasum_v');
+            }
+        }
+        return view('dashboard_v');
     }
 
     /**

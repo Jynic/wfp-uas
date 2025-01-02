@@ -9,6 +9,7 @@ use App\Models\Pelaporan_model;
 use App\Models\Staff_model;
 use App\Models\User_model;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -19,7 +20,14 @@ class Historypelaporan extends Controller
      */
     public function index()
     {
-        return view('historypelaporan_v');
+        $idjabatan = Auth::user()->idjabatan;
+        $data = DB::select('select ha.idjabatan, ha2.kode_fitur, ha2.nama_fitur from a_hak_akses_jabatan ha inner join a_hak_akses ha2 on ha.idhak_akses=ha2.idhak_akses where idjabatan = :idjabat', ['idjabat' => $idjabatan]);
+        foreach ($data as $key => $row) {
+            if ($row->nama_fitur == "report_history_perbaikkan") {
+                return view('historypelaporan_v');
+            }
+        }
+        return view('dashboard_v');
     }
 
     /**
@@ -200,11 +208,26 @@ class Historypelaporan extends Controller
 
         $pelaporan = [];
         foreach ($data as $key => $value) {
+            // Default status text
+            $status_text = $value->status_perbaikkan;
+
+            // Modifikasi status text berdasarkan nilai
+            if ($value->status_perbaikkan == 'Selesai') {
+                $status_text = 'Antri -> Dikerjakan / Outsource -> Selesai';
+            } elseif ($value->status_perbaikkan == 'Tidak Terselesaikan') {
+                $status_text = 'Antri -> Dikerjakan / Outsource -> Tidak Terselesaikan';
+            } elseif ($value->status_perbaikkan == 'Dikerjakan') {
+                $status_text = 'Antri -> Dikerjakan';
+            } elseif ($value->status_perbaikkan == 'Outsource') {
+                $status_text = 'Antri -> Outsource';
+            }
+
+            // Masukkan data ke array
             $pelaporan[] = array(
                 $value->fasum_nama,
                 $value->nomor_pelaporan,
                 $value->tanggal_pelaporan,
-                $value->status_perbaikkan
+                $status_text
             );
         }
         // Kirim data dalam format JSON
