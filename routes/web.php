@@ -11,6 +11,7 @@ use App\Http\Controllers\Pelaporanadmin;
 use App\Http\Controllers\Provinsi;
 use App\Http\Controllers\Staff;
 use App\Http\Controllers\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
