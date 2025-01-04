@@ -208,7 +208,7 @@ class Fasum extends Controller
             f.status_aktif = 1
         GROUP BY 
             f.idfasum, f.nama, f.luas_fasum, f.kondisi_fasum, 
-            f.asal_fasum, f.lat, f.lng, f.gambar, d.nama, kk.nama;
+            f.asal_fasum, f.lat, f.lng, f.gambar, d.nama, kk.nama,f.status_aktif;
         ");
 
         $fasum = [];
