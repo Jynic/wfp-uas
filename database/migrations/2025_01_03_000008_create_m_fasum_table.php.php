@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('lng')->nullable();
             $table->text('gambar')->nullable();
             $table->integer('status_aktif')->default(1);
+
             $table->foreign('m_dinas_iddinas')->references('iddinas')->on('m_dinas');
         });
     }
