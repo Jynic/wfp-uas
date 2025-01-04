@@ -25,7 +25,6 @@ class DatabaseSeeder extends Seeder
             ProvinsiSeeder::class,
             KotaKabupatenSeeder::class,
             DinasSeeder::class,
-            JenisFasumSeeder::class,
             KategoriFasumSeeder::class,
             FasumSeeder::class,
             KategoriFasumHasFasumSeeder::class,
