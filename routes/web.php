@@ -28,12 +28,15 @@ use Illuminate\Support\Facades\Route;
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name(name: 'home');
 
 Route::middleware('auth')->group(function () {
     Route::get('/', function () {
         return view('dashboard_v');
     });
+    Route::get('/home', function () {
+        return view('dashboard_v');
+    })->name('home');
     Route::get('provinsi', [Provinsi::class, 'index'])->name('provinsi');
     Route::post('provinsi/simpan', [Provinsi::class, 'simpan'])->name('provinsi.simpan');
     Route::post('provinsi/getData', [Provinsi::class, 'getData'])->name('provinsi.getData');
