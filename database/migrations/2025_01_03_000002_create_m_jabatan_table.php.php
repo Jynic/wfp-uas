@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('m_jabatan', function (Blueprint $table) {
             $table->id('idjabatan');
             $table->text('nama')->nullable();
-            $table->integer('status_aktif')->nullable();
+            $table->integer('status_aktif')->default(1);
         });
     }
 

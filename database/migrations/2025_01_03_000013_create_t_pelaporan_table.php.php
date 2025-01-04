@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('iduser');
             $table->text('status_pelaporan')->comment("'Antri', 'Dikerjakan', 'Outsource','Selesai','Tidak Terselesaikan'");
             $table->text('keterangan')->nullable();
-            $table->integer('status_aktif');
+            $table->integer('status_aktif')->default(1);
 
             $table->foreign('idm_staff')->references('idm_staff')->on('m_staff');
             $table->foreign('iduser')->references('iduser')->on('m_user');

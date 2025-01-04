@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id('idhak_akses');
             $table->text('kode_fitur')->nullable();
             $table->text('nama_fitur')->nullable();
-            $table->integer('status_aktif')->nullable();
+            $table->integer('status_aktif')->default(1);
         });
     }
 

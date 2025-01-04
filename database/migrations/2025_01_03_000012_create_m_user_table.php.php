@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('alamat')->nullable();
             $table->text('no_hp')->nullable();
             $table->text('email')->nullable()->unique();
-            $table->integer('status_aktif')->nullable();
+            $table->integer('status_aktif')->default(1);
             $table->unsignedBigInteger('idstaff')->nullable();
 
             $table->foreign('idjabatan')->references('idjabatan')->on('m_jabatan');
