@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id('idfasum');
             $table->unsignedBigInteger('m_dinas_iddinas');
             $table->text('nama')->nullable();
-            $table->float('luas_fasum')->nullable();
+            $table->decimal('luas_fasum', 20, 8)->nullable();
             $table->text('kondisi_fasum')->nullable();
             $table->text('asal_fasum')->nullable()->comment('APBN, APBD, Swasta');
             $table->text('lat')->nullable();
