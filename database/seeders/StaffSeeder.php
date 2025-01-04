@@ -24,7 +24,6 @@ class StaffSeeder extends Seeder
                 'status_aktif' => 1,
                 'alamat' => null,
                 'email' => null,
-                'idkota_kabupaten' => 1
             ],
             [
                 'idm_staff' => 8,
@@ -36,7 +35,6 @@ class StaffSeeder extends Seeder
                 'status_aktif' => 0,
                 'alamat' => null,
                 'email' => null,
-                'idkota_kabupaten' => null
             ],
             [
                 'idm_staff' => 9,
@@ -48,7 +46,6 @@ class StaffSeeder extends Seeder
                 'status_aktif' => 1,
                 'alamat' => null,
                 'email' => null,
-                'idkota_kabupaten' => null
             ],
             [
                 'idm_staff' => 10,
@@ -60,7 +57,6 @@ class StaffSeeder extends Seeder
                 'status_aktif' => 1,
                 'alamat' => 'Jalan Rungkut No 31',
                 'email' => 'ridwan@gmail.com',
-                'idkota_kabupaten' => 1
             ],
             [
                 'idm_staff' => 11,
@@ -72,7 +68,6 @@ class StaffSeeder extends Seeder
                 'status_aktif' => 1,
                 'alamat' => 'Jalan Rungkut No 31',
                 'email' => 'ramli@gmail.com',
-                'idkota_kabupaten' => 1
             ]
         ]);
     }

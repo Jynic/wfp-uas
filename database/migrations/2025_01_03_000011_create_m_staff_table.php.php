@@ -18,7 +18,6 @@ return new class extends Migration
             $table->integer('status_aktif')->default(1);
             $table->text('alamat')->nullable();
             $table->text('email')->nullable();
-            $table->unsignedBigInteger('idkota_kabupaten')->nullable();
 
             $table->foreign('iddinas')->references('iddinas')->on('m_dinas');
             $table->foreign('idjabatan')->references('idjabatan')->on('m_jabatan');
