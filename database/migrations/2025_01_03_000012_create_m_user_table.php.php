@@ -13,11 +13,11 @@ return new class extends Migration
             $table->unsignedBigInteger('idkota_kabupaten');
             $table->unsignedBigInteger('idjabatan');
             $table->text('nama')->nullable();
-            $table->text('username')->nullable();
+            $table->text('username')->nullable()->unique();
             $table->text('password')->nullable();
             $table->text('alamat')->nullable();
             $table->text('no_hp')->nullable();
-            $table->text('email')->nullable();
+            $table->text('email')->nullable()->unique();
             $table->integer('status_aktif')->nullable();
             $table->unsignedBigInteger('idstaff')->nullable();
 
