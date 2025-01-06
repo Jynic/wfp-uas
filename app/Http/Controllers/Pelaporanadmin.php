@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class Pelaporanadmin extends Controller
 {
@@ -362,37 +363,34 @@ class Pelaporanadmin extends Controller
         $id = DB::table('t_pelaporan')->insertGetId($data);
 
         foreach ($formData['fasum'] as $key => $value) {
-            $gambarPath = "";
+            $gambarPath = "-";
+
             if (isset($request->file('gambarFasum')[$key])) {
-                $gambar = $request->file('gambarFasum')[$key];
+                $gambarPath = "-";
 
-                // Validasi file gambar
-                if (!$gambar->isValid()) {
-                    return response()->json(['error' => 'File gambar tidak valid untuk detail ' . ($key + 1)], 400);
+                if (isset($request->file('gambarFasum')[$key])) {
+                    $gambar = $request->file('gambarFasum')[$key];
+
+                    if (!$gambar->isValid()) {
+                        return response()->json(['error' => 'File gambar tidak valid untuk detail ' . ($key + 1)], 400);
+                    }
+
+                    $folder = 'public/img_pelaporan';
+                    $filename = $id . '_detail_' . $key . '.' . $gambar->getClientOriginalExtension();
+
+                    if (!Storage::exists($folder)) {
+                        Storage::makeDirectory($folder);
+                    }
+
+                    try {
+                        $path = $gambar->storeAs($folder, $filename);
+                        $gambarPath = "storage/img_pelaporan/" . $filename;
+                    } catch (\Exception $e) {
+                        return response()->json(['error' => 'Gagal menyimpan file gambar untuk detail ' . ($key + 1)], 500);
+                    }
                 }
-
-                // Tentukan folder penyimpanan
-                $folder = public_path('img_pelaporan');
-                $filename = $id . '_detail_' . $key . '.' . $gambar->getClientOriginalExtension();
-
-                // Buat direktori jika belum ada
-                if (!file_exists($folder)) {
-                    mkdir($folder, 0755, true);
-                }
-
-                // Pindahkan file ke folder yang ditentukan
-                try {
-                    $gambar->move($folder, $filename);
-                } catch (\Exception $e) {
-                    return response()->json(['error' => 'Gagal menyimpan file gambar untuk detail ' . ($key + 1)], 500);
-                }
-
-                // Path gambar yang akan disimpan
-                $gambarPath = 'img_pelaporan/' . $filename;
-            } else {
-                // Jika tidak ada gambar untuk detail ini
-                $gambarPath = '-';
             }
+
             $data = [
                 't_pelaporan_idpelaporan' => $id,
                 'm_fasum_idfasum' => $value,
