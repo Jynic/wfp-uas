@@ -383,16 +383,20 @@
 
         function tambah_staff() {
             $("#id").val('');
-            $("#nama").val('');
+            generateSTCode();
+            $("#keterangan").val('');
+
+            $('#tabelDetailPelaporan tbody').find('tr').each(function() {
+                var dtRow = $(this);
+                t.row(dtRow).remove().draw(false);
+            });
+
+            $('#tgl').get(0)._flatpickr.setDate(new Date(), true);
+
             var option = new Option('', '', true, true);
-            $("#asal").append(option).trigger('change');
+            $("#user").append(option).trigger('change');
             var option = new Option('', '', true, true);
-            $('#jabatan').append(option).trigger('change');
-            $("#username").val('');
-            $("#password").val('');
-            $("#alamat").val('');
-            $("#no_hp").val('');
-            $("#email").val('');
+            $('#pic_utama').append(option).trigger('change');
 
             $("#modal-title").text('Tambah Pelaporan');
             $('#modal_form').modal('show');
@@ -402,6 +406,14 @@
 
         function save(id) {
             let form = document.getElementById('form');
+
+            var tableRows = t.rows().count();
+
+            if (tableRows <= 0) {
+                Swal.fire('Error!', 'Paling tidak harus ada 1 baris ditambahkan pada Detail Pelaporan.', 'error');
+                return;
+            }
+
 
             if (!form.checkValidity()) {
                 let invalidFields = form.querySelectorAll(':invalid');
@@ -417,14 +429,7 @@
                 return;
             }
 
-            // blom bisa lol tunggu besok lusa ya
-            // let table = document.getElementById('tabelDetailPelaporan');
-            // let rows = table.querySelectorAll('tbody tr');
 
-            // if (rows.length === 0) {
-            //     Swal.fire('Error!', 'Paling tidak harus ada 1 baris ditambahkan pada Detail Pelaporan.', 'error');
-            //     return;
-            // }
 
             if (id == 0) {
                 var url = "{{ route('pelaporanadmin.simpan') }}";

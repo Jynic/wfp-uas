@@ -419,7 +419,7 @@ class Pelaporanadmin extends Controller
 
     public function GetNomor()
     {
-        $nomor = DB::select('SELECT count(idpelaporan) + 1 as nomor FROM t_pelaporan ORDER BY idpelaporan DESC');
+        $nomor = DB::select('SELECT count(idpelaporan) + 1 as nomor FROM t_pelaporan');
         return intval($nomor[0]->nomor);
     }
     public function detail(Request $request)
