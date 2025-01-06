@@ -170,7 +170,7 @@
                                             <div class="col-md-12">
                                                 <label for="gambarFasum" class="form-label">Upload Gambar</label>
                                                 <input required type="file" class="form-control" id="gambarFasum"
-                                                    name="gambarFasum">
+                                                    name="gambarFasum" accept="image/*, application/pdf">
                                             </div>
                                         </div>
                                     </form>

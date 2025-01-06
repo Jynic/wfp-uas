@@ -506,7 +506,7 @@
                             ']" style="width:150px" name="fasum[]"><option value="' + item
                             .id_fasum + '">' + item.nama_fasum + '</option></select>');
                         rowData.push(
-                            '<input type="file" class="form-control" id="gambarFasum" name="gambarFasum[]" style="width:300px">'
+                            '<input type="file" class="form-control" id="gambarFasum" name="gambarFasum[]" accept="image/*, application/pdf" style="width:300px">'
                         );
                         rowData.push(
                             '<input type="text" class="form-control form-control-user " style="width:200px" id="keterangan_detail" name="keterangan_detail[]" value="' +

@@ -8,6 +8,7 @@ use App\Models\Kota_model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class Fasum extends Controller
 {
@@ -300,37 +301,32 @@ class Fasum extends Controller
                 'm_fasum_idfasum' => $fasum->idfasum
             ]);
         }
-        // Ambil ID dan Nama
+
         $id = $fasum->idfasum;
         $nama = preg_replace('/[^a-zA-Z0-9-_]/', '', $fasum->nama); // Sanitasi nama untuk digunakan sebagai nama file
 
-        // Proses file gambar jika ada
         if ($request->hasFile('gambarFasum')) {
             $gambar = $request->file('gambarFasum');
 
-            // Validasi file gambar
             if (!$gambar->isValid()) {
                 return response()->json(['error' => 'File gambar tidak valid'], 400);
             }
 
-            // Tentukan folder penyimpanan
-            $folder = public_path('img_fasum');
+            $folder = 'public/img_fasum';
             $filename = $id . '_' . $nama . '.' . $gambar->getClientOriginalExtension();
 
-            // Buat direktori jika belum ada
-            if (!file_exists($folder)) {
-                mkdir($folder, 0755, true);
+            if (!Storage::exists($folder)) {
+                Storage::makeDirectory($folder);
             }
 
-            // Pindahkan file ke folder yang ditentukan
             try {
-                $gambar->move($folder, $filename);
+                $path = $gambar->storeAs($folder, $filename);
+                $gambarPath = "storage/img_fasum/" . $filename;
             } catch (\Exception $e) {
-                return response()->json(['error' => 'Gagal menyimpan file gambar'], 500);
+                return response()->json(['error' => 'Gagal menyimpan file gambar untuk fasum'], 500);
             }
 
-            // Simpan URL gambar ke database
-            $fasum->gambar = 'img_fasum/' . $filename;
+            $fasum->gambar = $gambarPath;
             $fasum->save();
         }
 

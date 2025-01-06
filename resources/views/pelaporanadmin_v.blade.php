@@ -277,7 +277,7 @@
                     i +
                     ']" style="width:150px" name="pic_fasum[]"></select>');
                 rowData.push(
-                    '<input required type="file" class="form-control" id="gambarFasum" name="gambarFasum[]" style="width:300px">'
+                    '<input required type="file" class="form-control" id="gambarFasum" name="gambarFasum[]" accept="image/*, application/pdf" style="width:300px">'
                 );
                 rowData.push(
                     '<input required type="text" class="form-control form-control-user keterangan_detail" style="width:200px" id="keterangan_detail" name="keterangan_detail[]" placeholder="Keterangan" >'
