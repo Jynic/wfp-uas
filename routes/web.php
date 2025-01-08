@@ -35,10 +35,10 @@ Route::middleware('auth')->group(function () {
     // route halaman & query untuk dashboard
     Route::get('/', function () {
         return view('dashboard_v');
-    });
+    })->middleware('can:accessStaffPages');
     Route::get('/home', function () {
         return view('dashboard_v');
-    })->name('home');
+    })->name('home')->middleware('can:accessStaffPages');
 
     Route::post('fasum/getFasumRusak', [Fasum::class, 'getFasumRusak'])->name('fasum.getFasumRusak');
     Route::get('get-kategori-fasum', [Fasum::class, 'getKategoriFasum'])->name('fasum.getKategoriFasum');
@@ -119,4 +119,7 @@ Route::middleware('auth')->group(function () {
     Route::get('pelaporan/GetNomor', [Pelaporan::class, 'GetNomor'])->name('pelaporan.GetNomor');
     Route::get('pelaporan/assignStaff/{pelaporan_id}/{staff_id}', [Pelaporan::class, 'assignStaff'])->name('pelaporan.assignStaff')->middleware('can:accessManajerPages');
     Route::get('pelaporan/updateStatus/{pelaporan_id}/{state}', [Pelaporan::class, 'ubahState'])->name('pelaporan.updateStatus')->middleware('can:accessStaffPages');
+
+    Route::get('pelaporanku', [Pelaporan::class, 'indexUser'])->name('pelaporanku')->middleware('can:accessUserPages');
+    Route::post('pelaporanku/getDataForUser', [Pelaporan::class, 'getDataForUser'])->name('pelaporanku.getDataForUser');
 });

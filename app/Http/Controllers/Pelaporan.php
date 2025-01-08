@@ -25,6 +25,11 @@ class Pelaporan extends Controller
         return view('pelaporan_v');
     }
 
+    public function indexUser()
+    {
+        return view('pelaporanku');
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -98,10 +103,9 @@ class Pelaporan extends Controller
         $dataPelaporan = [
             'nomor' => $formData['nomor'],
             'tgl_pelaporan' => $tgl,
-            'idm_staff' => 8,
             // 'idm_staff' => $formData['pic_utama'],
             'iduser' => $formData['user'],
-            'keterangan' => $formData['keterangan']
+            'keterangan' => $formData['keterangan'] ?? '-'
         ];
 
         DB::table('t_pelaporan')
@@ -154,8 +158,7 @@ class Pelaporan extends Controller
                     't_pelaporan_idpelaporan' => $id,
                     'm_fasum_idfasum' => $value,
                     'foto_fasum' => $gambarPath,
-                    'keterangan' => $formData['keterangan_detail'][$key],
-                    'idstaff' => 8
+                    'keterangan' => $formData['keterangan_detail'][$key] ?? '-',
                     // 'idstaff' => $formData['pic_fasum'][$key]
                 ];
             }
@@ -269,9 +272,47 @@ class Pelaporan extends Controller
                 $action_buttons
             );
         }
-        // Kirim data dalam format JSON
         echo json_encode($pelaporan);
     }
+
+    public function getDataForUser(Request $request)
+    {
+        $userId = auth()->user()->iduser;
+
+        $data = DB::table('t_pelaporan')
+            ->select('idpelaporan AS id', 'nomor', 'tgl_pelaporan', 'status_pelaporan', 'iduser', 'keterangan')
+            ->where('iduser', $userId)
+            ->get();
+
+        $pelaporan = [];
+        foreach ($data as $value) {
+            $action_buttons = '
+                <div class="d-flex justify-content-center">
+                    <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="detail(' . $value->id . ')">
+                        <i class="bx bx-info-circle"></i>
+                    </a>
+                    <a href="javascript:void(0)" class="btn btn-primary btn-sm ms-3" onclick="edit(' . $value->id . ')">
+                        <i class="bx bx-edit-alt"></i>
+                    </a>
+                    <a href="javascript:void(0)" class="btn btn-danger btn-sm ms-3" onclick="hapus(' . $value->id . ')">
+                        <i class="bx bx-trash"></i>
+                    </a>
+                </div>';
+
+            $pelaporan[] = array(
+                $value->nomor,
+                $value->tgl_pelaporan,
+                $value->status_pelaporan,
+                $value->keterangan,
+                $action_buttons
+            );
+        }
+
+        echo json_encode($pelaporan);
+    }
+
+
+
 
     public function getPelaporanBelumSelesai(Request $request)
     {
@@ -422,12 +463,11 @@ class Pelaporan extends Controller
         $data = [
             'nomor' => $formData['nomor'],
             'tgl_pelaporan' => $tgl,
-            'idm_staff' => 8,
             // 'idm_staff' => $formData['pic_utama'],
             'iduser' => $formData['user'],
             // 'iduser' => $formData['user'],
             'status_pelaporan' => 'Antri',
-            'keterangan' => $formData['keterangan']
+            'keterangan' => $formData['keterangan'] ?? '-'
         ];
         $id = DB::table('t_pelaporan')->insertGetId($data);
 
@@ -459,8 +499,7 @@ class Pelaporan extends Controller
                 't_pelaporan_idpelaporan' => $id,
                 'm_fasum_idfasum' => $value,
                 'foto_fasum' => $gambarPath,
-                'keterangan' => $formData['keterangan_detail'][$key],
-                'idstaff' => 8
+                'keterangan' => $formData['keterangan_detail'][$key] ?? '-',
             ];
             DB::table('t_pelaporan_detail')->insert($data);
         }
@@ -514,26 +553,10 @@ class Pelaporan extends Controller
 
         $pelaporan = [];
         foreach ($data as $key => $value) {
-            $action_buttons = '
-                <div class="d-flex justify-content-center">
-                    <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="edit(' . $value->id . ')">
-                        <i class="bx bx-edit-alt"></i>
-                    </a>';
-
-            if (Gate::allows('accessManajerPages')) {
-                $action_buttons .= '
-                    <a href="javascript:void(0)" class="btn btn-danger btn-sm ms-3" onclick="hapus(' . $value->id . ')">
-                        <i class="bx bx-trash"></i>
-                    </a>';
-            }
-
-            $action_buttons .= '</div>';
-
             $pelaporan[] = array(
                 $value->nama_fasum,
                 '<img src="' . asset($value->foto_fasum) . '" alt="Gambar Fasum" style="max-width: 100px; max-height: 100px;">',
                 $value->keterangan_fasum,
-                $action_buttons
             );
         }
         echo json_encode($pelaporan);

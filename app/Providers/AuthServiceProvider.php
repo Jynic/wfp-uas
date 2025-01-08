@@ -33,7 +33,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::define('accessUserPages', function (User_model $user) {
-            return $user->idjabatan == 1 || $user->idjabatan == 2 || $user->idjabatan == 3 || $user->idjabatan == 4;
+            return $user->idjabatan == 2;
         });
 
         Gate::define('accessStaffPages', function (User_model $user) {

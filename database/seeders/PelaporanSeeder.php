@@ -16,7 +16,7 @@ class PelaporanSeeder extends Seeder
         DB::table('t_pelaporan')->insert([
             [
                 'idpelaporan' => 1,
-                'nomor' => 'P/2412/0001',
+                'nomor' => 'P/2501/0001',
                 'tgl_pelaporan' => '2025-01-08 14:55:58',
                 'iduser' => 2,
                 'status_pelaporan' => 'Antri',
