@@ -21,39 +21,30 @@ class Fasum extends Controller
         $data = $request->all();
         $id = $data['id'];
 
-        $result = DB::select("
-        SELECT 
-            f.idfasum AS id, 
-            f.nama, 
-            f.luas_fasum, 
-            f.kondisi_fasum, 
-            f.asal_fasum, 
-            CONCAT(f.lat, ', ', f.lng) AS lokasi, 
-            f.gambar, 
-            GROUP_CONCAT(kf.nama SEPARATOR ', ') AS kategori, 
-            GROUP_CONCAT(kf.idkategori_fasum SEPARATOR ', ') AS kategori_id, 
+        $result = DB::table('m_fasum AS f')
+        ->leftJoin('m_kategori_fasum_has_m_fasum AS kfs', 'f.idfasum', '=', 'kfs.m_fasum_idfasum')
+        ->leftJoin('m_kategori_fasum AS kf', 'kfs.m_kategori_fasum_idkategori_fasum', '=', 'kf.idkategori_fasum')
+        ->join('m_dinas AS d', 'f.m_dinas_iddinas', '=', 'd.iddinas')
+        ->join('m_kota_kabupaten AS kk', 'd.idkota_kabupaten', '=', 'kk.idkota_kabupaten')
+        ->where('f.status_aktif', 1)
+        ->where('f.idfasum', $id)
+        ->groupBy('f.idfasum', 'f.nama', 'f.luas_fasum', 'f.kondisi_fasum', 'f.asal_fasum', 'f.lat', 'f.lng', 'f.gambar', 'd.nama', 'kk.nama', 'd.iddinas', 'f.status_aktif')
+        ->selectRaw('
+            f.idfasum AS id,
+            f.nama,
+            f.luas_fasum,
+            f.kondisi_fasum,
+            f.asal_fasum,
+            CONCAT(f.lat, ", ", f.lng) AS lokasi,
+            f.gambar,
+            GROUP_CONCAT(kf.nama SEPARATOR ", ") AS kategori,
+            GROUP_CONCAT(kf.idkategori_fasum SEPARATOR ", ") AS kategori_id,
             d.nama AS dinas,
             d.iddinas AS dinas_id,
             kk.nama AS nama_kota,
             f.status_aktif
-        FROM 
-            m_fasum f
-        LEFT JOIN 
-            m_kategori_fasum_has_m_fasum kfs 
-            ON f.idfasum = kfs.m_fasum_idfasum
-        LEFT JOIN 
-            m_kategori_fasum kf 
-            ON kfs.m_kategori_fasum_idkategori_fasum = kf.idkategori_fasum
-        INNER JOIN 
-            m_dinas d 
-            ON f.m_dinas_iddinas = d.iddinas
-        INNER JOIN 
-            m_kota_kabupaten kk ON d.idkota_kabupaten=kk.idkota_kabupaten
-        WHERE 
-            f.status_aktif = 1 AND f.idfasum = :id
-        GROUP BY 
-            f.idfasum, f.nama, f.luas_fasum, f.kondisi_fasum, 
-            f.asal_fasum, f.lat, f.lng, f.gambar, d.nama, kk.nama, d.iddinas, f.status_aktif;", ['id' => $id]);
+        ')
+        ->get();
         return json_encode($result);
     }
     public function update(Request $request)
@@ -117,37 +108,27 @@ class Fasum extends Controller
     }
     public function getData()
     {
-        $data = DB::select("SELECT 
-            f.idfasum AS id, 
-            f.nama, 
-            f.luas_fasum, 
-            f.kondisi_fasum, 
-            f.asal_fasum, 
-            CONCAT(f.lat, ', ', f.lng) AS lokasi, 
-            f.gambar, 
-            GROUP_CONCAT(kf.nama SEPARATOR ', ') AS kategori, 
-            d.nama AS dinas,
-            kk.nama AS nama_kota,
-            f.status_aktif
-        FROM 
-            m_fasum f
-        LEFT JOIN 
-            m_kategori_fasum_has_m_fasum kfs 
-            ON f.idfasum = kfs.m_fasum_idfasum
-        LEFT JOIN 
-            m_kategori_fasum kf 
-            ON kfs.m_kategori_fasum_idkategori_fasum = kf.idkategori_fasum
-        INNER JOIN 
-            m_dinas d 
-            ON f.m_dinas_iddinas = d.iddinas
-        INNER JOIN 
-            m_kota_kabupaten kk ON d.idkota_kabupaten=kk.idkota_kabupaten
-        WHERE 
-            f.status_aktif = 1
-        GROUP BY 
-            f.idfasum, f.nama, f.luas_fasum, f.kondisi_fasum, 
-            f.asal_fasum, f.lat, f.lng, f.gambar, d.nama, kk.nama,f.status_aktif;
-        ");
+        $data = DB::table('m_fasum AS f')
+    ->leftJoin('m_kategori_fasum_has_m_fasum AS kfs', 'f.idfasum', '=', 'kfs.m_fasum_idfasum')
+    ->leftJoin('m_kategori_fasum AS kf', 'kfs.m_kategori_fasum_idkategori_fasum', '=', 'kf.idkategori_fasum')
+    ->join('m_dinas AS d', 'f.m_dinas_iddinas', '=', 'd.iddinas')
+    ->join('m_kota_kabupaten AS kk', 'd.idkota_kabupaten', '=', 'kk.idkota_kabupaten')
+    ->where('f.status_aktif', 1)
+    ->groupBy('f.idfasum', 'f.nama', 'f.luas_fasum', 'f.kondisi_fasum', 'f.asal_fasum', 'f.lat', 'f.lng', 'f.gambar', 'd.nama', 'kk.nama', 'f.status_aktif')
+    ->selectRaw('
+        f.idfasum AS id,
+        f.nama,
+        f.luas_fasum,
+        f.kondisi_fasum,
+        f.asal_fasum,
+        CONCAT(f.lat, ", ", f.lng) AS lokasi,
+        f.gambar,
+        GROUP_CONCAT(kf.nama SEPARATOR ", ") AS kategori,
+        d.nama AS dinas,
+        kk.nama AS nama_kota,
+        f.status_aktif
+    ')
+    ->get();
 
         $fasum = [];
         foreach ($data as $key => $value) {
@@ -180,9 +161,11 @@ class Fasum extends Controller
     public function getDataKategori(Request $request)
     {
         $search_term = $request->input('search');
-        $data = DB::select('SELECT kf.idkategori_fasum AS id, kf.nama, kf.status_aktif
-        FROM m_kategori_fasum kf
-        WHERE kf.status_aktif = 1 AND kf.nama LIKE :search', ['search' => '%' . $search_term . '%']);
+       $data = DB::table('m_kategori_fasum')
+    ->where('status_aktif', 1)
+    ->where('nama', 'LIKE', '%' . $search_term . '%')
+    ->select('idkategori_fasum AS id', 'nama', 'status_aktif')
+    ->get();
         $kategori = [];
         foreach ($data as $key => $row) {
             $kategori[] = array(
@@ -199,9 +182,11 @@ class Fasum extends Controller
     public function getDataDinas(Request $request)
     {
         $search_term = $request->input('search');
-        $data = DB::select('SELECT d.iddinas AS id, d.nama
-        FROM m_dinas d 
-        WHERE d.status_aktif = 1 AND d.nama LIKE :search', ['search' => '%' . $search_term . '%']);
+        $data = DB::table('m_dinas')
+    ->where('status_aktif', 1)
+    ->where('nama', 'LIKE', '%' . $search_term . '%')
+    ->select('iddinas AS id', 'nama')
+    ->get();
         $dinas = [];
         foreach ($data as $key => $row) {
             $dinas[] = array(
@@ -290,26 +275,18 @@ class Fasum extends Controller
         $month = $request->input('month');
         $year = $request->input('year');
 
-        $data = DB::select("SELECT DISTINCT
-                m_fasum.nama AS fasum_nama, 
-                m_kategori_fasum.nama AS kategori_fasum,
-                t_pelaporan.tgl_pelaporan
-            FROM 
-                t_pelaporan
-            JOIN 
-                t_pelaporan_detail ON t_pelaporan.idpelaporan = t_pelaporan_detail.t_pelaporan_idpelaporan
-            JOIN 
-                m_fasum ON t_pelaporan_detail.m_fasum_idfasum = m_fasum.idfasum
-            JOIN
-                m_kategori_fasum_has_m_fasum ON m_fasum.idfasum = m_kategori_fasum_has_m_fasum.m_fasum_idfasum
-            JOIN
-                m_kategori_fasum ON m_kategori_fasum_has_m_fasum.m_kategori_fasum_idkategori_fasum = m_kategori_fasum.idkategori_fasum
-            WHERE 
-                m_kategori_fasum.idkategori_fasum = $category
-                AND YEAR(t_pelaporan.tgl_pelaporan) = $year
-                AND MONTH(t_pelaporan.tgl_pelaporan) = $month
-            ORDER BY 
-                t_pelaporan.tgl_pelaporan DESC;");
+        $data = DB::table('t_pelaporan')
+    ->join('t_pelaporan_detail', 't_pelaporan.idpelaporan', '=', 't_pelaporan_detail.t_pelaporan_idpelaporan')
+    ->join('m_fasum', 't_pelaporan_detail.m_fasum_idfasum', '=', 'm_fasum.idfasum')
+    ->join('m_kategori_fasum_has_m_fasum', 'm_fasum.idfasum', '=', 'm_kategori_fasum_has_m_fasum.m_fasum_idfasum')
+    ->join('m_kategori_fasum', 'm_kategori_fasum_has_m_fasum.m_kategori_fasum_idkategori_fasum', '=', 'm_kategori_fasum.idkategori_fasum')
+    ->where('m_kategori_fasum.idkategori_fasum', $category)
+    ->whereYear('t_pelaporan.tgl_pelaporan', $year)
+    ->whereMonth('t_pelaporan.tgl_pelaporan', $month)
+    ->select('m_fasum.nama as fasum_nama', 'm_kategori_fasum.nama as kategori_fasum', 't_pelaporan.tgl_pelaporan')
+    ->distinct()
+    ->orderBy('t_pelaporan.tgl_pelaporan', 'desc')
+    ->get();
 
         $fasum = [];
         foreach ($data as $key => $value) {
