@@ -347,4 +347,51 @@ class Fasum extends Controller
             ->update(['status_aktif' => 0]);
         echo json_encode(array("status" => TRUE));
     }
+
+    public function getFasumRusak(Request $request)
+    {
+        $category = $request->input('category');
+        $month = $request->input('month');
+        $year = $request->input('year');
+
+        $data = DB::select("SELECT DISTINCT
+                m_fasum.nama AS fasum_nama, 
+                m_kategori_fasum.nama AS kategori_fasum,
+                t_pelaporan.tgl_pelaporan
+            FROM 
+                t_pelaporan
+            JOIN 
+                t_pelaporan_detail ON t_pelaporan.idpelaporan = t_pelaporan_detail.t_pelaporan_idpelaporan
+            JOIN 
+                m_fasum ON t_pelaporan_detail.m_fasum_idfasum = m_fasum.idfasum
+            JOIN
+                m_kategori_fasum_has_m_fasum ON m_fasum.idfasum = m_kategori_fasum_has_m_fasum.m_fasum_idfasum
+            JOIN
+                m_kategori_fasum ON m_kategori_fasum_has_m_fasum.m_kategori_fasum_idkategori_fasum = m_kategori_fasum.idkategori_fasum
+            WHERE 
+                m_kategori_fasum.idkategori_fasum = $category
+                AND YEAR(t_pelaporan.tgl_pelaporan) = $year
+                AND MONTH(t_pelaporan.tgl_pelaporan) = $month
+            ORDER BY 
+                t_pelaporan.tgl_pelaporan DESC;");
+
+        $fasum = [];
+        foreach ($data as $key => $value) {
+            $fasum[] = array(
+                'fasum_nama' => $value->fasum_nama,
+                'kategori_fasum' => $value->kategori_fasum,
+                'tgl_pelaporan' => $value->tgl_pelaporan,
+            );
+        }
+
+        echo json_encode($fasum);
+    }
+
+    public function getKategoriFasum(Request $request)
+    {
+        $categories = DB::table('m_kategori_fasum')
+            ->where('status_aktif', 1)
+            ->get();
+        return response()->json($categories);
+    }
 }

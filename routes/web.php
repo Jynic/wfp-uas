@@ -76,6 +76,9 @@ Route::middleware('auth')->group(function () {
     Route::post('fasum/update', [Fasum::class, 'update'])->name('fasum.update');
     Route::post('fasum/getDataKategori', [Fasum::class, 'getDataKategori'])->name('fasum.getDataKategori');
     Route::post('fasum/getDataDinas', [Fasum::class, 'getDataDinas'])->name('fasum.getDataDinas');
+    Route::post('fasum/getFasumRusak', [Fasum::class, 'getFasumRusak'])->name('fasum.getFasumRusak');
+    Route::get('/get-kategori-fasum', [Fasum::class, 'getKategoriFasum'])->name('fasum.getKategoriFasum');
+
 
     Route::get('staff', [Staff::class, 'index'])->name('staff');
     Route::post('staff/simpan', [Staff::class, 'simpan'])->name('staff.simpan');

@@ -64,7 +64,7 @@
                                 <thead>
                                     <tr>
                                         <th>Nama</th>
-                                        <th>Ketegori</th>
+                                        <th>Kategori</th>
                                         <th>Dinas</th>
                                         <th>Asal Kota</th>
                                         <th>Luas Fasilitas Umum</th>
