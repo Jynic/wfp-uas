@@ -22,8 +22,38 @@ class ProvinsiSeeder extends Seeder
             ],
             [
                 'idprovinsi' => 2,
-                'kode' => "JKT",
+                'kode' => "JK",
                 'nama' => "DKI Jakarta",
+                'status_aktif' => 1,
+            ],
+            [
+                'idprovinsi' => 3,
+                'kode' => "JBR",
+                'nama' => "Jawa Barat",
+                'status_aktif' => 1,
+            ],
+            [
+                'idprovinsi' => 4,
+                'kode' => "JTG",
+                'nama' => "Jawa Tengah",
+                'status_aktif' => 1,
+            ],
+            [
+                'idprovinsi' => 5,
+                'kode' => "YOG",
+                'nama' => "Daerah Istimewa Yogyakarta",
+                'status_aktif' => 1,
+            ],
+            [
+                'idprovinsi' => 6,
+                'kode' => "BNT",
+                'nama' => "Banten",
+                'status_aktif' => 1,
+            ],
+            [
+                'idprovinsi' => 7,
+                'kode' => "BAL",
+                'nama' => "Bali",
                 'status_aktif' => 1,
             ],
         ]);
