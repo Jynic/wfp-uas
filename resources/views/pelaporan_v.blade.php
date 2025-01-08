@@ -66,6 +66,7 @@
                                 enctype="multipart/form-data">
                                 <thead>
                                     <tr>
+                                        <th>Ditugaskan</th>
                                         <th>Nama</th>
                                         <th>Tanggal</th>
                                         <th>Status Pelaporan</th>
@@ -170,7 +171,6 @@
                                     <table id="tabelDetail" class="table dt-table-hover wrapped" style="width:100%">
                                         <thead>
                                             <th>Fasum</th>
-                                            <th>Status Perbaikkan</th>
                                             <th>Gambar</th>
                                             <th>Keterangan</th>
                                             <th>Aksi</th>
@@ -669,6 +669,68 @@
             });
             $('#modal_form').on('shown.bs.modal', function() {
                 $(this).find('.modal-content').css('overflow', 'visible');
+            });
+        }
+
+        function assignStaff(pelaporan_id, staff_id) {
+            console.log("Selected Staff ID:", staff_id);
+
+            if (!staff_id) {
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Please select a staff member.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+                return;
+            }
+
+            $.ajax({
+                url: '/pelaporan/assignStaff/' + pelaporan_id + '/' + staff_id,
+                type: 'GET',
+                success: function(response) {
+                    Swal.fire({
+                        title: 'Success',
+                        text: 'Staff assigned successfully.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        location.reload();
+                    });
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'There was an error assigning the staff.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        }
+
+        function updateStatus(pelaporan_id, status) {
+            $.ajax({
+                url: '/pelaporan/updateStatus/' + pelaporan_id + '/' + status,
+                type: 'GET',
+                success: function(response) {
+                    Swal.fire({
+                        title: 'Success',
+                        text: 'Status updated successfully.',
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        location.reload();
+                    });
+                },
+                error: function(xhr, status, error) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'There was an error updating the status.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
             });
         }
     </script>

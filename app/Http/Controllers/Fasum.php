@@ -8,6 +8,7 @@ use App\Models\Kota_model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 class Fasum extends Controller
@@ -22,14 +23,14 @@ class Fasum extends Controller
         $id = $data['id'];
 
         $result = DB::table('m_fasum AS f')
-        ->leftJoin('m_kategori_fasum_has_m_fasum AS kfs', 'f.idfasum', '=', 'kfs.m_fasum_idfasum')
-        ->leftJoin('m_kategori_fasum AS kf', 'kfs.m_kategori_fasum_idkategori_fasum', '=', 'kf.idkategori_fasum')
-        ->join('m_dinas AS d', 'f.m_dinas_iddinas', '=', 'd.iddinas')
-        ->join('m_kota_kabupaten AS kk', 'd.idkota_kabupaten', '=', 'kk.idkota_kabupaten')
-        ->where('f.status_aktif', 1)
-        ->where('f.idfasum', $id)
-        ->groupBy('f.idfasum', 'f.nama', 'f.luas_fasum', 'f.kondisi_fasum', 'f.asal_fasum', 'f.lat', 'f.lng', 'f.gambar', 'd.nama', 'kk.nama', 'd.iddinas', 'f.status_aktif')
-        ->selectRaw('
+            ->leftJoin('m_kategori_fasum_has_m_fasum AS kfs', 'f.idfasum', '=', 'kfs.m_fasum_idfasum')
+            ->leftJoin('m_kategori_fasum AS kf', 'kfs.m_kategori_fasum_idkategori_fasum', '=', 'kf.idkategori_fasum')
+            ->join('m_dinas AS d', 'f.m_dinas_iddinas', '=', 'd.iddinas')
+            ->join('m_kota_kabupaten AS kk', 'd.idkota_kabupaten', '=', 'kk.idkota_kabupaten')
+            ->where('f.status_aktif', 1)
+            ->where('f.idfasum', $id)
+            ->groupBy('f.idfasum', 'f.nama', 'f.luas_fasum', 'f.kondisi_fasum', 'f.asal_fasum', 'f.lat', 'f.lng', 'f.gambar', 'd.nama', 'kk.nama', 'd.iddinas', 'f.status_aktif')
+            ->selectRaw('
             f.idfasum AS id,
             f.nama,
             f.luas_fasum,
@@ -44,7 +45,7 @@ class Fasum extends Controller
             kk.nama AS nama_kota,
             f.status_aktif
         ')
-        ->get();
+            ->get();
         return json_encode($result);
     }
     public function update(Request $request)
@@ -109,13 +110,13 @@ class Fasum extends Controller
     public function getData()
     {
         $data = DB::table('m_fasum AS f')
-    ->leftJoin('m_kategori_fasum_has_m_fasum AS kfs', 'f.idfasum', '=', 'kfs.m_fasum_idfasum')
-    ->leftJoin('m_kategori_fasum AS kf', 'kfs.m_kategori_fasum_idkategori_fasum', '=', 'kf.idkategori_fasum')
-    ->join('m_dinas AS d', 'f.m_dinas_iddinas', '=', 'd.iddinas')
-    ->join('m_kota_kabupaten AS kk', 'd.idkota_kabupaten', '=', 'kk.idkota_kabupaten')
-    ->where('f.status_aktif', 1)
-    ->groupBy('f.idfasum', 'f.nama', 'f.luas_fasum', 'f.kondisi_fasum', 'f.asal_fasum', 'f.lat', 'f.lng', 'f.gambar', 'd.nama', 'kk.nama', 'f.status_aktif')
-    ->selectRaw('
+            ->leftJoin('m_kategori_fasum_has_m_fasum AS kfs', 'f.idfasum', '=', 'kfs.m_fasum_idfasum')
+            ->leftJoin('m_kategori_fasum AS kf', 'kfs.m_kategori_fasum_idkategori_fasum', '=', 'kf.idkategori_fasum')
+            ->join('m_dinas AS d', 'f.m_dinas_iddinas', '=', 'd.iddinas')
+            ->join('m_kota_kabupaten AS kk', 'd.idkota_kabupaten', '=', 'kk.idkota_kabupaten')
+            ->where('f.status_aktif', 1)
+            ->groupBy('f.idfasum', 'f.nama', 'f.luas_fasum', 'f.kondisi_fasum', 'f.asal_fasum', 'f.lat', 'f.lng', 'f.gambar', 'd.nama', 'kk.nama', 'f.status_aktif')
+            ->selectRaw('
         f.idfasum AS id,
         f.nama,
         f.luas_fasum,
@@ -128,10 +129,25 @@ class Fasum extends Controller
         kk.nama AS nama_kota,
         f.status_aktif
     ')
-    ->get();
+            ->get();
 
         $fasum = [];
         foreach ($data as $key => $value) {
+            $action_buttons = '
+                <div class="d-flex justify-content-center">
+                    <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="edit(' . $value->id . ')">
+                        <i class="bx bx-edit-alt"></i>
+                    </a>';
+
+            if (Gate::allows('accessManajerPages')) {
+                $action_buttons .= '
+                    <a href="javascript:void(0)" class="btn btn-danger btn-sm ms-3" onclick="hapus(' . $value->id . ')">
+                        <i class="bx bx-trash"></i>
+                    </a>';
+            }
+
+            $action_buttons .= '</div>';
+
             $fasum[] = array(
                 $value->nama,
                 $value->kategori,
@@ -145,27 +161,19 @@ class Fasum extends Controller
                 ($value->status_aktif == 1) ?
                     '<span class="badge bg-success">Active</span>' :
                     '<span class="badge bg-danger">Inactive</span>',
-                '<div class="d-flex justify-content-center">
-                <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="edit(' . $value->id . ')">
-                    <i class="bx bx-edit-alt"></i>
-                </a>
-                <a href="javascript:void(0)" class="btn btn-danger btn-sm ms-3" onclick="hapus(' . $value->id . ')">
-                    <i class="bx bx-trash"></i>
-                </a>
-                </div>'
+                $action_buttons
             );
         }
-        // Kirim data dalam format JSON
         echo json_encode($fasum);
     }
     public function getDataKategori(Request $request)
     {
         $search_term = $request->input('search');
-       $data = DB::table('m_kategori_fasum')
-    ->where('status_aktif', 1)
-    ->where('nama', 'LIKE', '%' . $search_term . '%')
-    ->select('idkategori_fasum AS id', 'nama', 'status_aktif')
-    ->get();
+        $data = DB::table('m_kategori_fasum')
+            ->where('status_aktif', 1)
+            ->where('nama', 'LIKE', '%' . $search_term . '%')
+            ->select('idkategori_fasum AS id', 'nama', 'status_aktif')
+            ->get();
         $kategori = [];
         foreach ($data as $key => $row) {
             $kategori[] = array(
@@ -183,10 +191,10 @@ class Fasum extends Controller
     {
         $search_term = $request->input('search');
         $data = DB::table('m_dinas')
-    ->where('status_aktif', 1)
-    ->where('nama', 'LIKE', '%' . $search_term . '%')
-    ->select('iddinas AS id', 'nama')
-    ->get();
+            ->where('status_aktif', 1)
+            ->where('nama', 'LIKE', '%' . $search_term . '%')
+            ->select('iddinas AS id', 'nama')
+            ->get();
         $dinas = [];
         foreach ($data as $key => $row) {
             $dinas[] = array(
@@ -276,17 +284,17 @@ class Fasum extends Controller
         $year = $request->input('year');
 
         $data = DB::table('t_pelaporan')
-    ->join('t_pelaporan_detail', 't_pelaporan.idpelaporan', '=', 't_pelaporan_detail.t_pelaporan_idpelaporan')
-    ->join('m_fasum', 't_pelaporan_detail.m_fasum_idfasum', '=', 'm_fasum.idfasum')
-    ->join('m_kategori_fasum_has_m_fasum', 'm_fasum.idfasum', '=', 'm_kategori_fasum_has_m_fasum.m_fasum_idfasum')
-    ->join('m_kategori_fasum', 'm_kategori_fasum_has_m_fasum.m_kategori_fasum_idkategori_fasum', '=', 'm_kategori_fasum.idkategori_fasum')
-    ->where('m_kategori_fasum.idkategori_fasum', $category)
-    ->whereYear('t_pelaporan.tgl_pelaporan', $year)
-    ->whereMonth('t_pelaporan.tgl_pelaporan', $month)
-    ->select('m_fasum.nama as fasum_nama', 'm_kategori_fasum.nama as kategori_fasum', 't_pelaporan.tgl_pelaporan')
-    ->distinct()
-    ->orderBy('t_pelaporan.tgl_pelaporan', 'desc')
-    ->get();
+            ->join('t_pelaporan_detail', 't_pelaporan.idpelaporan', '=', 't_pelaporan_detail.t_pelaporan_idpelaporan')
+            ->join('m_fasum', 't_pelaporan_detail.m_fasum_idfasum', '=', 'm_fasum.idfasum')
+            ->join('m_kategori_fasum_has_m_fasum', 'm_fasum.idfasum', '=', 'm_kategori_fasum_has_m_fasum.m_fasum_idfasum')
+            ->join('m_kategori_fasum', 'm_kategori_fasum_has_m_fasum.m_kategori_fasum_idkategori_fasum', '=', 'm_kategori_fasum.idkategori_fasum')
+            ->where('m_kategori_fasum.idkategori_fasum', $category)
+            ->whereYear('t_pelaporan.tgl_pelaporan', $year)
+            ->whereMonth('t_pelaporan.tgl_pelaporan', $month)
+            ->select('m_fasum.nama as fasum_nama', 'm_kategori_fasum.nama as kategori_fasum', 't_pelaporan.tgl_pelaporan')
+            ->distinct()
+            ->orderBy('t_pelaporan.tgl_pelaporan', 'desc')
+            ->get();
 
         $fasum = [];
         foreach ($data as $key => $value) {

@@ -32,18 +32,30 @@ class UserSeeder extends Seeder
         DB::table('m_user')->insert([
             [
                 'iduser' => 2,
+                'idkota_kabupaten' => '1',
+                'idjabatan' => '4',
                 'nama' => 'ryan',
                 'username' => 'ryan',
                 'password' => Hash::make("ryan"),
                 'status_aktif' => 1,
+                'alamat' => 'Jalan ryan No 31',
+                'no_hp' => '123123123',
+                'email' => 'ryan@gmail.com',
             ],
             [
                 'iduser' => 3,
+                'idkota_kabupaten' => '1',
+                'idjabatan' => '3',
                 'nama' => 'ivano',
                 'username' => 'ivano',
                 'password' => Hash::make("ivano"),
                 'status_aktif' => 1,
+                'alamat' => 'Jalan ivano No 31',
+                'no_hp' => '123123123',
+                'email' => 'ivano@gmail.com',
             ],
+        ]);
+        DB::table('m_user')->insert([
             [
                 'iduser' => 4,
                 'nama' => 'zefa',

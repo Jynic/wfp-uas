@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
@@ -56,6 +57,7 @@ class Pelaporan extends Controller
         $data = $request->all();
         $id = $data['id'];
 
+<<<<<<< Updated upstream
         $result = DB::table('t_pelaporan as p')
             ->join('t_pelaporan_detail as pd', 'p.idpelaporan', '=', 'pd.t_pelaporan_idpelaporan')
             ->join('m_user as u', 'p.iduser', '=', 'u.iduser')
@@ -78,6 +80,32 @@ class Pelaporan extends Controller
                 'pd.keterangan AS keterangan_fasum'
             )
             ->get();
+=======
+        $result = DB::select("
+        SELECT 
+        p.idpelaporan AS id,
+        p.nomor,
+        p.tgl_pelaporan,
+        p.status_pelaporan,
+        p.keterangan,
+        p.status_aktif,
+        u.nama AS nama_user,
+        u.iduser AS id_user,
+        f.nama AS nama_fasum,
+        f.idfasum AS id_fasum,
+        pd.foto_fasum AS foto_fasum,
+        pd.keterangan AS keterangan_fasum
+        FROM 
+            t_pelaporan p
+        INNER JOIN 
+            t_pelaporan_detail pd ON p.idpelaporan = pd.t_pelaporan_idpelaporan
+        INNER JOIN 
+            m_user u ON p.iduser = u.iduser
+        INNER JOIN 
+            m_fasum f ON pd.m_fasum_idfasum = f.idfasum
+        WHERE 
+            p.status_aktif = 1 and p.idpelaporan = :id;", ['id' => $id]);
+>>>>>>> Stashed changes
         return json_encode($result);
     }
 
@@ -150,7 +178,6 @@ class Pelaporan extends Controller
                 $dataDetail = [
                     't_pelaporan_idpelaporan' => $id,
                     'm_fasum_idfasum' => $value,
-                    'status_perbaikkan' => $formData['status_perbaikkan'][$key] ?? 'Antri',
                     'foto_fasum' => $gambarPath,
                     'keterangan' => $formData['keterangan_detail'][$key],
                     'idstaff' => 8
@@ -175,6 +202,7 @@ class Pelaporan extends Controller
     public function getData(Request $request)
     {
         $id = $request->input('id');
+<<<<<<< Updated upstream
         $data = DB::table('t_pelaporan as p')
             ->leftJoin('t_pelaporan_detail as pd', 'p.idpelaporan', '=', 'pd.t_pelaporan_idpelaporan')
             ->leftJoin('m_staff as s', 'p.idm_staff', '=', 's.idm_staff')
@@ -211,17 +239,96 @@ class Pelaporan extends Controller
                 DB::raw('GROUP_CONCAT(pd.keterangan SEPARATOR ", ") AS keterangan_fasum')
             )
             ->get();
+=======
+        $data = DB::select("SELECT 
+    p.idm_staff,
+    p.idpelaporan AS id,
+    p.nomor,
+    p.tgl_pelaporan,
+    p.status_pelaporan,
+    p.keterangan,
+    p.status_aktif,
+    s.nama AS nama_staff,
+    s.idm_staff AS id_staff,
+    u.nama AS nama_user,
+    u.iduser AS id_user,
+    GROUP_CONCAT(f.nama SEPARATOR ', ') AS nama_fasum,
+    GROUP_CONCAT(f.idfasum SEPARATOR ', ') AS id_fasum,
+    GROUP_CONCAT(pd.foto_fasum SEPARATOR ', ') AS foto_fasum,
+    GROUP_CONCAT(pd.keterangan SEPARATOR ', ') AS keterangan_fasum
+    FROM 
+        t_pelaporan p
+    LEFT JOIN 
+        t_pelaporan_detail pd ON p.idpelaporan = pd.t_pelaporan_idpelaporan
+    LEFT JOIN 
+        m_staff s ON p.idm_staff = s.idm_staff
+    LEFT JOIN 
+        m_user u ON p.iduser = u.iduser
+    LEFT JOIN 
+        m_fasum f ON pd.m_fasum_idfasum = f.idfasum
+    WHERE 
+        p.status_aktif = 1
+    GROUP BY 
+    p.idm_staff,
+        p.idpelaporan, 
+        p.nomor, 
+        p.tgl_pelaporan, 
+        p.status_pelaporan, 
+        p.keterangan, 
+        p.status_aktif, 
+        s.nama, 
+        s.idm_staff, 
+        u.nama, 
+        u.iduser;
+        ");
+>>>>>>> Stashed changes
 
         $pelaporan = [];
         foreach ($data as $key => $value) {
+            $action_buttons = '
+                <div class="d-flex justify-content-center">
+                    <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="detail(' . $value->id . ')">
+                        <i class="bx bx-info-circle"></i>
+                    </a>
+                    <a href="javascript:void(0)" class="btn btn-primary btn-sm ms-3" onclick="edit(' . $value->id . ')">
+                        <i class="bx bx-edit-alt"></i>
+                    </a>';
+
+            if (Gate::allows('accessManajerPages')) {
+                $action_buttons .= '
+                    <a href="javascript:void(0)" class="btn btn-danger btn-sm ms-3" onclick="hapus(' . $value->id . ')">
+                        <i class="bx bx-trash"></i>
+                    </a>';
+            }
+
+            $action_buttons .= '</div>';
+
+            $staff = Staff_model::all();
+
             $pelaporan[] = array(
+                (auth()->user()->can('accessManajerPages') ?
+                    '<select class="form-select form-select-sm" onchange="assignStaff(' . $value->id . ', this.value)">
+            <option value="">Select Staff</option>' .
+                    implode('', $staff->map(function ($staffMember) use ($value) {
+                        return '<option value="' . $staffMember->idm_staff . '" ' .
+                            ($staffMember->idm_staff == $value->id_staff ? 'selected' : '') . '>' .
+                            $staffMember->username . '</option>';
+                    })->toArray()) .
+                    '</select>' :
+                    '-'),
                 $value->nomor,
                 $value->tgl_pelaporan,
-                $value->status_pelaporan,
+                '<select class="form-select form-select-sm" onchange="updateStatus(' . $value->id . ', this.value)">
+                    <option value="Dikerjakan" ' . ($value->status_pelaporan == 'Dikerjakan' ? 'selected' : '') . '>Dikerjakan</option>
+                    <option value="Outsource" ' . ($value->status_pelaporan == 'Outsource' ? 'selected' : '') . '>Outsource</option>
+                    <option value="Selesai" ' . ($value->status_pelaporan == 'Selesai' ? 'selected' : '') . '>Selesai</option>
+                    <option value="Tidak Terselesaikan" ' . ($value->status_pelaporan == 'Tidak Terselesaikan' ? 'selected' : '') . '>Tidak Terselesaikan</option>
+                </select>',
                 $value->keterangan,
                 $value->nama_user,
                 $value->nama_fasum,
                 ($value->status_aktif == 1) ?
+<<<<<<< Updated upstream
                 '<span class="badge bg-success">Active</span>' :
                 '<span class="badge bg-danger">Inactive</span>',
                 '<div class="d-flex justify-content-center">
@@ -236,6 +343,11 @@ class Pelaporan extends Controller
                         <i class="bx bx-trash"></i>
                     </a>' .
                 '</div>'
+=======
+                    '<span class="badge bg-success">Active</span>' :
+                    '<span class="badge bg-danger">Inactive</span>',
+                $action_buttons
+>>>>>>> Stashed changes
             );
         }
         // Kirim data dalam format JSON
@@ -272,6 +384,7 @@ class Pelaporan extends Controller
             $query->where('p.tgl_pelaporan', '>=', $dateRange);
         }
 
+<<<<<<< Updated upstream
         $data = DB::table('t_pelaporan as p')
             ->leftJoin('t_pelaporan_detail as pd', 'p.idpelaporan', '=', 'pd.t_pelaporan_idpelaporan')
             ->leftJoin('m_staff as s', 'p.idm_staff', '=', 's.idm_staff')
@@ -308,6 +421,24 @@ class Pelaporan extends Controller
                 DB::raw('GROUP_CONCAT(pd.keterangan SEPARATOR ", ") AS keterangan_fasum')
             )
             ->get();
+=======
+        $data = $query->select(
+            'p.idpelaporan as id',
+            'p.nomor',
+            'p.tgl_pelaporan',
+            'p.status_pelaporan',
+            'p.keterangan',
+            'p.status_aktif',
+            's.nama as nama_staff',
+            's.idm_staff as id_staff',
+            'u.nama as nama_user',
+            'u.iduser as id_user',
+            DB::raw('GROUP_CONCAT(f.nama SEPARATOR ", ") AS nama_fasum'),
+            DB::raw('GROUP_CONCAT(f.idfasum SEPARATOR ", ") AS id_fasum'),
+            DB::raw('GROUP_CONCAT(pd.foto_fasum SEPARATOR ", ") AS foto_fasum'),
+            DB::raw('GROUP_CONCAT(pd.keterangan SEPARATOR ", ") AS keterangan_fasum')
+        )->get();
+>>>>>>> Stashed changes
 
         $pelaporan = [];
         foreach ($data as $key => $value) {
@@ -460,7 +591,6 @@ class Pelaporan extends Controller
             $data = [
                 't_pelaporan_idpelaporan' => $id,
                 'm_fasum_idfasum' => $value,
-                'status_perbaikkan' => 'Antri',
                 'foto_fasum' => $gambarPath,
                 'keterangan' => $formData['keterangan_detail'][$key],
                 'idstaff' => 8
@@ -490,6 +620,7 @@ class Pelaporan extends Controller
     {
         $data = $request->all();
         $id = $data['id'];
+<<<<<<< Updated upstream
         $data = DB::table('t_pelaporan as p')
             ->leftJoin('t_pelaporan_detail as pd', 'p.idpelaporan', '=', 'pd.t_pelaporan_idpelaporan')
             ->leftJoin('m_user as u', 'p.iduser', '=', 'u.iduser')
@@ -512,22 +643,55 @@ class Pelaporan extends Controller
                 'pd.keterangan AS keterangan_fasum'
             )
             ->get();
+=======
+        $data = DB::select("
+        SELECT 
+        p.idpelaporan AS id,
+        p.nomor,
+        p.tgl_pelaporan,
+        p.status_pelaporan,
+        p.keterangan,
+        p.status_aktif,
+        u.nama AS nama_user,
+        u.iduser AS id_user,
+        f.nama AS nama_fasum,
+        f.idfasum AS id_fasum,
+        pd.foto_fasum AS foto_fasum,
+        pd.keterangan AS keterangan_fasum
+        FROM 
+            t_pelaporan p
+        LEFT JOIN 
+            t_pelaporan_detail pd ON p.idpelaporan = pd.t_pelaporan_idpelaporan
+        LEFT JOIN 
+            m_user u ON p.iduser = u.iduser
+        LEFT JOIN 
+            m_fasum f ON pd.m_fasum_idfasum = f.idfasum
+        WHERE 
+            p.status_aktif = 1 and p.idpelaporan = :id;", ['id' => $id]);
+>>>>>>> Stashed changes
 
         $pelaporan = [];
         foreach ($data as $key => $value) {
+            $action_buttons = '
+                <div class="d-flex justify-content-center">
+                    <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="edit(' . $value->id . ')">
+                        <i class="bx bx-edit-alt"></i>
+                    </a>';
+
+            if (Gate::allows('accessManajerPages')) {
+                $action_buttons .= '
+                    <a href="javascript:void(0)" class="btn btn-danger btn-sm ms-3" onclick="hapus(' . $value->id . ')">
+                        <i class="bx bx-trash"></i>
+                    </a>';
+            }
+
+            $action_buttons .= '</div>';
+
             $pelaporan[] = array(
                 $value->nama_fasum,
-                $value->status_perbaikkan,
                 '<img src="' . asset($value->foto_fasum) . '" alt="Gambar Fasum" style="max-width: 100px; max-height: 100px;">',
                 $value->keterangan_fasum,
-                '<div class="d-flex justify-content-center">
-                <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="edit(' . $value->id . ')">
-                    <i class="bx bx-edit-alt"></i>
-                </a>
-                <a href="javascript:void(0)" class="btn btn-danger btn-sm ms-3" onclick="hapus(' . $value->id . ')">
-                    <i class="bx bx-trash"></i>
-                </a>
-                </div>'
+                $action_buttons
             );
         }
         echo json_encode($pelaporan);
@@ -537,6 +701,7 @@ class Pelaporan extends Controller
     {
         $data = $request->all();
         $id = $data['id'];
+<<<<<<< Updated upstream
         $data = DB::table('t_pelaporan as p')
             ->join('t_pelaporan_detail as pd', 'p.idpelaporan', '=', 'pd.t_pelaporan_idpelaporan')
             ->join('m_user as u', 'p.iduser', '=', 'u.iduser')
@@ -559,16 +724,56 @@ class Pelaporan extends Controller
                 'pd.keterangan AS keterangan_fasum'
             )
             ->get();
+=======
+        $data = DB::select("
+        SELECT 
+        p.idpelaporan AS id,
+        p.nomor,
+        p.tgl_pelaporan,
+        p.status_pelaporan,
+        p.keterangan,
+        p.status_aktif,
+        u.nama AS nama_user,
+        u.iduser AS id_user,
+        f.nama AS nama_fasum,
+        f.idfasum AS id_fasum,
+        pd.foto_fasum AS foto_fasum,
+        pd.keterangan AS keterangan_fasum
+        FROM 
+            t_pelaporan p
+        INNER JOIN 
+            t_pelaporan_detail pd ON p.idpelaporan = pd.t_pelaporan_idpelaporan
+        INNER JOIN 
+            m_user u ON p.iduser = u.iduser
+        INNER JOIN 
+            m_fasum f ON pd.m_fasum_idfasum = f.idfasum
+        WHERE 
+            p.status_aktif = 1 and p.idpelaporan = :id;", ['id' => $id]);
+>>>>>>> Stashed changes
 
         $pelaporan = [];
         foreach ($data as $key => $value) {
             $pelaporan[] = array(
                 $value->nama_fasum,
-                $value->status_perbaikkan,
                 '<img src="' . asset($value->foto_fasum) . '" alt="Gambar Fasum" style="max-width: 100px; max-height: 100px;">',
                 $value->keterangan_fasum,
             );
         }
         echo json_encode($pelaporan);
+    }
+
+    public static function assignStaff($report_id, $staff_id)
+    {
+        $report = Pelaporan_model::find($report_id);
+        $report->idm_staff = $staff_id;
+        $report->status_pelaporan = 'Dikerjakan';
+        $report->save();
+    }
+
+    public static function ubahState($report_id, $state)
+    {
+        $report = Pelaporan_model::find($report_id);
+        $report->status_pelaporan = $state;
+        $report->save();
     }
 }

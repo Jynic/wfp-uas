@@ -16,7 +16,8 @@ class JabatanSeeder extends Seeder
         DB::table('m_jabatan')->insert([
             ['idjabatan' => 1, 'nama' => 'Admin', 'status_aktif' => 1],
             ['idjabatan' => 2, 'nama' => 'User', 'status_aktif' => 1],
-            ['idjabatan' => 3, 'nama' => 'Manager', 'status_aktif' => 1],
+            ['idjabatan' => 3, 'nama' => 'Staf', 'status_aktif' => 1],
+            ['idjabatan' => 4, 'nama' => 'Manajer', 'status_aktif' => 1],
         ]);
     }
 }

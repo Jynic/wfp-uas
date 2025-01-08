@@ -3,7 +3,12 @@
 namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
+
+use App\Models\User;
+use App\Models\User_model;
+use App\Policies\RoutePolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -13,7 +18,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+        User::class => RoutePolicy::class,
     ];
 
     /**
@@ -23,6 +28,20 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        Gate::define('accessAdminPages', function (User_model $user) {
+            return $user->idjabatan == 1;
+        });
+
+        Gate::define('accessUserPages', function (User_model $user) {
+            return $user->idjabatan == 1 || $user->idjabatan == 2 || $user->idjabatan == 3 || $user->idjabatan == 4;
+        });
+
+        Gate::define('accessStaffPages', function (User_model $user) {
+            return $user->idjabatan == 1 || $user->idjabatan == 3 || $user->idjabatan == 4;
+        });
+
+        Gate::define('accessManajerPages', function (User_model $user) {
+            return $user->idjabatan == 1 || $user->idjabatan == 4;
+        });
     }
 }

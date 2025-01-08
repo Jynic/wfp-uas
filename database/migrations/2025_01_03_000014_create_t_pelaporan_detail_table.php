@@ -12,7 +12,6 @@ return new class extends Migration
             $table->id('iddetail');
             $table->unsignedBigInteger('t_pelaporan_idpelaporan');
             $table->unsignedBigInteger('m_fasum_idfasum');
-            $table->text('status_perbaikkan')->nullable();
             $table->text('foto_fasum')->nullable();
             $table->text('keterangan')->nullable();
 

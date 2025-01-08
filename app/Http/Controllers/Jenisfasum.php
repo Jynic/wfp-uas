@@ -7,6 +7,7 @@ use App\Models\Kota_model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class Jenisfasum extends Controller
 {
@@ -96,22 +97,29 @@ class Jenisfasum extends Controller
 
         $jenis_fasum = [];
         foreach ($data as $key => $value) {
+            $action_buttons = '
+                <div class="d-flex justify-content-center">
+                    <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="edit(' . $value->id . ')">
+                        <i class="bx bx-edit-alt"></i>
+                    </a>';
+
+            if (Gate::allows('accessManajerPages')) {
+                $action_buttons .= '
+                    <a href="javascript:void(0)" class="btn btn-danger btn-sm ms-3" onclick="hapus(' . $value->id . ')">
+                        <i class="bx bx-trash"></i>
+                    </a>';
+            }
+
+            $action_buttons .= '</div>';
+
             $jenis_fasum[] = array(
                 $value->nama,
                 ($value->status_aktif == 1) ?
                     '<span class="badge bg-success">Active</span>' :
                     '<span class="badge bg-danger">Inactive</span>',
-                '<div class="d-flex justify-content-center">
-                <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="edit(' . $value->id . ')">
-                    <i class="bx bx-edit-alt"></i>
-                </a>
-                <a href="javascript:void(0)" class="btn btn-danger btn-sm ms-3" onclick="hapus(' . $value->id . ')">
-                    <i class="bx bx-trash"></i>
-                </a>
-                </div>'
+                $action_buttons
             );
         }
-        // Kirim data dalam format JSON
         echo json_encode($jenis_fasum);
     }
     public function getDataKota(Request $request)

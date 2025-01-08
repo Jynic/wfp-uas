@@ -45,14 +45,14 @@ Route::middleware('auth')->group(function () {
     Route::post('pelaporan/detailBelumSelesai', [Pelaporan::class, 'detailBelumSelesai'])->name('pelaporan.detailBelumSelesai');
     Route::post('user/sering-mengadu', [User::class, 'getUserSeringMengadu'])->name('user.getUserSeringMengadu');
 
-    Route::get('provinsi', [Provinsi::class, 'index'])->name('provinsi');
+    Route::get('provinsi', [Provinsi::class, 'index'])->name('provinsi')->middleware('can:accessAdminPages');
     Route::post('provinsi/simpan', [Provinsi::class, 'simpan'])->name('provinsi.simpan');
     Route::post('provinsi/getData', [Provinsi::class, 'getData'])->name('provinsi.getData');
     Route::post('provinsi/edit', [Provinsi::class, 'edit'])->name('provinsi.edit');
     Route::post('provinsi/hapus', [Provinsi::class, 'hapus'])->name('provinsi.hapus');
     Route::post('provinsi/update', [Provinsi::class, 'update'])->name('provinsi.update');
 
-    Route::get('kota', [Kota::class, 'index'])->name('kota');
+    Route::get('kota', [Kota::class, 'index'])->name('kota')->middleware('can:accessAdminPages');
     Route::post('kota/simpan', [Kota::class, 'simpan'])->name('kota.simpan');
     Route::post('kota/getData', [Kota::class, 'getData'])->name('kota.getData');
     Route::post('kota/edit', [Kota::class, 'edit'])->name('kota.edit');
@@ -60,7 +60,7 @@ Route::middleware('auth')->group(function () {
     Route::post('kota/update', [Kota::class, 'update'])->name('kota.update');
     Route::post('kota/getDataProvinsi', [Kota::class, 'getDataProvinsi'])->name('kota.getDataProvinsi');
 
-    Route::get('dinas', [Dinas::class, 'index'])->name('dinas');
+    Route::get('dinas', [Dinas::class, 'index'])->name('dinas')->middleware('can:accessAdminPages');
     Route::post('dinas/simpan', [Dinas::class, 'simpan'])->name('dinas.simpan');
     Route::post('dinas/getData', [Dinas::class, 'getData'])->name('dinas.getData');
     Route::post('dinas/edit', [Dinas::class, 'edit'])->name('dinas.edit');
@@ -68,7 +68,7 @@ Route::middleware('auth')->group(function () {
     Route::post('dinas/update', [Dinas::class, 'update'])->name('dinas.update');
     Route::post('dinas/getDataKota', [Dinas::class, 'getDataKota'])->name('dinas.getDataKota');
 
-    Route::get('jenisfasum', [Jenisfasum::class, 'index'])->name('jenisfasum');
+    Route::get('jenisfasum', [Jenisfasum::class, 'index'])->name('jenisfasum')->middleware('can:accessStaffPages');
     Route::post('jenisfasum/simpan', [Jenisfasum::class, 'simpan'])->name('jenisfasum.simpan');
     Route::post('jenisfasum/getData', [Jenisfasum::class, 'getData'])->name('jenisfasum.getData');
     Route::post('jenisfasum/edit', [Jenisfasum::class, 'edit'])->name('jenisfasum.edit');
@@ -76,7 +76,7 @@ Route::middleware('auth')->group(function () {
     Route::post('jenisfasum/update', [Jenisfasum::class, 'update'])->name('jenisfasum.update');
     Route::post('jenisfasum/getDataKota', [Jenisfasum::class, 'getDataKota'])->name('jenisfasum.getDataKota');
 
-    Route::get('fasum', [Fasum::class, 'index'])->name('fasum');
+    Route::get('fasum', [Fasum::class, 'index'])->name('fasum')->middleware('can:accessStaffPages');
     Route::post('fasum/simpan', [Fasum::class, 'simpan'])->name('fasum.simpan');
     Route::post('fasum/getData', [Fasum::class, 'getData'])->name('fasum.getData');
     Route::post('fasum/edit', [Fasum::class, 'edit'])->name('fasum.edit');
@@ -86,7 +86,7 @@ Route::middleware('auth')->group(function () {
     Route::post('fasum/getDataDinas', [Fasum::class, 'getDataDinas'])->name('fasum.getDataDinas');
 
 
-    Route::get('staff', [Staff::class, 'index'])->name('staff');
+    Route::get('staff', [Staff::class, 'index'])->name('staff')->middleware('can:accessAdminPages');
     Route::post('staff/simpan', [Staff::class, 'simpan'])->name('staff.simpan');
     Route::post('staff/getData', [Staff::class, 'getData'])->name('staff.getData');
     Route::post('staff/edit', [Staff::class, 'edit'])->name('staff.edit');
@@ -95,7 +95,7 @@ Route::middleware('auth')->group(function () {
     Route::post('staff/getDataJabatan', [Staff::class, 'getDataJabatan'])->name('staff.getDataJabatan');
     Route::post('staff/getDataDinas', [Staff::class, 'getDataDinas'])->name('staff.getDataDinas');
 
-    Route::get('user', [User::class, 'index'])->name('user');
+    Route::get('user', [User::class, 'index'])->name('user')->middleware('can:accessAdminPages');
     Route::post('user/simpan', [User::class, 'simpan'])->name('user.simpan');
     Route::post('user/getData', [User::class, 'getData'])->name('user.getData');
     Route::post('user/edit', [User::class, 'edit'])->name('user.edit');
@@ -104,7 +104,7 @@ Route::middleware('auth')->group(function () {
     Route::post('user/getDataJabatan', [User::class, 'getDataJabatan'])->name('user.getDataJabatan');
     Route::post('user/getKota', [User::class, 'getKota'])->name('user.getKota');
 
-    Route::get('pelaporan', [Pelaporan::class, 'index'])->name('pelaporan');
+    Route::get('pelaporan', [Pelaporan::class, 'index'])->name('pelaporan')->middleware('can:accessStaffPages');
     Route::post('pelaporan/simpan', [Pelaporan::class, 'simpan'])->name('pelaporan.simpan');
     Route::post('pelaporan/getData', [Pelaporan::class, 'getData'])->name('pelaporan.getData');
     Route::post('pelaporan/edit', [Pelaporan::class, 'edit'])->name('pelaporan.edit');
@@ -115,16 +115,6 @@ Route::middleware('auth')->group(function () {
     Route::post('pelaporan/getDataUser', [Pelaporan::class, 'getDataUser'])->name('pelaporan.getDataUser');
     Route::post('pelaporan/getDataFasum', [Pelaporan::class, 'getDataFasum'])->name('pelaporan.getDataFasum');
     Route::get('pelaporan/GetNomor', [Pelaporan::class, 'GetNomor'])->name('pelaporan.GetNomor');
-
-    Route::get('hakakses', [Hakakses::class, 'index'])->name('hakakses');
-    Route::post('hakakses/simpan', [Hakakses::class, 'simpan'])->name('hakakses.simpan');
-    Route::post('hakakses/getData', [Hakakses::class, 'getData'])->name('hakakses.getData');
-    Route::post('hakakses/edit', [Hakakses::class, 'edit'])->name('hakakses.edit');
-    Route::post('hakakses/detail', [Hakakses::class, 'detail'])->name('hakakses.detail');
-    Route::post('hakakses/hapus', [Hakakses::class, 'hapus'])->name('hakakses.hapus');
-    Route::post('hakakses/update', [Hakakses::class, 'update'])->name('hakakses.update');
-    Route::post('hakakses/getDataStaff', [Hakakses::class, 'getDataStaff'])->name('hakakses.getDataStaff');
-    Route::post('hakakses/getDetailJabatan', [Hakakses::class, 'getDetailJabatan'])->name('hakakses.getDetailJabatan');
-    Route::post('hakakses/getDataJabatan', [Hakakses::class, 'getDataJabatan'])->name('hakakses.getDataJabatan');
-    Route::post('hakakses/getDataListHakakses', [Hakakses::class, 'getDataListHakakses'])->name('hakakses.getDataListHakakses');
+    Route::get('pelaporan/assignStaff/{pelaporan_id}/{staff_id}', [Pelaporan::class, 'assignStaff'])->name('pelaporan.assignStaff')->middleware('can:accessManajerPages');
+    Route::get('pelaporan/updateStatus/{pelaporan_id}/{state}', [Pelaporan::class, 'ubahState'])->name('pelaporan.updateStatus')->middleware('can:accessStaffPages');
 });
