@@ -12,11 +12,11 @@ return new class extends Migration
             $table->id('idpelaporan');
             $table->text('nomor');
             $table->datetime('tgl_pelaporan');
-            $table->unsignedBigInteger('idm_staff');
             $table->unsignedBigInteger('iduser');
-            $table->text('status_pelaporan')->comment("'Antri', 'Dikerjakan', 'Outsource','Selesai','Tidak Terselesaikan'");
+            $table->enum('status_pelaporan', ['Antri', 'Dikerjakan', 'Outsource', 'Selesai', 'Tidak Terselesaikan']);
             $table->text('keterangan')->nullable();
             $table->integer('status_aktif')->default(1);
+            $table->unsignedBigInteger('idm_staff')->nullable();
 
             $table->foreign('idm_staff')->references('idm_staff')->on('m_staff');
             $table->foreign('iduser')->references('iduser')->on('m_user');

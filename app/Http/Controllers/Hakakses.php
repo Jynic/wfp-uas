@@ -19,18 +19,7 @@ class Hakakses extends Controller
      */
     public function index()
     {
-        $idjabatan = Auth::user()->idjabatan;
-        $data = DB::table('a_hak_akses_jabatan as ha')
-            ->join('a_hak_akses as ha2', 'ha.idhak_akses', '=', 'ha2.idhak_akses')
-            ->where('ha.idjabatan', $idjabatan)
-            ->select('ha.idjabatan', 'ha2.kode_fitur', 'ha2.nama_fitur')
-            ->get();
-        foreach ($data as $key => $row) {
-            if ($row->nama_fitur == "hak_akses") {
-                return view('hak_akses_v');
-            }
-        }
-        return view('dashboard_v');
+        return view('hak_akses_v');
     }
 
     /**

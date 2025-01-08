@@ -26,14 +26,13 @@ class DatabaseSeeder extends Seeder
             KotaKabupatenSeeder::class,
             DinasSeeder::class,
             KategoriFasumSeeder::class,
-            // FasumSeeder::class,
-            // KategoriFasumHasFasumSeeder::class,
+            FasumSeeder::class,
+            KategoriFasumHasFasumSeeder::class,
             HakAksesJabatanSeeder::class,
             StaffSeeder::class,
             UserSeeder::class,
-            // PelaporanSeeder::class,
-            // PelaporanDetailSeeder::class,
-            // HistoryPerbaikanSeeder::class,
+            PelaporanSeeder::class,
+            PelaporanDetailSeeder::class,
         ]);
     }
 }

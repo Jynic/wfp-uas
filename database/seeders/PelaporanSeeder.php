@@ -13,6 +13,16 @@ class PelaporanSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('t_pelaporan')->insert([]);
+        DB::table('t_pelaporan')->insert([
+            [
+                'idpelaporan' => 1,
+                'nomor' => 'P/2412/0001',
+                'tgl_pelaporan' => '2025-01-08 14:55:58',
+                'iduser' => 2,
+                'status_pelaporan' => 'Antri',
+                'keterangan' => 'Test',
+                'status_aktif' => 1
+            ],
+        ]);
     }
 }

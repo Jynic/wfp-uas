@@ -116,32 +116,6 @@ Route::middleware('auth')->group(function () {
     Route::post('pelaporan/getDataFasum', [Pelaporan::class, 'getDataFasum'])->name('pelaporan.getDataFasum');
     Route::get('pelaporan/GetNomor', [Pelaporan::class, 'GetNomor'])->name('pelaporan.GetNomor');
 
-    Route::get('pelaporanadmin', [Pelaporanadmin::class, 'index'])->name('pelaporanadmin');
-    Route::post('pelaporanadmin/simpan', [Pelaporanadmin::class, 'simpan'])->name('pelaporanadmin.simpan');
-    Route::post('pelaporanadmin/getData', [Pelaporanadmin::class, 'getData'])->name('pelaporanadmin.getData');
-    Route::post('pelaporanadmin/edit', [Pelaporanadmin::class, 'edit'])->name('pelaporanadmin.edit');
-    Route::post('pelaporanadmin/detail', [Pelaporanadmin::class, 'detail'])->name('pelaporanadmin.detail');
-    Route::post('pelaporanadmin/hapus', [Pelaporanadmin::class, 'hapus'])->name('pelaporanadmin.hapus');
-    Route::post('pelaporanadmin/update', [Pelaporanadmin::class, 'update'])->name('pelaporanadmin.update');
-    Route::post('pelaporanadmin/getDataStaff', [Pelaporanadmin::class, 'getDataStaff'])->name('pelaporanadmin.getDataStaff');
-    Route::post('pelaporanadmin/getDataUser', [Pelaporanadmin::class, 'getDataUser'])->name('pelaporanadmin.getDataUser');
-    Route::post('pelaporanadmin/getDataFasum', [Pelaporanadmin::class, 'getDataFasum'])->name('pelaporanadmin.getDataFasum');
-    Route::get('pelaporanadmin/GetNomor', [Pelaporanadmin::class, 'GetNomor'])->name('pelaporanadmin.GetNomor');
-    Route::post('pelaporanadmin/updateDetail', [Pelaporanadmin::class, 'updateDetail'])->name('pelaporanadmin.updateDetail');
-    Route::post('pelaporanadmin/updateStatus', [Pelaporanadmin::class, 'updateStatus'])->name('pelaporanadmin.updateStatus');
-
-    Route::get('historypelaporan', [Historypelaporan::class, 'index'])->name('historypelaporan');
-    Route::post('historypelaporan/simpan', [Historypelaporan::class, 'simpan'])->name('historypelaporan.simpan');
-    Route::post('historypelaporan/getData', [Historypelaporan::class, 'getData'])->name('historypelaporan.getData');
-    Route::post('historypelaporan/edit', [Historypelaporan::class, 'edit'])->name('historypelaporan.edit');
-    Route::post('historypelaporan/detail', [Historypelaporan::class, 'detail'])->name('historypelaporan.detail');
-    Route::post('historypelaporan/hapus', [Historypelaporan::class, 'hapus'])->name('historypelaporan.hapus');
-    Route::post('historypelaporan/update', [Historypelaporan::class, 'update'])->name('historypelaporan.update');
-    Route::post('historypelaporan/getDataStaff', [Historypelaporan::class, 'getDataStaff'])->name('historypelaporan.getDataStaff');
-    Route::post('historypelaporan/getDataUser', [Historypelaporan::class, 'getDataUser'])->name('historypelaporan.getDataUser');
-    Route::post('historypelaporan/getDataFasum', [Historypelaporan::class, 'getDataFasum'])->name('historypelaporan.getDataFasum');
-    Route::get('historypelaporan/GetNomor', [Historypelaporan::class, 'GetNomor'])->name('historypelaporan.GetNomor');
-
     Route::get('hakakses', [Hakakses::class, 'index'])->name('hakakses');
     Route::post('hakakses/simpan', [Hakakses::class, 'simpan'])->name('hakakses.simpan');
     Route::post('hakakses/getData', [Hakakses::class, 'getData'])->name('hakakses.getData');

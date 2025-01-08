@@ -14,65 +14,48 @@ class Fasum extends Controller
 {
     public function index()
     {
-        $idjabatan = Auth::user()->idjabatan;
-        $data = DB::table('a_hak_akses_jabatan as ha')
-            ->join('a_hak_akses as ha2', 'ha.idhak_akses', '=', 'ha2.idhak_akses')
-            ->where('ha.idjabatan', $idjabatan)
-            ->select('ha.idjabatan', 'ha2.kode_fitur', 'ha2.nama_fitur')
-            ->get();
-        foreach ($data as $key => $row) {
-            if ($row->nama_fitur == "master_fasum") {
-                return view('fasum_v');
-            }
-        }
-        return view('dashboard_v');
+        return view('fasum_v');
     }
-
     public function edit(Request $request)
     {
         $data = $request->all();
         $id = $data['id'];
 
-        $result = DB::table('m_fasum as f')
-            ->leftJoin('m_kategori_fasum_has_m_fasum as kfs', 'f.idfasum', '=', 'kfs.m_fasum_idfasum')
-            ->leftJoin('m_kategori_fasum as kf', 'kfs.m_kategori_fasum_idkategori_fasum', '=', 'kf.idkategori_fasum')
-            ->join('m_dinas as d', 'f.m_dinas_iddinas', '=', 'd.iddinas')
-            ->join('m_kota_kabupaten as kk', 'd.idkota_kabupaten', '=', 'kk.idkota_kabupaten')
-            ->where('f.status_aktif', 1)
-            ->where('f.idfasum', $id)
-            ->select(
-                'f.idfasum as id',
-                'f.nama',
-                'f.luas_fasum',
-                'f.kondisi_fasum',
-                'f.asal_fasum',
-                DB::raw("CONCAT(f.lat, ', ', f.lng) as lokasi"),
-                'f.gambar',
-                DB::raw('GROUP_CONCAT(kf.nama SEPARATOR ", ") as kategori'),
-                DB::raw('GROUP_CONCAT(kf.idkategori_fasum SEPARATOR ", ") as kategori_id'),
-                'd.nama as dinas',
-                'd.iddinas as dinas_id',
-                'kk.nama as nama_kota',
-                'f.status_aktif'
-            )
-            ->groupBy(
-                'f.idfasum',
-                'f.nama',
-                'f.luas_fasum',
-                'f.kondisi_fasum',
-                'f.asal_fasum',
-                'f.lat',
-                'f.lng',
-                'f.gambar',
-                'd.nama',
-                'kk.nama',
-                'd.iddinas',
-                'f.status_aktif'
-            )
-            ->get();
+        $result = DB::select("
+        SELECT 
+            f.idfasum AS id, 
+            f.nama, 
+            f.luas_fasum, 
+            f.kondisi_fasum, 
+            f.asal_fasum, 
+            CONCAT(f.lat, ', ', f.lng) AS lokasi, 
+            f.gambar, 
+            GROUP_CONCAT(kf.nama SEPARATOR ', ') AS kategori, 
+            GROUP_CONCAT(kf.idkategori_fasum SEPARATOR ', ') AS kategori_id, 
+            d.nama AS dinas,
+            d.iddinas AS dinas_id,
+            kk.nama AS nama_kota,
+            f.status_aktif
+        FROM 
+            m_fasum f
+        LEFT JOIN 
+            m_kategori_fasum_has_m_fasum kfs 
+            ON f.idfasum = kfs.m_fasum_idfasum
+        LEFT JOIN 
+            m_kategori_fasum kf 
+            ON kfs.m_kategori_fasum_idkategori_fasum = kf.idkategori_fasum
+        INNER JOIN 
+            m_dinas d 
+            ON f.m_dinas_iddinas = d.iddinas
+        INNER JOIN 
+            m_kota_kabupaten kk ON d.idkota_kabupaten=kk.idkota_kabupaten
+        WHERE 
+            f.status_aktif = 1 AND f.idfasum = :id
+        GROUP BY 
+            f.idfasum, f.nama, f.luas_fasum, f.kondisi_fasum, 
+            f.asal_fasum, f.lat, f.lng, f.gambar, d.nama, kk.nama, d.iddinas, f.status_aktif;", ['id' => $id]);
         return json_encode($result);
     }
-
     public function update(Request $request)
     {
         $formData = $request->all();
@@ -112,12 +95,15 @@ class Fasum extends Controller
             }
         }
 
+        // Simpan perubahan pada fasum
         $fasum->save();
 
+        // Hapus semua kategori lama
         DB::table('m_kategori_fasum_has_m_fasum')
             ->where('m_fasum_idfasum', $id)
             ->delete();
 
+        // Insert kategori baru
         $kategori = $formData['kategori'] ?? [];
         foreach ($kategori as $item) {
             DB::table('m_kategori_fasum_has_m_fasum')->insert([
@@ -126,44 +112,42 @@ class Fasum extends Controller
             ]);
         }
 
+        // Berikan respons sukses
         return response()->json(['status' => true, 'message' => 'Data berhasil diperbarui']);
     }
-
     public function getData()
     {
-        $data = DB::table('m_fasum as f')
-            ->leftJoin('m_kategori_fasum_has_m_fasum as kfs', 'f.idfasum', '=', 'kfs.m_fasum_idfasum')
-            ->leftJoin('m_kategori_fasum as kf', 'kfs.m_kategori_fasum_idkategori_fasum', '=', 'kf.idkategori_fasum')
-            ->join('m_dinas as d', 'f.m_dinas_iddinas', '=', 'd.iddinas')
-            ->join('m_kota_kabupaten as kk', 'd.idkota_kabupaten', '=', 'kk.idkota_kabupaten')
-            ->where('f.status_aktif', 1)
-            ->select(
-                'f.idfasum as id',
-                'f.nama',
-                'f.luas_fasum',
-                'f.kondisi_fasum',
-                'f.asal_fasum',
-                DB::raw("CONCAT(f.lat, ', ', f.lng) as lokasi"),
-                'f.gambar',
-                DB::raw('GROUP_CONCAT(kf.nama SEPARATOR ", ") as kategori'),
-                'd.nama as dinas',
-                'kk.nama as nama_kota',
-                'f.status_aktif'
-            )
-            ->groupBy(
-                'f.idfasum',
-                'f.nama',
-                'f.luas_fasum',
-                'f.kondisi_fasum',
-                'f.asal_fasum',
-                'f.lat',
-                'f.lng',
-                'f.gambar',
-                'd.nama',
-                'kk.nama',
-                'f.status_aktif'
-            )
-            ->get();
+        $data = DB::select("SELECT 
+            f.idfasum AS id, 
+            f.nama, 
+            f.luas_fasum, 
+            f.kondisi_fasum, 
+            f.asal_fasum, 
+            CONCAT(f.lat, ', ', f.lng) AS lokasi, 
+            f.gambar, 
+            GROUP_CONCAT(kf.nama SEPARATOR ', ') AS kategori, 
+            d.nama AS dinas,
+            kk.nama AS nama_kota,
+            f.status_aktif
+        FROM 
+            m_fasum f
+        LEFT JOIN 
+            m_kategori_fasum_has_m_fasum kfs 
+            ON f.idfasum = kfs.m_fasum_idfasum
+        LEFT JOIN 
+            m_kategori_fasum kf 
+            ON kfs.m_kategori_fasum_idkategori_fasum = kf.idkategori_fasum
+        INNER JOIN 
+            m_dinas d 
+            ON f.m_dinas_iddinas = d.iddinas
+        INNER JOIN 
+            m_kota_kabupaten kk ON d.idkota_kabupaten=kk.idkota_kabupaten
+        WHERE 
+            f.status_aktif = 1
+        GROUP BY 
+            f.idfasum, f.nama, f.luas_fasum, f.kondisi_fasum, 
+            f.asal_fasum, f.lat, f.lng, f.gambar, d.nama, kk.nama,f.status_aktif;
+        ");
 
         $fasum = [];
         foreach ($data as $key => $value) {
@@ -190,17 +174,15 @@ class Fasum extends Controller
                 </div>'
             );
         }
+        // Kirim data dalam format JSON
         echo json_encode($fasum);
     }
-
     public function getDataKategori(Request $request)
     {
         $search_term = $request->input('search');
-        $data = DB::table('m_kategori_fasum as kf')
-            ->where('kf.status_aktif', 1)
-            ->where('kf.nama', 'like', '%' . $search_term . '%')
-            ->select('kf.idkategori_fasum as id', 'kf.nama', 'kf.status_aktif')
-            ->get();
+        $data = DB::select('SELECT kf.idkategori_fasum AS id, kf.nama, kf.status_aktif
+        FROM m_kategori_fasum kf
+        WHERE kf.status_aktif = 1 AND kf.nama LIKE :search', ['search' => '%' . $search_term . '%']);
         $kategori = [];
         foreach ($data as $key => $row) {
             $kategori[] = array(
@@ -214,15 +196,12 @@ class Fasum extends Controller
             'location' => $kategori
         ));
     }
-
     public function getDataDinas(Request $request)
     {
         $search_term = $request->input('search');
-        $data = DB::table('m_dinas as d')
-            ->where('d.status_aktif', 1)
-            ->where('d.nama', 'like', '%' . $search_term . '%')
-            ->select('d.iddinas as id', 'd.nama')
-            ->get();
+        $data = DB::select('SELECT d.iddinas AS id, d.nama
+        FROM m_dinas d 
+        WHERE d.status_aktif = 1 AND d.nama LIKE :search', ['search' => '%' . $search_term . '%']);
         $dinas = [];
         foreach ($data as $key => $row) {
             $dinas[] = array(
@@ -236,10 +215,11 @@ class Fasum extends Controller
             'location' => $dinas
         ));
     }
-
     public function simpan(Request $request)
     {
+        // Proses data form
         $formData = $request->all();
+
         $fasum = new Fasum_model();
         $fasum->nama = $formData['nama'] ?? '';
         $fasum->m_dinas_iddinas = $formData['dinas'] ?? 1;
@@ -248,11 +228,28 @@ class Fasum extends Controller
         $fasum->asal_fasum = $formData['asalFasum'] ?? '';
         $fasum->lat = $formData['latitude'] ?? '';
         $fasum->lng = $formData['longitude'] ?? '';
+        $fasum->save();
+
+        $kategori = $formData['kategori'];
+        foreach ($kategori as $item) {
+            DB::table('m_kategori_fasum_has_m_fasum')->insert([
+                'm_kategori_fasum_idkategori_fasum' => $item,
+                'm_fasum_idfasum' => $fasum->idfasum
+            ]);
+        }
+
+        $id = $fasum->idfasum;
+        $nama = preg_replace('/[^a-zA-Z0-9-_]/', '', $fasum->nama); // Sanitasi nama untuk digunakan sebagai nama file
 
         if ($request->hasFile('gambarFasum')) {
             $gambar = $request->file('gambarFasum');
+
+            if (!$gambar->isValid()) {
+                return response()->json(['error' => 'File gambar tidak valid'], 400);
+            }
+
             $folder = 'public/img_fasum';
-            $filename = uniqid() . '.' . $gambar->getClientOriginalExtension();
+            $filename = $id . '_' . $nama . '.' . $gambar->getClientOriginalExtension();
 
             if (!Storage::exists($folder)) {
                 Storage::makeDirectory($folder);
@@ -261,22 +258,76 @@ class Fasum extends Controller
             try {
                 $path = $gambar->storeAs($folder, $filename);
                 $gambarPath = "storage/img_fasum/" . $filename;
-                $fasum->gambar = $gambarPath;
             } catch (\Exception $e) {
-                return response()->json(['error' => 'Gagal menyimpan gambar'], 500);
+                return response()->json(['error' => 'Gagal menyimpan file gambar untuk fasum'], 500);
             }
+
+            $fasum->gambar = $gambarPath;
+            $fasum->save();
         }
 
-        $fasum->save();
-
-        $kategori = $formData['kategori'] ?? [];
-        foreach ($kategori as $item) {
-            DB::table('m_kategori_fasum_has_m_fasum')->insert([
-                'm_kategori_fasum_idkategori_fasum' => $item,
-                'm_fasum_idfasum' => $fasum->idfasum
-            ]);
-        }
-
+        // Berikan respons sukses
         return response()->json(['status' => true, 'message' => 'Data berhasil disimpan']);
+    }
+
+
+
+
+
+    public function hapus(Request $request)
+    {
+        $data = $request->all();
+        $id = $data['id'];
+        $update = DB::table('m_fasum')
+            ->where('idfasum', $id)
+            ->update(['status_aktif' => 0]);
+        echo json_encode(array("status" => TRUE));
+    }
+
+    public function getFasumRusak(Request $request)
+    {
+        $category = $request->input('category');
+        $month = $request->input('month');
+        $year = $request->input('year');
+
+        $data = DB::select("SELECT DISTINCT
+                m_fasum.nama AS fasum_nama, 
+                m_kategori_fasum.nama AS kategori_fasum,
+                t_pelaporan.tgl_pelaporan
+            FROM 
+                t_pelaporan
+            JOIN 
+                t_pelaporan_detail ON t_pelaporan.idpelaporan = t_pelaporan_detail.t_pelaporan_idpelaporan
+            JOIN 
+                m_fasum ON t_pelaporan_detail.m_fasum_idfasum = m_fasum.idfasum
+            JOIN
+                m_kategori_fasum_has_m_fasum ON m_fasum.idfasum = m_kategori_fasum_has_m_fasum.m_fasum_idfasum
+            JOIN
+                m_kategori_fasum ON m_kategori_fasum_has_m_fasum.m_kategori_fasum_idkategori_fasum = m_kategori_fasum.idkategori_fasum
+            WHERE 
+                m_kategori_fasum.idkategori_fasum = $category
+                AND YEAR(t_pelaporan.tgl_pelaporan) = $year
+                AND MONTH(t_pelaporan.tgl_pelaporan) = $month
+            ORDER BY 
+                t_pelaporan.tgl_pelaporan DESC;");
+
+        $fasum = [];
+        foreach ($data as $key => $value) {
+            $fasum[] = array(
+                'fasum_nama' => $value->fasum_nama,
+                'kategori_fasum' => $value->kategori_fasum,
+                'tgl_pelaporan' => $value->tgl_pelaporan,
+            );
+        }
+
+        echo json_encode($fasum);
+    }
+
+    public function getKategoriFasum(Request $request)
+    {
+        $categories = DB::table('m_kategori_fasum')
+            ->where('status_aktif', 1)
+            ->get();
+        return response()->json($categories);
     }
 }

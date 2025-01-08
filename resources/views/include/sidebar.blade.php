@@ -71,31 +71,10 @@
                         <i class="bi bi-circle"></i><span>Pelaporan</span>
                     </a>
                 </li>
-                <li>
-                    <a href="{{ route('pelaporanadmin') }}"
-                        class="{{ request()->segment(1) == 'pelaporanadmin' ? 'active' : '' }}">
-                        <i class="bi bi-circle"></i><span>Pelaporan Admin</span>
-                    </a>
-                </li>
             </ul>
         </li>
 
-        <li class="nav-item">
-            <a class="nav-link {{ request()->segment(1) == 'historypelaporan' ? '' : 'collapsed' }}"
-                data-bs-target="#report-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-journal-text"></i><span>Report</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="report-nav"
-                class="nav-content collapse {{ request()->segment(1) == 'historypelaporan' ? 'show' : '' }}"
-                data-bs-parent="#sidebar-nav">
-                <li>
-                    <a href="{{ route('historypelaporan') }}"
-                        class="{{ request()->segment(1) == 'historypelaporan' ? 'active' : '' }}">
-                        <i class="bi bi-circle"></i><span>History Perbaikan</span>
-                    </a>
-                </li>
-            </ul>
-        </li>
+
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#setting-nav" data-bs-toggle="collapse" href="#">
                 <i class="bi bi-journal-text"></i><span>Setting</span><i class="bi bi-chevron-down ms-auto"></i>

@@ -21,14 +21,7 @@ class Pelaporan extends Controller
      */
     public function index()
     {
-        $idjabatan = Auth::user()->idjabatan;
-        $data = DB::select('select ha.idjabatan, ha2.kode_fitur, ha2.nama_fitur from a_hak_akses_jabatan ha inner join a_hak_akses ha2 on ha.idhak_akses=ha2.idhak_akses where idjabatan = :idjabat', ['idjabat' => $idjabatan]);
-        foreach ($data as $key => $row) {
-            if ($row->nama_fitur == "transaksi_pelaporan") {
-                return view('pelaporan_v');
-            }
-        }
-        return view('404');
+        return view('pelaporan_v');
     }
 
     /**
@@ -71,28 +64,21 @@ class Pelaporan extends Controller
         p.status_pelaporan,
         p.keterangan,
         p.status_aktif,
-        s.nama AS nama_staff,
-        s.idm_staff AS id_staff,
         u.nama AS nama_user,
         u.iduser AS id_user,
         f.nama AS nama_fasum,
         f.idfasum AS id_fasum,
         pd.status_perbaikkan AS status_perbaikkan,
         pd.foto_fasum AS foto_fasum,
-        pd.keterangan AS keterangan_fasum,
-        s1.idm_staff AS id_staff_detail,
-        s1.nama as nama_staff_detail
+        pd.keterangan AS keterangan_fasum
         FROM 
             t_pelaporan p
         INNER JOIN 
             t_pelaporan_detail pd ON p.idpelaporan = pd.t_pelaporan_idpelaporan
         INNER JOIN 
-            m_staff s ON p.idm_staff = s.idm_staff
-        INNER JOIN 
             m_user u ON p.iduser = u.iduser
         INNER JOIN 
             m_fasum f ON pd.m_fasum_idfasum = f.idfasum
-            INNER JOIN m_staff s1 ON pd.idstaff=s1.idm_staff
         WHERE 
             p.status_aktif = 1 and p.idpelaporan = :id;", ['id' => $id]);
         return json_encode($result);
@@ -488,28 +474,21 @@ class Pelaporan extends Controller
         p.status_pelaporan,
         p.keterangan,
         p.status_aktif,
-        s.nama AS nama_staff,
-        s.idm_staff AS id_staff,
         u.nama AS nama_user,
         u.iduser AS id_user,
         f.nama AS nama_fasum,
         f.idfasum AS id_fasum,
         pd.status_perbaikkan AS status_perbaikkan,
         pd.foto_fasum AS foto_fasum,
-        pd.keterangan AS keterangan_fasum,
-        s1.idm_staff AS id_staff_detail,
-        s1.nama as nama_staff_detail
+        pd.keterangan AS keterangan_fasum
         FROM 
             t_pelaporan p
-        INNER JOIN 
+        LEFT JOIN 
             t_pelaporan_detail pd ON p.idpelaporan = pd.t_pelaporan_idpelaporan
-        INNER JOIN 
-            m_staff s ON p.idm_staff = s.idm_staff
-        INNER JOIN 
+        LEFT JOIN 
             m_user u ON p.iduser = u.iduser
-        INNER JOIN 
+        LEFT JOIN 
             m_fasum f ON pd.m_fasum_idfasum = f.idfasum
-            INNER JOIN m_staff s1 ON pd.idstaff=s1.idm_staff
         WHERE 
             p.status_aktif = 1 and p.idpelaporan = :id;", ['id' => $id]);
 
@@ -530,7 +509,6 @@ class Pelaporan extends Controller
                 </div>'
             );
         }
-        // Kirim data dalam format JSON
         echo json_encode($pelaporan);
     }
 
@@ -546,28 +524,21 @@ class Pelaporan extends Controller
         p.status_pelaporan,
         p.keterangan,
         p.status_aktif,
-        s.nama AS nama_staff,
-        s.idm_staff AS id_staff,
         u.nama AS nama_user,
         u.iduser AS id_user,
         f.nama AS nama_fasum,
         f.idfasum AS id_fasum,
         pd.status_perbaikkan AS status_perbaikkan,
         pd.foto_fasum AS foto_fasum,
-        pd.keterangan AS keterangan_fasum,
-        s1.idm_staff AS id_staff_detail,
-        s1.nama as nama_staff_detail
+        pd.keterangan AS keterangan_fasum
         FROM 
             t_pelaporan p
         INNER JOIN 
             t_pelaporan_detail pd ON p.idpelaporan = pd.t_pelaporan_idpelaporan
         INNER JOIN 
-            m_staff s ON p.idm_staff = s.idm_staff
-        INNER JOIN 
             m_user u ON p.iduser = u.iduser
         INNER JOIN 
             m_fasum f ON pd.m_fasum_idfasum = f.idfasum
-            INNER JOIN m_staff s1 ON pd.idstaff=s1.idm_staff
         WHERE 
             p.status_aktif = 1 and p.idpelaporan = :id;", ['id' => $id]);
 

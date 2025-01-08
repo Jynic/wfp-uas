@@ -15,14 +15,7 @@ class Jenisfasum extends Controller
      */
     public function index()
     {
-        $idjabatan = Auth::user()->idjabatan;
-        $data = DB::select('select ha.idjabatan, ha2.kode_fitur, ha2.nama_fitur from a_hak_akses_jabatan ha inner join a_hak_akses ha2 on ha.idhak_akses=ha2.idhak_akses where idjabatan = :idjabat', ['idjabat' => $idjabatan]);
-        foreach ($data as $key => $row) {
-            if ($row->nama_fitur == "master_jenis_fasilitas_umum") {
-                return view('jenis_fasum_v');
-            }
-        }
-        return view('dashboard_v');
+        return view('jenis_fasum_v');
     }
 
     /**
