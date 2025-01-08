@@ -28,6 +28,34 @@ class PelaporanDetailSeeder extends Seeder
                 'foto_fasum' => '-',
                 'keterangan' => 'Fasum ini kotor saja',
             ],
+            [
+                'iddetail' => 3,
+                't_pelaporan_idpelaporan' => 2,
+                'm_fasum_idfasum' => 3,
+                'foto_fasum' => '-',
+                'keterangan' => 'Fasum ini rusak saja',
+            ],
+            [
+                'iddetail' => 4,
+                't_pelaporan_idpelaporan' => 2,
+                'm_fasum_idfasum' => 8,
+                'foto_fasum' => '-',
+                'keterangan' => 'Fasum ini kotor saja',
+            ],
+            [
+                'iddetail' => 5,
+                't_pelaporan_idpelaporan' => 3,
+                'm_fasum_idfasum' => 4,
+                'foto_fasum' => '-',
+                'keterangan' => 'Fasum ini rusak saja',
+            ],
+            [
+                'iddetail' => 6,
+                't_pelaporan_idpelaporan' => 4,
+                'm_fasum_idfasum' => 5,
+                'foto_fasum' => '-',
+                'keterangan' => 'Fasum ini rusak saja',
+            ],
 
         ]);
     }

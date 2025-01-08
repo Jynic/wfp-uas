@@ -60,6 +60,7 @@ class UserSeeder extends Seeder
         DB::table('m_user')->insert([
             [
                 'iduser' => 4,
+                'idkota_kabupaten' => '1',
                 'nama' => 'zefa',
                 'username' => 'zefa',
                 'password' => Hash::make("zefa"),
@@ -67,6 +68,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'iduser' => 5,
+                'idkota_kabupaten' => '5',
                 'nama' => 'niko',
                 'username' => 'niko',
                 'password' => Hash::make("niko"),

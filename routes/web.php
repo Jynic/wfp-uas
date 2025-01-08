@@ -120,6 +120,11 @@ Route::middleware('auth')->group(function () {
     Route::get('pelaporan/assignStaff/{pelaporan_id}/{staff_id}', [Pelaporan::class, 'assignStaff'])->name('pelaporan.assignStaff')->middleware('can:accessManajerPages');
     Route::get('pelaporan/updateStatus/{pelaporan_id}/{state}', [Pelaporan::class, 'ubahState'])->name('pelaporan.updateStatus')->middleware('can:accessStaffPages');
 
+    Route::get('historypelaporan', [Historypelaporan::class, 'index'])->name('historypelaporan')->middleware('can:accessStaffPages');
+    Route::post('historypelaporan/getData', [Historypelaporan::class, 'getData'])->name('historypelaporan.getData');
+    Route::post('/historypelaporan/updateKeterangan', [Historypelaporan::class, 'updateKeterangan'])->name('historypelaporan.updateKeterangan');
+
     Route::get('pelaporanku', [Pelaporan::class, 'indexUser'])->name('pelaporanku')->middleware('can:accessUserPages');
     Route::post('pelaporanku/getDataForUser', [Pelaporan::class, 'getDataForUser'])->name('pelaporanku.getDataForUser');
+    Route::post('pelaporanku/getDataFasum', [Pelaporan::class, 'getDataFasumForUser'])->name('pelaporanku.getDataFasumForUser');
 });

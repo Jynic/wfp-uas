@@ -225,7 +225,8 @@
             generateSTCode();
             initializeSelect2('select[name=\'pic_fasum[]\']', "{{ route('pelaporan.getDataStaff') }}",
                 'Pilih Staff');
-            initializeSelect2('select[name=\'fasum[]\']', "{{ route('pelaporan.getDataFasum') }}", 'Pilih Fasum');
+            initializeSelect2('select[name=\'fasum[]\']', "{{ route('pelaporanku.getDataFasumForUser') }}",
+                'Pilih Fasum');
             let map;
             let marker;
             var customButton = $('<button/>', {
@@ -264,7 +265,8 @@
 
                 initializeSelect2('select[name=\'pic_fasum[]\']', "{{ route('pelaporan.getDataStaff') }}",
                     'Pilih Staff');
-                initializeSelect2('select[name=\'fasum[]\']', "{{ route('pelaporan.getDataFasum') }}",
+                initializeSelect2('select[name=\'fasum[]\']',
+                    "{{ route('pelaporanku.getDataFasumForUser') }}",
                     'Pilih Fasum');
                 i++;
             });
@@ -490,7 +492,8 @@
                     // });
                     initializeSelect2('select[name=\'pic_fasum[]\']', "{{ route('pelaporan.getDataStaff') }}",
                         'Pilih Staff');
-                    initializeSelect2('select[name=\'fasum[]\']', "{{ route('pelaporan.getDataFasum') }}",
+                    initializeSelect2('select[name=\'fasum[]\']',
+                        "{{ route('pelaporanku.getDataFasumForUser') }}",
                         'Pilih Fasum');
                     t.clear();
                     $.each(data, function(key, item) {
@@ -518,7 +521,7 @@
                         initializeSelect2('select[name=\'pic_fasum[]\']',
                             "{{ route('pelaporan.getDataStaff') }}", 'Pilih Staff');
                         initializeSelect2('select[name=\'fasum[]\']',
-                            "{{ route('pelaporan.getDataFasum') }}", 'Pilih Fasum');
+                            "{{ route('pelaporanku.getDataFasumForUser') }}", 'Pilih Fasum');
                     });
 
                     $('#modal_form').modal('show');

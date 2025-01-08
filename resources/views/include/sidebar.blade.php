@@ -85,6 +85,12 @@
                                 <i class="bi bi-circle"></i><span>Pelaporan</span>
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ route('historypelaporan') }}"
+                                class="{{ request()->segment(1) == 'historypelaporan' ? 'active' : '' }}">
+                                <i class="bi bi-circle"></i><span>History Pelaporan</span>
+                            </a>
+                        </li>
                     </ul>
                 </li>
             @endcan

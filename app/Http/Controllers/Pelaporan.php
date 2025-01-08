@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Fasum_model;
+use App\Models\Historypelaporan_model;
 use App\Models\Jenisfasum_model;
 use App\Models\Kota_model;
 use App\Models\Pelaporan_model;
@@ -257,12 +258,14 @@ class Pelaporan extends Controller
                     $value->nama_staff),
                 $value->nomor,
                 $value->tgl_pelaporan,
-                '<select class="form-select form-select-sm" onchange="updateStatus(' . $value->id . ', this.value)">
-                    <option value="Dikerjakan" ' . ($value->status_pelaporan == 'Dikerjakan' ? 'selected' : '') . '>Dikerjakan</option>
-                    <option value="Outsource" ' . ($value->status_pelaporan == 'Outsource' ? 'selected' : '') . '>Outsource</option>
-                    <option value="Selesai" ' . ($value->status_pelaporan == 'Selesai' ? 'selected' : '') . '>Selesai</option>
-                    <option value="Tidak Terselesaikan" ' . ($value->status_pelaporan == 'Tidak Terselesaikan' ? 'selected' : '') . '>Tidak Terselesaikan</option>
-                </select>',
+                $value->status_pelaporan == 'Antri' ?
+                    $value->status_pelaporan :
+                    '<select class="form-select form-select-sm" onchange="updateStatus(' . $value->id . ', this.value)">
+            <option value="Dikerjakan" ' . ($value->status_pelaporan == 'Dikerjakan' ? 'selected' : '') . '>Dikerjakan</option>
+            <option value="Outsource" ' . ($value->status_pelaporan == 'Outsource' ? 'selected' : '') . '>Outsource</option>
+            <option value="Selesai" ' . ($value->status_pelaporan == 'Selesai' ? 'selected' : '') . '>Selesai</option>
+            <option value="Tidak Terselesaikan" ' . ($value->status_pelaporan == 'Tidak Terselesaikan' ? 'selected' : '') . '>Tidak Terselesaikan</option>
+        </select>',
                 $value->keterangan,
                 $value->nama_user,
                 $value->nama_fasum,
@@ -455,6 +458,42 @@ class Pelaporan extends Controller
             'location' => $dinas
         ));
     }
+
+    public function getDataFasumForUser(Request $request)
+    {
+        $search_term = $request->input('search');
+        $user_kota_id = auth()->user()->idkota_kabupaten;
+
+        $data = DB::select(
+            '
+        SELECT f.idfasum as id, f.nama 
+        FROM m_fasum f
+        JOIN m_dinas d ON f.m_dinas_iddinas = d.iddinas
+        WHERE f.status_aktif = 1
+        AND d.idkota_kabupaten = :user_kota_id
+        AND f.nama LIKE :search',
+            [
+                'user_kota_id' => $user_kota_id,
+                'search' => '%' . $search_term . '%'
+            ]
+        );
+
+        $dinas = [];
+        foreach ($data as $row) {
+            $dinas[] = array(
+                'id' => $row->id,
+                'text' => $row->nama
+            );
+        }
+
+        // Return the response as JSON
+        return response()->json([
+            'search' => $search_term,
+            'location' => $dinas
+        ]);
+    }
+
+
     public function simpan(Request $request)
     {
         // Proses data form
@@ -606,13 +645,31 @@ class Pelaporan extends Controller
     {
         $report = Pelaporan_model::find($report_id);
         $report->idm_staff = $staff_id;
-        $report->status_pelaporan = 'Dikerjakan';
+        if ($report->status_pelaporan == "Antri") {
+            $report->status_pelaporan = 'Dikerjakan';
+            Historypelaporan_model::create([
+                'idpelaporan' => $report_id,
+                'status_sebelumnya' => "Antri",
+                'status_setelahnya' => 'Dikerjakan',
+                'keterangan' => 'Perubahan status karena assign staff',
+                'idstaff' => Auth::user()->idstaff,
+                'tgl_perubahan' => now()
+            ]);
+        }
         $report->save();
     }
 
     public static function ubahState($report_id, $state)
     {
         $report = Pelaporan_model::find($report_id);
+        Historypelaporan_model::create([
+            'idpelaporan' => $report_id,
+            'status_sebelumnya' => $report->status_pelaporan,
+            'status_setelahnya' => $state,
+            'keterangan' => 'Perubahan status oleh staff',
+            'idstaff' => Auth::user()->idstaff,
+            'tgl_perubahan' => now()
+        ]);
         $report->status_pelaporan = $state;
         $report->save();
     }
