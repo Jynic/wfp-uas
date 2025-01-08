@@ -14,13 +14,6 @@ class HistoryPerbaikanSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('t_history_perbaikan')->insert([
-            [
-                'idhistory_perbaikan' => 1,
-                'idpelaporan' => 9,
-                'tgl' => '2024-12-26 10:27:49',
-                'keterangan' => 'Pelaporan Selesai'
-            ]
-        ]);
+        DB::table('t_history_perbaikan')->insert([]);
     }
 }

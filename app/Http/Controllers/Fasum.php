@@ -115,38 +115,27 @@ class Fasum extends Controller
         $fasum->lat = $formData['latitude'] ?? $fasum->lat;
         $fasum->lng = $formData['longitude'] ?? $fasum->lng;
 
-        // Proses file gambar jika ada
         if ($request->hasFile('gambarFasum')) {
             $gambar = $request->file('gambarFasum');
 
-            // Validasi file gambar
             if (!$gambar->isValid()) {
                 return response()->json(['error' => 'File gambar tidak valid'], 400);
             }
 
-            // Hapus gambar lama jika ada
-            if (!empty($fasum->gambar) && file_exists(public_path($fasum->gambar))) {
-                unlink(public_path($fasum->gambar));
+            $folder = 'public/img_fasum';
+            $filename = $id . '_' . $formData['nama'] . '.' . $gambar->getClientOriginalExtension();
+
+            if (!Storage::exists($folder)) {
+                Storage::makeDirectory($folder);
             }
 
-            // Tentukan folder penyimpanan
-            $folder = public_path('img_fasum');
-            $filename = $id . '_' . preg_replace('/[^a-zA-Z0-9-_]/', '', $fasum->nama) . '.' . $gambar->getClientOriginalExtension();
-
-            // Buat direktori jika belum ada
-            if (!file_exists($folder)) {
-                mkdir($folder, 0755, true);
-            }
-
-            // Pindahkan file ke folder yang ditentukan
             try {
-                $gambar->move($folder, $filename);
+                $path = $gambar->storeAs($folder, $filename);
+                $gambarPath = "storage/img_fasum/" . $filename;
+                $fasum->gambar = $gambarPath;
             } catch (\Exception $e) {
-                return response()->json(['error' => 'Gagal menyimpan file gambar'], 500);
+                return response()->json(['error' => 'Gagal menyimpan file gambar untuk fasum '], 500);
             }
-
-            // Simpan URL gambar ke database
-            $fasum->gambar = 'img_fasum/' . $filename;
         }
 
         // Simpan perubahan pada fasum

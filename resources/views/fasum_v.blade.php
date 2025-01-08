@@ -133,8 +133,11 @@
                                         <div class="row mb-3">
                                             <div class="col-md-12">
                                                 <label for="kondisiFasum" class="form-label">Kondisi Fasum</label>
-                                                <textarea required name="kondisiFasum" class="form-control" id="kondisiFasum" rows="3"
-                                                    placeholder="Masukkan Kondisi Fasilitas Umum"></textarea>
+                                                <select required name="kondisiFasum" id="kondisiFasum"
+                                                    class="form-control">
+                                                    <option value="Baik">Baik</option>
+                                                    <option value="Rusak">Rusak</option>
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="row mb-3">

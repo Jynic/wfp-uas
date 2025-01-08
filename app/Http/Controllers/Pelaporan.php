@@ -141,32 +141,27 @@ class Pelaporan extends Controller
 
         // Insert ulang detail baru
         foreach ($formData['fasum'] as $key => $value) {
-            // Proses file gambar jika ada
+            $gambarPath = "-";
+
             if (isset($request->file('gambarFasum')[$key])) {
                 $gambar = $request->file('gambarFasum')[$key];
 
-                // Validasi file gambar
-                if ($gambar->isValid()) {
-                    $filename = $id . '_detail_' . $key . '.' . $gambar->getClientOriginalExtension();
-
-                    // Pindahkan file ke folder yang ditentukan
-                    try {
-                        $gambar->move($folder, $filename);
-                        $gambarPathNew = 'img_pelaporan/' . $filename; // Path gambar yang akan disimpan
-                        $dataDetail = [
-                            't_pelaporan_idpelaporan' => $id,
-                            'm_fasum_idfasum' => $value,
-                            'status_perbaikkan' => $formData['status_perbaikkan'][$key] ?? 'Antri',
-                            'foto_fasum' => $gambarPathNew,
-                            'keterangan' => $formData['keterangan_detail'][$key],
-                            'idstaff' => 8
-                            // 'idstaff' => $formData['pic_fasum'][$key]
-                        ];
-                    } catch (\Exception $e) {
-                        return response()->json(['error' => 'Gagal menyimpan file gambar untuk detail ' . ($key + 1)], 500);
-                    }
-                } else {
+                if (!$gambar->isValid()) {
                     return response()->json(['error' => 'File gambar tidak valid untuk detail ' . ($key + 1)], 400);
+                }
+
+                $folder = 'public/img_pelaporan';
+                $filename = $id . '_detail_' . $key . '.' . $gambar->getClientOriginalExtension();
+
+                if (!Storage::exists($folder)) {
+                    Storage::makeDirectory($folder);
+                }
+
+                try {
+                    $path = $gambar->storeAs($folder, $filename);
+                    $gambarPath = "storage/img_pelaporan/" . $filename;
+                } catch (\Exception $e) {
+                    return response()->json(['error' => 'Gagal menyimpan file gambar untuk detail ' . ($key + 1)], 500);
                 }
             } else {
                 $dataDetail = [
