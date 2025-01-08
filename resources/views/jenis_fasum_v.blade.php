@@ -76,7 +76,7 @@
                                         <input type="hidden" id="id" name="id">
                                         <div class="row">
                                             <div class="form-group col-md-12 mb-3">
-                                                <label for="nama">Nama Jenis Fasilitas Umum</label>
+                                                <label for="nama">Nama Jenis Fasilitas Umum*</label>
                                                 <input required type="text" class="form-control" id="nama"
                                                     name="nama" placeholder="Masukan Jenis Fasilitas Umum">
                                             </div>

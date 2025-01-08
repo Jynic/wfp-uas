@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('m_kategori_fasum', function (Blueprint $table) {
             $table->id('idkategori_fasum');
-            $table->text('nama')->nullable();
+            $table->text('nama');
             $table->integer('status_aktif')->default(1);
         });
     }

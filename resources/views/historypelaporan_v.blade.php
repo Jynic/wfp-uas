@@ -93,12 +93,12 @@
                                         </select>
                                         <div class="row mb-3">
                                             <div class="col-md-6">
-                                                <label for="nomor" class="form-label">Nomor Pelaporan</label>
+                                                <label for="nomor" class="form-label">Nomor Pelaporan*</label>
                                                 <input type="text" class="form-control" id="nomor" name="nomor"
                                                     placeholder="Masukkan Nomor Pelaporan" required readonly>
                                             </div>
                                             <div class="col-md-6">
-                                                <label for="tgl" class="form-label">Tanggal</label>
+                                                <label for="tgl" class="form-label">Tanggal*</label>
                                                 <input type="text" class="form-control" id="tgl" name="tgl"
                                                     required readonly>
                                             </div>
@@ -112,7 +112,7 @@
                                                         class="table dt-table-hover wrapped" style="width:100%">
                                                         <thead>
                                                             <tr>
-                                                                <th>Fasilitas Umum</th>
+                                                                <th>Fasilitas Umum*</th>
                                                                 <th>Gambar</th>
                                                                 <th>Keterangan</th>
                                                                 <th>Action</th>
@@ -132,7 +132,7 @@
                                         </div>
                                         <div class="row mb-3">
                                             <div class="col-md-12">
-                                                <label for="keterangan" class="form-label">Keterangan</label>
+                                                <label for="keterangan" class="form-label">Keterangan*</label>
                                                 <textarea name="keterangan" class="form-control" id="keterangan" rows="3" placeholder="Masukkan Keterangan"></textarea>
                                             </div>
                                         </div>
@@ -240,10 +240,10 @@
                     ']" style="width:150px" name="fasum[]"></select>');
                 rowData.push(
                     '<input type="file" class="form-control" id="gambarFasum" name="gambarFasum[]" style="width:300px">'
-                    );
+                );
                 rowData.push(
                     '<input type="text" class="form-control form-control-user keterangan_detail" style="width:200px" id="keterangan_detail" name="keterangan_detail[]" placeholder="Keterangan" >'
-                    );
+                );
                 rowData.push('<button type="button" class="btn btn-danger btnHapusBaris">Hapus</button>');
                 t.row.add(rowData).draw(false);
 
@@ -485,13 +485,13 @@
                             .id_fasum + '">' + item.nama_fasum + '</option></select>');
                         rowData.push(
                             '<input type="file" class="form-control" id="gambarFasum" name="gambarFasum[]" style="width:300px">'
-                            );
+                        );
                         rowData.push(
                             '<input type="text" class="form-control form-control-user " style="width:200px" id="keterangan_detail" name="keterangan_detail[]" value="' +
                             item.keterangan_fasum + '" placeholder="Keterangan">');
                         rowData.push(
                             '<button type="button" class="btn btn-danger btnHapusBaris">Hapus</button>'
-                            );
+                        );
                         t.row.add(rowData).draw();
 
                         $('#tableDetailSTBPB tbody').on('click', '.btnHapusBaris', function() {

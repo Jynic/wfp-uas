@@ -95,20 +95,20 @@
                                         <input type="hidden" id="id" name="id">
                                         <div class="row mb-3">
                                             <div class="col-md-12">
-                                                <label for="nama" class="form-label">Nama Fasum</label>
+                                                <label for="nama" class="form-label">Nama Fasum*</label>
                                                 <input required type="text" class="form-control" id="nama"
                                                     name="nama" placeholder="Masukkan Nama Fasilitas Umum">
                                             </div>
                                         </div>
                                         <div class="row mb-3">
                                             <div class="col-md-6">
-                                                <label for="dinas" class="form-label">Dinas</label>
+                                                <label for="dinas" class="form-label">Dinas*</label>
                                                 <select required name="dinas" class="form-control" id="dinas"
                                                     style="width: 100%">
                                                 </select>
                                             </div>
                                             <div class="col-md-6">
-                                                <label for="kategori" class="form-label">Kategori Fasum</label>
+                                                <label for="kategori" class="form-label">Kategori Fasum*</label>
                                                 <select required name="kategori[]" class="form-control" id="kategori"
                                                     style="width: 100%">
                                                 </select>
@@ -118,11 +118,11 @@
                                             <div class="col-md-6">
                                                 <label for="luasFasum" class="form-label">Luas Fasum
                                                     (m<sup>2</sup>)</label>
-                                                <input required type="number" class="form-control" id="luasFasum"
+                                                <input type="number" class="form-control" id="luasFasum"
                                                     name="luasFasum" placeholder="Masukkan Luas Fasilitas Umum">
                                             </div>
                                             <div class="col-md-6">
-                                                <label for="asalFasum" class="form-label">Asal Fasum</label>
+                                                <label for="asalFasum" class="form-label">Asal Fasum*</label>
                                                 <select required name="asalFasum" class="form-control" id="asalFasum">
                                                     <option value="APBN" selected>APBN</option>
                                                     <option value="APBD">APBD</option>
@@ -132,7 +132,7 @@
                                         </div>
                                         <div class="row mb-3">
                                             <div class="col-md-12">
-                                                <label for="kondisiFasum" class="form-label">Kondisi Fasum</label>
+                                                <label for="kondisiFasum" class="form-label">Kondisi Fasum*</label>
                                                 <select required name="kondisiFasum" id="kondisiFasum"
                                                     class="form-control">
                                                     <option value="Baik">Baik</option>
@@ -157,14 +157,12 @@
                                                 <div id="map"></div>
                                                 <div class="row mt-2">
                                                     <div class="col">
-                                                        <input required type="text" class="form-control"
-                                                            id="latitude" name="latitude" placeholder="Latitude"
-                                                            readonly>
+                                                        <input type="text" class="form-control" id="latitude"
+                                                            name="latitude" placeholder="Latitude" readonly>
                                                     </div>
                                                     <div class="col">
-                                                        <input required type="text" class="form-control"
-                                                            id="longitude" name="longitude" placeholder="Longitude"
-                                                            readonly>
+                                                        <input type="text" class="form-control" id="longitude"
+                                                            name="longitude" placeholder="Longitude" readonly>
                                                     </div>
                                                 </div>
                                             </div>
@@ -172,7 +170,7 @@
                                         <div class="row mb-3">
                                             <div class="col-md-12">
                                                 <label for="gambarFasum" class="form-label">Upload Gambar</label>
-                                                <input required type="file" class="form-control" id="gambarFasum"
+                                                <input type="file" class="form-control" id="gambarFasum"
                                                     name="gambarFasum" accept="image/*, application/pdf">
                                             </div>
                                         </div>

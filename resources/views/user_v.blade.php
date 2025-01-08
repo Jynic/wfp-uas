@@ -93,7 +93,7 @@
                                         <input type="hidden" id="id" name="id">
                                         <div class="row mb-3">
                                             <div class="col-md-12">
-                                                <label for="nama" class="form-label">Nama User</label>
+                                                <label for="nama" class="form-label">Nama User*</label>
                                                 <input required type="text" class="form-control" id="nama"
                                                     name="nama" placeholder="Masukkan Nama User" required>
                                             </div>
@@ -101,19 +101,19 @@
                                         <div class="row mb-3">
                                             <div class="col-md-12">
                                                 <label for="email" class="form-label">Email</label>
-                                                <input required type="email" class="form-control" id="email"
-                                                    name="email" placeholder="Masukkan Email" required>
+                                                <input type="email" class="form-control" id="email" name="email"
+                                                    placeholder="Masukkan Email" required>
                                             </div>
                                         </div>
                                         <div class="row mb-3">
                                             <div class="col-md-6">
                                                 <label for="asal" class="form-label">Asal</label>
-                                                <select required name="asal" class="form-control" id="asal"
+                                                <select name="asal" class="form-control" id="asal"
                                                     style="width: 100%">
                                                 </select>
                                             </div>
                                             <div class="col-md-6">
-                                                <label for="jabatan" class="form-label">Jabatan</label>
+                                                <label for="jabatan" class="form-label">Jabatan*</label>
                                                 <select required name="jabatan" class="form-control" id="jabatan"
                                                     style="width: 100%">
                                                 </select>
@@ -121,12 +121,12 @@
                                         </div>
                                         <div class="row mb-3">
                                             <div class="col-md-6">
-                                                <label for="username" class="form-label">Username</label>
+                                                <label for="username" class="form-label">Username*</label>
                                                 <input required type="text" class="form-control" id="username"
                                                     name="username" placeholder="Masukkan Username" required>
                                             </div>
                                             <div class="col-md-6">
-                                                <label for="password" class="form-label">Password</label>
+                                                <label for="password" class="form-label">Password*</label>
                                                 <input required type="password" class="form-control" id="password"
                                                     name="password" placeholder="Masukkan Password" required>
                                             </div>
@@ -134,12 +134,12 @@
                                         <div class="row mb-3">
                                             <div class="col-md-6">
                                                 <label for="alamat" class="form-label">Alamat</label>
-                                                <input required type="text" class="form-control" id="alamat"
+                                                <input type="text" class="form-control" id="alamat"
                                                     name="alamat" placeholder="Masukkan Alamat" required>
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="no_hp" class="form-label">No HP</label>
-                                                <input required type="number" class="form-control" id="no_hp"
+                                                <input type="number" class="form-control" id="no_hp"
                                                     name="no_hp" placeholder="Masukkan No HP" required>
                                             </div>
                                         </div>

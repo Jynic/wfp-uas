@@ -10,9 +10,9 @@ return new class extends Migration
     {
         Schema::create('m_kota_kabupaten', function (Blueprint $table) {
             $table->id('idkota_kabupaten');
-            $table->text('kode')->nullable();
-            $table->text('nama')->nullable();
-            $table->text('jenis')->nullable();
+            $table->text('kode');
+            $table->text('nama');
+            $table->enum('jenis', ['kota', 'kabupaten']);
             $table->integer('status_aktif')->default(1);
             $table->unsignedBigInteger('m_provinsi_idprovinsi');
 

@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('t_pelaporan', function (Blueprint $table) {
             $table->id('idpelaporan');
-            $table->text('nomor')->nullable();
-            $table->datetime('tgl_pelaporan')->nullable();
+            $table->text('nomor');
+            $table->datetime('tgl_pelaporan');
             $table->unsignedBigInteger('idm_staff');
             $table->unsignedBigInteger('iduser');
             $table->text('status_pelaporan')->comment("'Antri', 'Dikerjakan', 'Outsource','Selesai','Tidak Terselesaikan'");

@@ -11,8 +11,8 @@ return new class extends Migration
         Schema::create('t_history_perbaikan', function (Blueprint $table) {
             $table->id('idhistory_perbaikan');
             $table->unsignedBigInteger('idpelaporan');
-            $table->datetime('tgl')->nullable();
-            $table->text('keterangan')->nullable();
+            $table->datetime('tgl');
+            $table->text('keterangan');
 
             $table->foreign('idpelaporan')->references('idpelaporan')->on('t_pelaporan');
         });

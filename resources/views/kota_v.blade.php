@@ -77,7 +77,7 @@
                                         <input type="hidden" id="id" name="id">
                                         <div class="row">
                                             <div class="form-group col-md-6 mb-3">
-                                                <label for="kode">Kode Kota / Kabupaten</label>
+                                                <label for="kode">Kode Kota / Kabupaten*</label>
                                                 <input type="text" class="form-control" id="kode" name="kode"
                                                     placeholder="Masukan Kode Kota / Kabupaten" required>
                                             </div>
@@ -85,18 +85,18 @@
                                                 <label for="provinsi">Provinsi</label>
                                                 <select name="provinsi" id="provinsi" class="form-control"
                                                     style="width: 100%" required>
-                                                    <option value="">Pilih Provinsi</option>
+                                                    <option value="">Pilih Provinsi*</option>
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="form-group col-md-6 mb-3">
-                                                <label for="nama" class="form-label">Nama Kota / Kabupaten</label>
+                                                <label for="nama" class="form-label">Nama Kota / Kabupaten*</label>
                                                 <input type="text" class="form-control" id="nama" name="nama"
                                                     placeholder="Masukan Nama Kota / Kabupaten" required>
                                             </div>
                                             <div class="form-group col-md-6 mb-3">
-                                                <label for="jenis_kota_kabupaten" class="form-label">Jenis Data</label>
+                                                <label for="jenis_kota_kabupaten" class="form-label">Jenis Data*</label>
                                                 <select name="jenis_kota_kabupaten" id="jenis_kota_kabupaten"
                                                     class="form-control" required>
                                                     <option value="kota">Kota</option>

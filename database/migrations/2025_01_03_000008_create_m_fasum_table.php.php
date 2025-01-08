@@ -11,10 +11,10 @@ return new class extends Migration
         Schema::create('m_fasum', function (Blueprint $table) {
             $table->id('idfasum');
             $table->unsignedBigInteger('m_dinas_iddinas');
-            $table->text('nama')->nullable();
+            $table->text('nama');
             $table->decimal('luas_fasum', 20)->nullable();
-            $table->enum('kondisi_fasum', ['Baik', 'Rusak'])->nullable();
-            $table->text('asal_fasum')->nullable()->comment('APBN, APBD, Swasta');
+            $table->enum('kondisi_fasum', ['Baik', 'Rusak'])->default("Baik");
+            $table->enum('asal_fasum', ['APBN', 'APBD', 'Swasta']);
             $table->text('lat')->nullable();
             $table->text('lng')->nullable();
             $table->text('gambar')->nullable();

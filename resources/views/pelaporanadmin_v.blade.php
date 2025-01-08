@@ -95,25 +95,25 @@
                                         <input type="hidden" id="id" name="id">
                                         <div class="row mb-3">
                                             <div class="col-md-6">
-                                                <label for="nomor" class="form-label">Nomor Pelaporan</label>
+                                                <label for="nomor" class="form-label">Nomor Pelaporan*</label>
                                                 <input required type="text" class="form-control" id="nomor"
-                                                    name="nomor" placeholder="Masukkan Nomor Pelaporan" required>
+                                                    name="nomor" placeholder="Masukkan Nomor Pelaporan" readonly>
                                             </div>
                                             <div class="col-md-6">
-                                                <label for="tgl" class="form-label">Tanggal</label>
+                                                <label for="tgl" class="form-label">Tanggal*</label>
                                                 <input required type="text" class="form-control" id="tgl"
                                                     name="tgl" required>
                                             </div>
                                         </div>
                                         <div class="row mb-3">
                                             <div class="col-md-6">
-                                                <label for="user" class="form-label">Pelapor</label>
+                                                <label for="user" class="form-label">Pelapor*</label>
                                                 <select required name="user" class="form-control" id="user"
                                                     style="width: 100%">
                                                 </select>
                                             </div>
                                             <div class="col-md-6">
-                                                <label for="pic_utama" class="form-label">PIC Utama</label>
+                                                <label for="pic_utama" class="form-label">PIC Utama*</label>
                                                 <select required name="pic_utama" class="form-control" id="pic_utama"
                                                     style="width: 100%">
                                                 </select>
@@ -122,13 +122,13 @@
                                         <div class="row mb-3">
                                             <div class="form-group col-md-12 mb-3 text-center">
                                                 <label for="tabelDetailPelaporan" class="form-label">Detail
-                                                    Pelaporan</label>
+                                                    Pelaporan*</label>
                                                 <div class="table-responsive ">
                                                     <table id="tabelDetailPelaporan"
                                                         class="table dt-table-hover wrapped" style="width:100%">
                                                         <thead>
                                                             <tr>
-                                                                <th>Fasilitas Umum</th>
+                                                                <th>Fasilitas Umum*</th>
                                                                 <th>PIC Fasum</th>
                                                                 <th>Gambar</th>
                                                                 <th>Keterangan</th>
@@ -277,10 +277,10 @@
                     i +
                     ']" style="width:150px" name="pic_fasum[]"></select>');
                 rowData.push(
-                    '<input required type="file" class="form-control" id="gambarFasum" name="gambarFasum[]" accept="image/*, application/pdf" style="width:300px">'
+                    '<input type="file" class="form-control" id="gambarFasum" name="gambarFasum[]" accept="image/*, application/pdf" style="width:300px">'
                 );
                 rowData.push(
-                    '<input required type="text" class="form-control form-control-user keterangan_detail" style="width:200px" id="keterangan_detail" name="keterangan_detail[]" placeholder="Keterangan" >'
+                    '<input type="text" class="form-control form-control-user keterangan_detail" style="width:200px" id="keterangan_detail" name="keterangan_detail[]" placeholder="Keterangan" >'
                 );
                 rowData.push('<button type="button" class="btn btn-danger btnHapusBaris">Hapus</button>');
                 t.row.add(rowData).draw(false);

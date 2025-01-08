@@ -98,12 +98,12 @@
                                         <div class="row mb-3">
                                             <div class="col-md-6">
                                                 <label required for="nomor" class="form-label">Nomor
-                                                    Pelaporan</label>
+                                                    Pelaporan*</label>
                                                 <input type="text" class="form-control" id="nomor" name="nomor"
                                                     placeholder="Masukkan Nomor Pelaporan" required readonly>
                                             </div>
                                             <div class="col-md-6">
-                                                <label for="tgl" class="form-label">Tanggal</label>
+                                                <label for="tgl" class="form-label">Tanggal*</label>
                                                 <input required type="text" class="form-control" id="tgl"
                                                     name="tgl" required readonly>
                                             </div>
@@ -111,13 +111,13 @@
                                         <div class="row mb-3">
                                             <div class="form-group col-md-12 mb-3 text-center">
                                                 <label for="tabelDetailPelaporan" class="form-label">Detail
-                                                    Pelaporan</label>
+                                                    Pelaporan*</label>
                                                 <div class="table-responsive ">
                                                     <table id="tabelDetailPelaporan"
                                                         class="table dt-table-hover wrapped" style="width:100%">
                                                         <thead>
                                                             <tr>
-                                                                <th>Fasilitas Umum</th>
+                                                                <th>Fasilitas Umum*</th>
                                                                 <th>Gambar</th>
                                                                 <th>Keterangan</th>
                                                                 <th>Action</th>
@@ -138,8 +138,7 @@
                                         <div class="row mb-3">
                                             <div class="col-md-12">
                                                 <label for="keterangan" class="form-label">Keterangan</label>
-                                                <textarea required name="keterangan" class="form-control" id="keterangan" rows="3"
-                                                    placeholder="Masukkan Keterangan"></textarea>
+                                                <textarea name="keterangan" class="form-control" id="keterangan" rows="3" placeholder="Masukkan Keterangan"></textarea>
                                             </div>
                                         </div>
                                     </form>
@@ -254,10 +253,10 @@
                     i +
                     ']" style="width:150px" name="fasum[]"></select>');
                 rowData.push(
-                    '<input required type="file" class="form-control" id="gambarFasum" name="gambarFasum[]" style="width:300px">'
+                    '<input type="file" class="form-control" id="gambarFasum" name="gambarFasum[]" style="width:300px">'
                 );
                 rowData.push(
-                    '<input required type="text" class="form-control form-control-user keterangan_detail" style="width:200px" id="keterangan_detail" name="keterangan_detail[]" placeholder="Keterangan" >'
+                    '<input type="text" class="form-control form-control-user keterangan_detail" style="width:200px" id="keterangan_detail" name="keterangan_detail[]" placeholder="Keterangan" >'
                 );
                 rowData.push('<button type="button" class="btn btn-danger btnHapusBaris">Hapus</button>');
                 t.row.add(rowData).draw(false);

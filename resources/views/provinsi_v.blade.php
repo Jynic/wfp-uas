@@ -77,14 +77,14 @@
                                         <input type="hidden" id="id" name="id">
                                         <div class="row">
                                             <div class="form-group col-md-12 mb-3">
-                                                <label for="kode">Kode Provinsi</label>
+                                                <label for="kode">Kode Provinsi*</label>
                                                 <input type="text" class="form-control" id="kode" name="kode"
                                                     placeholder="Masukan Kode Provinsi" required>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="form-group col-md-12 mb-3">
-                                                <label for="nama" class="form-label">Nama Provinsi</label>
+                                                <label for="nama" class="form-label">Nama Provinsi*</label>
                                                 <input type="text" class="form-control" id="nama" name="nama"
                                                     placeholder="Masukan Nama Provinsi" required>
                                             </div>

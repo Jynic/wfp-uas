@@ -78,12 +78,12 @@
                                         <input type="hidden" id="id" name="id">
                                         <div class="row">
                                             <div class="form-group col-md-6 mb-3">
-                                                <label for="nama">Nama Dinas</label>
+                                                <label for="nama">Nama Dinas*</label>
                                                 <input required type="text" class="form-control" id="nama"
                                                     name="nama" placeholder="Masukan Dinas">
                                             </div>
                                             <div class="form-group col-md-6 mb-3">
-                                                <label for="kota_kabupaten">Kota / Kabupaten</label>
+                                                <label for="kota_kabupaten">Kota / Kabupaten*</label>
                                                 <select required name="kota_kabupaten" id="kota_kabupaten"
                                                     class="form-control" style="width: 100%">
                                                     <option value="">Pilih Kota / Kabupaten</option>
@@ -93,7 +93,7 @@
                                         <div class="row">
                                             <div class="form-group col-md-12 mb-3">
                                                 <label for="nama" class="form-label">Alamat</label>
-                                                <textarea required name="alamat" id="alamat" class="form-control" rows="3" placeholder="Masukan Alamat"></textarea>
+                                                <textarea name="alamat" id="alamat" class="form-control" rows="3" placeholder="Masukan Alamat"></textarea>
                                             </div>
                                         </div>
                                     </form>

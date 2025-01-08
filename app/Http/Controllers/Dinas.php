@@ -2,22 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Dinas_model;
-use App\Models\Kota_model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\Dinas_model;
 
 class Dinas extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $idjabatan = Auth::user()->idjabatan;
-        $data = DB::select('select ha.idjabatan, ha2.kode_fitur, ha2.nama_fitur from a_hak_akses_jabatan ha inner join a_hak_akses ha2 on ha.idhak_akses=ha2.idhak_akses where idjabatan = :idjabat', ['idjabat' => $idjabatan]);
-        foreach ($data as $key => $row) {
+        $data = DB::table('a_hak_akses_jabatan as ha')
+            ->join('a_hak_akses as ha2', 'ha.idhak_akses', '=', 'ha2.idhak_akses')
+            ->where('ha.idjabatan', $idjabatan)
+            ->select('ha.idjabatan', 'ha2.kode_fitur', 'ha2.nama_fitur')
+            ->get();
+
+        foreach ($data as $row) {
             if ($row->nama_fitur == "master_dinas") {
                 return view('dinas_v');
             }
@@ -25,54 +26,20 @@ class Dinas extends Controller
         return view('dashboard_v');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Kota_model $kota_model)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Request $request)
     {
         $data = $request->all();
         $id = $data['id'];
 
-        $result = DB::select("
-        SELECT d.iddinas AS id, 
-        d.nama, 
-        d.alamat, 
-        d.status_aktif, 
-        kk.nama AS kota_nama, 
-        kk.idkota_kabupaten AS kota_id
-        FROM m_dinas d
-        INNER JOIN m_kota_kabupaten kk ON d.idkota_kabupaten=kk.idkota_kabupaten
-        WHERE d.iddinas = :id", ['id' => $id]);
+        $result = DB::table('m_dinas as d')
+            ->join('m_kota_kabupaten as kk', 'd.idkota_kabupaten', '=', 'kk.idkota_kabupaten')
+            ->where('d.iddinas', $id)
+            ->select('d.iddinas as id', 'd.nama', 'd.alamat', 'd.status_aktif', 'kk.nama as kota_nama', 'kk.idkota_kabupaten as kota_id')
+            ->get();
+
         return json_encode($result);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request)
     {
         $data = $request->all();
@@ -91,30 +58,28 @@ class Dinas extends Controller
             $kota = $data['kota_kabupaten'] ?? null;
             $alamat = $data['alamat'] ?? null;
         }
-        $dinas = Dinas_model::where('iddinas', $id)->first();
-        $dinas->nama = $nama ?? $dinas->nama;
-        $dinas->idkota_kabupaten = $kota ?? $dinas->idkota_kabupaten;
-        $dinas->alamat = $alamat ?? $dinas->alamat;
-        $dinas->save();
+
+        DB::table('m_dinas')
+            ->where('iddinas', $id)
+            ->update([
+                'nama' => $nama,
+                'idkota_kabupaten' => $kota,
+                'alamat' => $alamat
+            ]);
+
         echo json_encode(array("status" => TRUE));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Kota_model $kota_model)
-    {
-        //
-    }
     public function getData(Request $request)
     {
-        $data = DB::select('SELECT d.iddinas AS id, d.nama, d.alamat, d.status_aktif, kk.nama AS kota
-        FROM m_dinas d 
-        INNER JOIN m_kota_kabupaten kk ON d.idkota_kabupaten=kk.idkota_kabupaten
-        WHERE d.status_aktif = 1');
+        $data = DB::table('m_dinas as d')
+            ->join('m_kota_kabupaten as kk', 'd.idkota_kabupaten', '=', 'kk.idkota_kabupaten')
+            ->where('d.status_aktif', 1)
+            ->select('d.iddinas as id', 'd.nama', 'd.alamat', 'd.status_aktif', 'kk.nama as kota')
+            ->get();
 
         $dinas = [];
-        foreach ($data as $key => $value) {
+        foreach ($data as $value) {
             $dinas[] = array(
                 $value->nama,
                 $value->kota,
@@ -132,15 +97,20 @@ class Dinas extends Controller
                 </div>'
             );
         }
-        // Kirim data dalam format JSON
         echo json_encode($dinas);
     }
+
     public function getDataKota(Request $request)
     {
         $search_term = $request->input('search');
-        $data = DB::select('SELECT idkota_kabupaten as id, nama FROM m_kota_kabupaten WHERE status_aktif = 1 AND nama LIKE "%' . $search_term . '%"');
+        $data = DB::table('m_kota_kabupaten')
+            ->where('status_aktif', 1)
+            ->where('nama', 'like', '%' . $search_term . '%')
+            ->select('idkota_kabupaten as id', 'nama')
+            ->get();
+
         $provinsi = [];
-        foreach ($data as $key => $row) {
+        foreach ($data as $row) {
             $provinsi[] = array(
                 'id' => $row->id,
                 'text' => $row->nama
@@ -152,6 +122,7 @@ class Dinas extends Controller
             'location' => $provinsi
         ));
     }
+
     public function simpan(Request $request)
     {
         $data = $request->all();
@@ -169,20 +140,25 @@ class Dinas extends Controller
             $kota = $data['kota_kabupaten'] ?? null;
             $alamat = $data['alamat'] ?? null;
         }
-        $dinas = new Dinas_model();
-        $dinas->nama = $nama;
-        $dinas->idkota_kabupaten = $kota;
-        $dinas->alamat = $alamat;
-        $dinas->save();
+
+        DB::table('m_dinas')->insert([
+            'nama' => $nama,
+            'idkota_kabupaten' => $kota,
+            'alamat' => $alamat
+        ]);
+
         echo json_encode(array("status" => TRUE));
     }
+
     public function hapus(Request $request)
     {
         $data = $request->all();
         $id = $data['id'];
-        $update = DB::table('m_dinas')
+
+        DB::table('m_dinas')
             ->where('iddinas', $id)
             ->update(['status_aktif' => 0]);
+
         echo json_encode(array("status" => TRUE));
     }
 }

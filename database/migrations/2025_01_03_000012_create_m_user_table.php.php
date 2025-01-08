@@ -11,10 +11,10 @@ return new class extends Migration
         Schema::create('m_user', function (Blueprint $table) {
             $table->id('iduser');
             $table->unsignedBigInteger('idkota_kabupaten')->nullable();
-            $table->unsignedBigInteger('idjabatan')->nullable();
-            $table->text('nama')->nullable();
-            $table->text('username')->nullable()->unique();
-            $table->text('password')->nullable();
+            $table->unsignedBigInteger('idjabatan')->default('2');
+            $table->text('nama');
+            $table->text('username')->unique();
+            $table->text('password');
             $table->text('alamat')->nullable();
             $table->text('no_hp')->nullable();
             $table->text('email')->nullable()->unique();

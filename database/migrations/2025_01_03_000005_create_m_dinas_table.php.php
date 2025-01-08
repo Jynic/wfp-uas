@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('m_dinas', function (Blueprint $table) {
             $table->id('iddinas');
             $table->unsignedBigInteger('idkota_kabupaten');
-            $table->text('nama')->nullable();
+            $table->text('nama');
             $table->text('alamat')->nullable();
             $table->integer('status_aktif')->default(1);
 

@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('m_provinsi', function (Blueprint $table) {
             $table->id('idprovinsi');
-            $table->text('kode')->nullable();
-            $table->text('nama')->nullable();
+            $table->text('kode');
+            $table->text('nama');
             $table->integer('status_aktif')->default(1);
         });
     }
