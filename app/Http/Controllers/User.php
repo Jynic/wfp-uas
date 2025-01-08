@@ -221,14 +221,6 @@ class User extends Controller
                     '<span class="badge bg-success">Active</span>' :
                     '<span class="badge bg-danger">Inactive</span>',
                 'report_count' => $value->pelaporan_count,
-                'actions' => '<div class="d-flex justify-content-center">
-                            <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="edit(' . $value->id . ')">
-                                <i class="bx bx-edit-alt"></i>
-                            </a>
-                            <a href="javascript:void(0)" class="btn btn-danger btn-sm ms-3" onclick="hapus(' . $value->id . ')">
-                                <i class="bx bx-trash"></i>
-                            </a>
-                          </div>'
             );
         }
         echo json_encode($user);

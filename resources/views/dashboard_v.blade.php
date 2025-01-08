@@ -142,7 +142,6 @@
                                 <th>Email</th>
                                 <th>Status Aktif</th>
                                 <th>Jumlah Pelaporan</th>
-                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -461,9 +460,6 @@
             },
             {
                 "data": "report_count"
-            },
-            {
-                "data": "actions"
             }
         ]
     });
