@@ -53,21 +53,13 @@ class Staff extends Controller
         $data = $request->all();
         $id = $data['id'];
 
-        $result = DB::select("
-            SELECT 
-                s.idm_staff AS id, 
-                COALESCE(s.nama, '') AS nama, 
-                COALESCE(s.username, '') AS username, 
-                COALESCE(s.status_aktif, 0) AS status_aktif, 
-                COALESCE(d.nama, '') AS dinas_nama, 
-                COALESCE(d.iddinas, 0) AS dinas_id, 
-                COALESCE(j.nama, '') AS jabatan_nama, 
-                COALESCE(j.idjabatan, 0) AS jabatan_id
-            FROM m_staff s
-            LEFT JOIN m_dinas d ON s.iddinas = d.iddinas
-            LEFT JOIN m_jabatan j ON s.idjabatan = j.idjabatan
-            WHERE s.status_aktif = 1 AND s.idm_staff = :id
-        ", ['id' => $id]);
+        $result = DB::table('m_staff as s')
+            ->select('s.idm_staff as id', 's.nama', 's.username', 's.status_aktif', 'd.nama as dinas_nama', 'd.iddinas as dinas_id', 'j.nama as jabatan_nama', 'j.idjabatan as jabatan_id')
+            ->leftJoin('m_dinas as d', 's.iddinas', '=', 'd.iddinas')
+            ->leftJoin('m_jabatan as j', 's.idjabatan', '=', 'j.idjabatan')
+            ->where('s.status_aktif', 1)
+            ->where('s.idm_staff', $id)
+            ->get();
 
 
         return json_encode($result);
@@ -103,12 +95,12 @@ class Staff extends Controller
     }
     public function getData()
     {
-        $data = DB::select("SELECT s.idm_staff AS id, s.nama, s.username, s.status_aktif, d.nama AS dinas_nama, d.iddinas AS dinas_id, j.nama AS jabatan_nama, j.idjabatan AS jabatan_id
-        FROM m_staff s
-        LEFT JOIN m_dinas d ON s.iddinas=d.iddinas
-        LEFT JOIN m_jabatan j ON s.idjabatan=j.idjabatan
-        WHERE s.status_aktif = 1
-        ");
+        $data = DB::table('m_staff as s')
+            ->select('s.idm_staff as id', 's.nama', 's.username', 's.status_aktif', 'd.nama as dinas_nama', 'd.iddinas as dinas_id', 'j.nama as jabatan_nama', 'j.idjabatan as jabatan_id')
+            ->leftJoin('m_dinas as d', 's.iddinas', '=', 'd.iddinas')
+            ->leftJoin('m_jabatan as j', 's.idjabatan', '=', 'j.idjabatan')
+            ->where('s.status_aktif', 1)
+            ->get();
 
         $staff = [];
         foreach ($data as $key => $value) {
@@ -118,8 +110,8 @@ class Staff extends Controller
                 $value->jabatan_nama,
                 $value->username,
                 ($value->status_aktif == 1) ?
-                    '<span class="badge bg-success">Active</span>' :
-                    '<span class="badge bg-danger">Inactive</span>',
+                '<span class="badge bg-success">Active</span>' :
+                '<span class="badge bg-danger">Inactive</span>',
                 '<div class="d-flex justify-content-center">
                 <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="edit(' . $value->id . ')">
                     <i class="bx bx-edit-alt"></i>
@@ -136,9 +128,11 @@ class Staff extends Controller
     public function getDataKategori(Request $request)
     {
         $search_term = $request->input('search');
-        $data = DB::select('SELECT kf.idkategori_fasum AS id, kf.nama, kf.status_aktif
-        FROM m_kategori_fasum kf
-        WHERE kf.status_aktif = 1 AND kf.nama LIKE :search', ['search' => '%' . $search_term . '%']);
+        $data = DB::table('m_kategori_fasum')
+            ->select('idkategori_fasum AS id', 'nama', 'status_aktif')
+            ->where('status_aktif', 1)
+            ->where('nama', 'LIKE', '%' . $search_term . '%')
+            ->get();
         $kategori = [];
         foreach ($data as $key => $row) {
             $kategori[] = array(
@@ -155,9 +149,11 @@ class Staff extends Controller
     public function getDataDinas(Request $request)
     {
         $search_term = $request->input('search');
-        $data = DB::select('SELECT d.iddinas AS id, d.nama
-        FROM m_dinas d 
-        WHERE d.status_aktif = 1 AND d.nama LIKE :search', ['search' => '%' . $search_term . '%']);
+        $data = DB::table('m_dinas')
+            ->select('iddinas AS id', 'nama')
+            ->where('status_aktif', 1)
+            ->where('nama', 'LIKE', '%' . $search_term . '%')
+            ->get();
         $dinas = [];
         foreach ($data as $key => $row) {
             $dinas[] = array(
@@ -174,10 +170,11 @@ class Staff extends Controller
     public function getDataJabatan(Request $request)
     {
         $search_term = $request->input('search');
-        $data = DB::select('SELECT j.idjabatan AS id,
-        j.nama
-        FROM m_jabatan j
-        WHERE j.status_aktif = 1 AND j.nama LIKE :search', ['search' => '%' . $search_term . '%']);
+        $data = DB::table('m_jabatan')
+            ->select('idjabatan AS id', 'nama')
+            ->where('status_aktif', 1)
+            ->where('nama', 'LIKE', '%' . $search_term . '%')
+            ->get();
         $dinas = [];
         foreach ($data as $key => $row) {
             $dinas[] = array(

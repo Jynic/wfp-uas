@@ -50,8 +50,10 @@ class Jenisfasum extends Controller
         $data = $request->all();
         $id = $data['id'];
 
-        $result = DB::select("
-        select kf.idkategori_fasum as id, kf.nama, kf.status_aktif from m_kategori_fasum kf where kf.idkategori_fasum = :id", ['id' => $id]);
+      $result = DB::table('m_kategori_fasum')
+    ->select('idkategori_fasum as id', 'nama', 'status_aktif')
+    ->where('idkategori_fasum', $id)
+    ->get();
         return json_encode($result);
     }
 
@@ -87,9 +89,10 @@ class Jenisfasum extends Controller
     }
     public function getData(Request $request)
     {
-        $data = DB::select('SELECT kf.idkategori_fasum AS id, kf.nama, kf.status_aktif
-                FROM m_kategori_fasum kf
-                WHERE kf.status_aktif = 1');
+       $data = DB::table('m_kategori_fasum')
+    ->select('idkategori_fasum as id', 'nama', 'status_aktif')
+    ->where('status_aktif', 1)
+    ->get();
 
         $jenis_fasum = [];
         foreach ($data as $key => $value) {
@@ -114,8 +117,12 @@ class Jenisfasum extends Controller
     public function getDataKota(Request $request)
     {
         $search_term = $request->input('search');
-        $data = DB::select('SELECT idkota_kabupaten as id, nama FROM m_kota_kabupaten WHERE status_aktif = 1 AND nama LIKE "%' . $search_term . '%"');
-        $provinsi = [];
+$data = DB::table('m_kota_kabupaten')
+    ->select('idkota_kabupaten as id', 'nama')
+    ->where('status_aktif', 1)
+    ->where('nama', 'LIKE', '%' . $search_term . '%')
+    ->get();
+            $provinsi = [];
         foreach ($data as $key => $row) {
             $provinsi[] = array(
                 'id' => $row->id,

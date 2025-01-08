@@ -50,16 +50,11 @@ class Dinas extends Controller
         $data = $request->all();
         $id = $data['id'];
 
-        $result = DB::select("
-        SELECT d.iddinas AS id, 
-        d.nama, 
-        d.alamat, 
-        d.status_aktif, 
-        kk.nama AS kota_nama, 
-        kk.idkota_kabupaten AS kota_id
-        FROM m_dinas d
-        INNER JOIN m_kota_kabupaten kk ON d.idkota_kabupaten=kk.idkota_kabupaten
-        WHERE d.iddinas = :id", ['id' => $id]);
+        $result = DB::table('m_dinas')
+    ->join('m_kota_kabupaten', 'm_dinas.idkota_kabupaten', '=', 'm_kota_kabupaten.idkota_kabupaten')
+    ->select('m_dinas.iddinas AS id', 'm_dinas.nama', 'm_dinas.alamat', 'm_dinas.status_aktif', 'm_kota_kabupaten.nama AS kota_nama', 'm_kota_kabupaten.idkota_kabupaten AS kota_id')
+    ->where('m_dinas.iddinas', $id)
+    ->get();
         return json_encode($result);
     }
 
@@ -101,10 +96,11 @@ class Dinas extends Controller
     }
     public function getData(Request $request)
     {
-        $data = DB::select('SELECT d.iddinas AS id, d.nama, d.alamat, d.status_aktif, kk.nama AS kota
-        FROM m_dinas d 
-        INNER JOIN m_kota_kabupaten kk ON d.idkota_kabupaten=kk.idkota_kabupaten
-        WHERE d.status_aktif = 1');
+        $data = DB::table('m_dinas')
+    ->join('m_kota_kabupaten', 'm_dinas.idkota_kabupaten', '=', 'm_kota_kabupaten.idkota_kabupaten')
+    ->select('m_dinas.iddinas AS id', 'm_dinas.nama', 'm_dinas.alamat', 'm_dinas.status_aktif', 'm_kota_kabupaten.nama AS kota')
+    ->where('m_dinas.status_aktif', 1)
+    ->get();
 
         $dinas = [];
         foreach ($data as $key => $value) {
@@ -131,8 +127,12 @@ class Dinas extends Controller
     public function getDataKota(Request $request)
     {
         $search_term = $request->input('search');
-        $data = DB::select('SELECT idkota_kabupaten as id, nama FROM m_kota_kabupaten WHERE status_aktif = 1 AND nama LIKE "%' . $search_term . '%"');
-        $provinsi = [];
+$data = DB::table('m_kota_kabupaten')
+    ->select('idkota_kabupaten as id', 'nama')
+    ->where('status_aktif', 1)
+    ->where('nama', 'LIKE', '%' . $search_term . '%')
+    ->get();
+     $provinsi = [];
         foreach ($data as $key => $row) {
             $provinsi[] = array(
                 'id' => $row->id,

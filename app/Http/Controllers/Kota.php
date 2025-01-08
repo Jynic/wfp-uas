@@ -49,12 +49,11 @@ class Kota extends Controller
         $data = $request->all();
         $id = $data['id'];
 
-        $result = DB::select("
-        SELECT k.idkota_kabupaten, k.kode, k.nama, k.jenis, k.status_aktif, 
-               p.idprovinsi AS provinsi_id, p.nama AS provinsi_nama
-        FROM m_kota_kabupaten AS k
-        INNER JOIN m_provinsi AS p ON k.m_provinsi_idprovinsi = p.idprovinsi
-        WHERE k.idkota_kabupaten = :id", ['id' => $id]);
+        $result = DB::table('m_kota_kabupaten AS k')
+            ->join('m_provinsi AS p', 'k.m_provinsi_idprovinsi', '=', 'p.idprovinsi')
+            ->select('k.idkota_kabupaten', 'k.kode', 'k.nama', 'k.jenis', 'k.status_aktif', 'p.idprovinsi AS provinsi_id', 'p.nama AS provinsi_nama')
+            ->where('k.idkota_kabupaten', $id)
+            ->get();
 
         // Mengembalikan data dalam format JSON
         return json_encode($result);
@@ -101,9 +100,11 @@ class Kota extends Controller
     }
     public function getData(Request $request)
     {
-        $data = DB::select('SELECT kk.idkota_kabupaten AS id, kk.kode, kk.nama, kk.jenis, kk.status_aktif, p.nama AS provinsi
-        FROM m_kota_kabupaten kk INNER JOIN m_provinsi p ON kk.m_provinsi_idprovinsi=p.idprovinsi
-        WHERE kk.status_aktif = 1');
+        $data = DB::table('m_kota_kabupaten AS kk')
+            ->join('m_provinsi AS p', 'kk.m_provinsi_idprovinsi', '=', 'p.idprovinsi')
+            ->select('kk.idkota_kabupaten AS id', 'kk.kode', 'kk.nama', 'kk.jenis', 'kk.status_aktif', 'p.nama AS provinsi')
+            ->where('kk.status_aktif', 1)
+            ->get();
 
         $kota = [];
         foreach ($data as $key => $value) {
@@ -111,8 +112,8 @@ class Kota extends Controller
                 $value->jenis . ' - ' . $value->nama,
                 $value->provinsi,
                 ($value->status_aktif == 1) ?
-                    '<span class="badge bg-success">Active</span>' :
-                    '<span class="badge bg-danger">Inactive</span>',
+                '<span class="badge bg-success">Active</span>' :
+                '<span class="badge bg-danger">Inactive</span>',
                 '<div class="d-flex justify-content-center">
                 <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="edit(' . $value->id . ')">
                     <i class="bx bx-edit-alt"></i>
@@ -129,7 +130,11 @@ class Kota extends Controller
     public function getDataProvinsi(Request $request)
     {
         $search_term = $request->input('search');
-        $data = DB::select('SELECT idprovinsi as id, nama FROM m_provinsi WHERE status_aktif = 1 AND nama LIKE "%' . $search_term . '%"');
+        $data = DB::table('m_provinsi')
+            ->where('status_aktif', 1)
+            ->where('nama', 'LIKE', '%' . $search_term . '%')
+            ->select('idprovinsi as id', 'nama')
+            ->get();
         $provinsi = [];
         foreach ($data as $key => $row) {
             $provinsi[] = array(
