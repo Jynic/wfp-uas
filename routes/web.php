@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/home', function () {
         return view('dashboard_v');
     })->name('home');
+
     Route::post('fasum/getFasumRusak', [Fasum::class, 'getFasumRusak'])->name('fasum.getFasumRusak');
     Route::get('get-kategori-fasum', [Fasum::class, 'getKategoriFasum'])->name('fasum.getKategoriFasum');
     Route::post('pelaporan/belum-selesai', [Pelaporan::class, 'getPelaporanBelumSelesai'])->name('pelaporan.getPelaporanBelumSelesai');
@@ -79,6 +80,7 @@ Route::middleware('auth')->group(function () {
     Route::get('fasum', [Fasum::class, 'index'])->name('fasum')->middleware('can:accessStaffPages');
     Route::post('fasum/simpan', [Fasum::class, 'simpan'])->name('fasum.simpan');
     Route::post('fasum/getData', [Fasum::class, 'getData'])->name('fasum.getData');
+    Route::post('fasum/getDataByDinas', [Fasum::class, 'getDataByDinas'])->name('fasum.getDataByDinas');
     Route::post('fasum/edit', [Fasum::class, 'edit'])->name('fasum.edit');
     Route::post('fasum/hapus', [Fasum::class, 'hapus'])->name('fasum.hapus');
     Route::post('fasum/update', [Fasum::class, 'update'])->name('fasum.update');
@@ -86,7 +88,7 @@ Route::middleware('auth')->group(function () {
     Route::post('fasum/getDataDinas', [Fasum::class, 'getDataDinas'])->name('fasum.getDataDinas');
 
 
-    Route::get('staff', [Staff::class, 'index'])->name('staff')->middleware('can:accessAdminPages');
+    Route::get('staff', [Staff::class, 'index'])->name('staff')->middleware('can:accessManajerPages');
     Route::post('staff/simpan', [Staff::class, 'simpan'])->name('staff.simpan');
     Route::post('staff/getData', [Staff::class, 'getData'])->name('staff.getData');
     Route::post('staff/edit', [Staff::class, 'edit'])->name('staff.edit');
@@ -95,7 +97,7 @@ Route::middleware('auth')->group(function () {
     Route::post('staff/getDataJabatan', [Staff::class, 'getDataJabatan'])->name('staff.getDataJabatan');
     Route::post('staff/getDataDinas', [Staff::class, 'getDataDinas'])->name('staff.getDataDinas');
 
-    Route::get('user', [User::class, 'index'])->name('user')->middleware('can:accessAdminPages');
+    Route::get('user', [User::class, 'index'])->name('user')->middleware('can:accessManajerPages');
     Route::post('user/simpan', [User::class, 'simpan'])->name('user.simpan');
     Route::post('user/getData', [User::class, 'getData'])->name('user.getData');
     Route::post('user/edit', [User::class, 'edit'])->name('user.edit');

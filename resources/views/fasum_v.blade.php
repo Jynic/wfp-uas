@@ -472,27 +472,55 @@
         function getData() {
             $.ajax({
                 type: 'POST',
-                url: "{{ route('fasum.getData') }}",
-                data: {
-                    '_token': '<?php echo csrf_token(); ?>'
-                },
+                url: function() {
+                    let idjabatan = '<?php echo auth()->user()->idjabatan; ?>';
+                    if (idjabatan == 3 || idjabatan == 4) {
+                        return "{{ route('fasum.getDataByDinas') }}";
+                    }
+                    return "{{ route('fasum.getData') }}";
+                }(),
+                data: function() {
+                    let idjabatan = '<?php echo auth()->user()->idjabatan; ?>';
+                    if (idjabatan == 3 || idjabatan == 4) {
+                        let dinas_id = '<?php echo auth()->user()->staff ? auth()->user()->staff->iddinas : null; ?>';
+                        if (dinas_id === null) {
+                            Swal.fire('Error', 'User does not have a valid iddinas.', 'error');
+                            return;
+                        }
+                        return {
+                            '_token': '<?php echo csrf_token(); ?>',
+                            'dinas_id': dinas_id
+                        };
+                    }
+                    return {
+                        '_token': '<?php echo csrf_token(); ?>'
+                    };
+                }(),
                 beforeSend: function() {
                     Swal.fire({
                         title: 'Loading',
                         html: 'Memproses data',
                         didOpen: () => {
-                            Swal.showLoading()
+                            Swal.showLoading();
                         }
-                    })
+                    });
                 },
                 success: function(data) {
                     Swal.close();
                     var data = JSON.parse(data);
                     table.clear();
                     table.rows.add(data).draw();
+                },
+                error: function(xhr, status, error) {
+                    Swal.close();
+                    Swal.fire('Error', 'Terjadi kesalahan dalam memuat data.', 'error');
                 }
             });
         }
+
+
+
+
 
         function edit(id) {
             $.ajax({

@@ -166,6 +166,69 @@ class Fasum extends Controller
         }
         echo json_encode($fasum);
     }
+
+    public function getDataByDinas(Request $request)
+    {
+        $dinas_id = $request->input('dinas_id');
+
+        $data = DB::table('m_fasum AS f')
+            ->leftJoin('m_kategori_fasum_has_m_fasum AS kfs', 'f.idfasum', '=', 'kfs.m_fasum_idfasum')
+            ->leftJoin('m_kategori_fasum AS kf', 'kfs.m_kategori_fasum_idkategori_fasum', '=', 'kf.idkategori_fasum')
+            ->join('m_dinas AS d', 'f.m_dinas_iddinas', '=', 'd.iddinas')
+            ->join('m_kota_kabupaten AS kk', 'd.idkota_kabupaten', '=', 'kk.idkota_kabupaten')
+            ->where('f.status_aktif', 1)
+            ->where('f.m_dinas_iddinas', $dinas_id)
+            ->groupBy('f.idfasum', 'f.nama', 'f.luas_fasum', 'f.kondisi_fasum', 'f.asal_fasum', 'f.lat', 'f.lng', 'f.gambar', 'd.nama', 'kk.nama', 'f.status_aktif')
+            ->selectRaw('
+            f.idfasum AS id,
+            f.nama,
+            f.luas_fasum,
+            f.kondisi_fasum,
+            f.asal_fasum,
+            CONCAT(f.lat, ", ", f.lng) AS lokasi,
+            f.gambar,
+            GROUP_CONCAT(kf.nama SEPARATOR ", ") AS kategori,
+            d.nama AS dinas,
+            kk.nama AS nama_kota,
+            f.status_aktif
+        ')
+            ->get();
+
+        $fasum = [];
+        foreach ($data as $key => $value) {
+            $action_buttons = '
+            <div class="d-flex justify-content-center">
+                <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="edit(' . $value->id . ')">
+                    <i class="bx bx-edit-alt"></i>
+                </a>';
+
+            if (Gate::allows('accessManajerPages')) {
+                $action_buttons .= '
+                <a href="javascript:void(0)" class="btn btn-danger btn-sm ms-3" onclick="hapus(' . $value->id . ')">
+                    <i class="bx bx-trash"></i>
+                </a>';
+            }
+
+            $action_buttons .= '</div>';
+
+            $fasum[] = array(
+                $value->nama,
+                $value->kategori,
+                $value->dinas,
+                $value->nama_kota,
+                $value->luas_fasum,
+                $value->kondisi_fasum,
+                $value->asal_fasum,
+                $value->lokasi,
+                '<img src="' . asset($value->gambar) . '" alt="Gambar" style="max-width: 100px; max-height: 100px;">',
+                ($value->status_aktif == 1) ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-danger">Inactive</span>',
+                $action_buttons
+            );
+        }
+
+        echo json_encode($fasum);
+    }
+
     public function getDataKategori(Request $request)
     {
         $search_term = $request->input('search');
@@ -190,13 +253,21 @@ class Fasum extends Controller
     public function getDataDinas(Request $request)
     {
         $search_term = $request->input('search');
-        $data = DB::table('m_dinas')
+        $user = auth()->user();
+
+        $query = DB::table('m_dinas')
             ->where('status_aktif', 1)
             ->where('nama', 'LIKE', '%' . $search_term . '%')
-            ->select('iddinas AS id', 'nama')
-            ->get();
+            ->select('iddinas AS id', 'nama');
+
+        if (in_array($user->idjabatan, [3, 4])) {
+            $query->where('iddinas', $user->staff->iddinas ?? 0);
+        }
+
+        $data = $query->get();
+
         $dinas = [];
-        foreach ($data as $key => $row) {
+        foreach ($data as $row) {
             $dinas[] = array(
                 'id' => $row->id,
                 'text' => $row->nama
@@ -208,6 +279,7 @@ class Fasum extends Controller
             'location' => $dinas
         ));
     }
+
     public function simpan(Request $request)
     {
         // Proses data form

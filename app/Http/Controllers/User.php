@@ -250,22 +250,31 @@ class User extends Controller
     public function getDataJabatan(Request $request)
     {
         $search_term = $request->input('search');
-        $data = DB::select('SELECT j.idjabatan AS id,
-        j.nama
-        FROM m_jabatan j
-        WHERE j.status_aktif = 1 AND j.nama LIKE :search', ['search' => '%' . $search_term . '%']);
+
+        $user_idjabatan = auth()->user()->idjabatan;
+
+        $query = DB::table('m_jabatan AS j')
+            ->where('j.status_aktif', 1)
+            ->where('j.nama', 'LIKE', '%' . $search_term . '%');
+
+        if ($user_idjabatan != 1) {
+            $query->whereNotIn('j.idjabatan', [1, 4]);
+        }
+
+        $data = $query->get();
+
         $dinas = [];
-        foreach ($data as $key => $row) {
+        foreach ($data as $row) {
             $dinas[] = array(
-                'id' => $row->id,
+                'id' => $row->idjabatan,
                 'text' => $row->nama
             );
         }
 
-        echo json_encode(array(
+        return response()->json([
             'search' => $search_term,
             'location' => $dinas
-        ));
+        ]);
     }
 
     public function simpan(Request $request)

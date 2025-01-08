@@ -41,6 +41,7 @@ class UserSeeder extends Seeder
                 'alamat' => 'Jalan ryan No 31',
                 'no_hp' => '123123123',
                 'email' => 'ryan@gmail.com',
+                'idstaff' => 3
             ],
             [
                 'iduser' => 3,
@@ -53,6 +54,7 @@ class UserSeeder extends Seeder
                 'alamat' => 'Jalan ivano No 31',
                 'no_hp' => '123123123',
                 'email' => 'ivano@gmail.com',
+                'idstaff' => 2
             ],
         ]);
         DB::table('m_user')->insert([

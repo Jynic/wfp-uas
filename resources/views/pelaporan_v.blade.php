@@ -437,12 +437,15 @@
         }
 
         function getData(id = null) {
+            var iduser = <?php echo auth()->user()->iduser; ?>;
+
             $.ajax({
                 type: 'POST',
                 url: "{{ route('pelaporan.getData') }}",
                 data: {
                     '_token': '<?php echo csrf_token(); ?>',
-                    'id': id
+                    'id': id,
+                    'iduser': iduser
                 },
                 beforeSend: function() {
                     Swal.fire({

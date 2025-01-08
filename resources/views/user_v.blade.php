@@ -185,8 +185,8 @@
         });
         $(document).ready(function() {
             getData();
-            initializeSelect2('#asal', "{{ route('user.getKota') }}", 'Pilih Domisili');
-            initializeSelect2('#jabatan', "{{ route('user.getDataJabatan') }}", 'Pilih Jabatan');
+            initializeSelect2('#asal', "{{ route('user.getKota') }}", 'Domisili');
+            initializeSelect2('#jabatan', "{{ route('user.getDataJabatan') }}", 'Jabatan');
             let map;
             let marker;
             var customButton = $('<button/>', {

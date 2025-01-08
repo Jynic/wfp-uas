@@ -251,7 +251,7 @@ class Pelaporan extends Controller
                             $staffMember->username . '</option>';
                     })->toArray()) .
                     '</select>' :
-                    '-'),
+                    $value->nama_staff),
                 $value->nomor,
                 $value->tgl_pelaporan,
                 '<select class="form-select form-select-sm" onchange="updateStatus(' . $value->id . ', this.value)">

@@ -110,8 +110,8 @@ class Staff extends Controller
                 $value->jabatan_nama,
                 $value->username,
                 ($value->status_aktif == 1) ?
-                '<span class="badge bg-success">Active</span>' :
-                '<span class="badge bg-danger">Inactive</span>',
+                    '<span class="badge bg-success">Active</span>' :
+                    '<span class="badge bg-danger">Inactive</span>',
                 '<div class="d-flex justify-content-center">
                 <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="edit(' . $value->id . ')">
                     <i class="bx bx-edit-alt"></i>
@@ -149,11 +149,19 @@ class Staff extends Controller
     public function getDataDinas(Request $request)
     {
         $search_term = $request->input('search');
-        $data = DB::table('m_dinas')
+        $user = auth()->user();
+
+        $query = DB::table('m_dinas')
             ->select('iddinas AS id', 'nama')
             ->where('status_aktif', 1)
-            ->where('nama', 'LIKE', '%' . $search_term . '%')
-            ->get();
+            ->where('nama', 'LIKE', '%' . $search_term . '%');
+
+        if (in_array($user->idjabatan, [3, 4])) {
+            $query->where('iddinas', $user->staff->iddinas ?? 0);
+        }
+
+        $data = $query->get();
+
         $dinas = [];
         foreach ($data as $key => $row) {
             $dinas[] = array(
@@ -167,6 +175,7 @@ class Staff extends Controller
             'location' => $dinas
         ));
     }
+
     public function getDataJabatan(Request $request)
     {
         $search_term = $request->input('search');
