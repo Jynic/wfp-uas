@@ -91,7 +91,7 @@ class Fasum extends Controller
             f.status_aktif = 1 AND f.idfasum = :id
         GROUP BY 
             f.idfasum, f.nama, f.luas_fasum, f.kondisi_fasum, 
-            f.asal_fasum, f.lat, f.lng, f.gambar, d.nama, kk.nama, d.iddinas;", ['id' => $id]);
+            f.asal_fasum, f.lat, f.lng, f.gambar, d.nama, kk.nama, d.iddinas, f.status_aktif;", ['id' => $id]);
         return json_encode($result);
     }
 
