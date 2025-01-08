@@ -7,7 +7,6 @@ use App\Models\Jenisfasum_model;
 use App\Models\Kota_model;
 use App\Models\Pelaporan_model;
 use App\Models\Staff_model;
-use App\Models\User_model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;

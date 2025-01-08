@@ -61,17 +61,26 @@ class Staff extends Controller
         $id = $data['id'];
 
         $result = DB::select("
-        SELECT s.idm_staff AS id, s.nama, s.username, s.status_aktif, d.nama AS dinas_nama, d.iddinas AS dinas_id, j.nama AS jabatan_nama, j.idjabatan AS jabatan_id
-        FROM m_staff s
-        INNER JOIN m_dinas d ON s.iddinas=d.iddinas
-        INNER JOIN m_jabatan j ON s.idjabatan=j.idjabatan
-        WHERE s.status_aktif = 1 and s.idm_staff = :id", ['id' => $id]);
+            SELECT 
+                s.idm_staff AS id, 
+                COALESCE(s.nama, '') AS nama, 
+                COALESCE(s.username, '') AS username, 
+                COALESCE(s.status_aktif, 0) AS status_aktif, 
+                COALESCE(d.nama, '') AS dinas_nama, 
+                COALESCE(d.iddinas, 0) AS dinas_id, 
+                COALESCE(j.nama, '') AS jabatan_nama, 
+                COALESCE(j.idjabatan, 0) AS jabatan_id
+            FROM m_staff s
+            LEFT JOIN m_dinas d ON s.iddinas = d.iddinas
+            LEFT JOIN m_jabatan j ON s.idjabatan = j.idjabatan
+            WHERE s.status_aktif = 1 AND s.idm_staff = :id
+        ", ['id' => $id]);
+
+
         return json_encode($result);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+
     public function update(Request $request)
     {
         $formData = $request->all();
@@ -85,7 +94,6 @@ class Staff extends Controller
         $staff->iddinas = $formData['dinas'] ?? $staff->iddinas;
         $staff->idjabatan = $formData['jabatan'] ?? $staff->idjabatan;
         $staff->username = $formData['username'] ?? $staff->username;
-        $staff->password = Hash::make($formData['password']) ?? $staff->password;
         $staff->save();
 
         // Berikan respons sukses
@@ -104,8 +112,8 @@ class Staff extends Controller
     {
         $data = DB::select("SELECT s.idm_staff AS id, s.nama, s.username, s.status_aktif, d.nama AS dinas_nama, d.iddinas AS dinas_id, j.nama AS jabatan_nama, j.idjabatan AS jabatan_id
         FROM m_staff s
-        INNER JOIN m_dinas d ON s.iddinas=d.iddinas
-        INNER JOIN m_jabatan j ON s.idjabatan=j.idjabatan
+        LEFT JOIN m_dinas d ON s.iddinas=d.iddinas
+        LEFT JOIN m_jabatan j ON s.idjabatan=j.idjabatan
         WHERE s.status_aktif = 1
         ");
 
@@ -190,24 +198,6 @@ class Staff extends Controller
             'location' => $dinas
         ));
     }
-    public function simpan(Request $request)
-    {
-        // Proses data form
-        $formData = $request->all();
-        $password = Hash::make($formData['password']);
-        $staff = new Staff_model();
-        $staff->nama = $formData['nama'] ?? '';
-        $staff->iddinas = $formData['dinas'] ?? 1;
-        $staff->idjabatan = $formData['jabatan'] ?? 0;
-        $staff->username = $formData['username'] ?? '';
-        $staff->password = $password ?? '';
-        $staff->save();
-        return response()->json(['status' => true, 'message' => 'Data berhasil disimpan']);
-    }
-
-
-
-
 
     public function hapus(Request $request)
     {

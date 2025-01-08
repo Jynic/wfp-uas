@@ -11,7 +11,7 @@ class Staff_model extends Model
     protected $table = 'm_staff';
     protected $primaryKey = 'idm_staff';
     public $timestamps = false;
-    protected $fillable = ['nama', 'iddinas', 'idjabatan', 'username', 'password', 'status_aktif'];
+    protected $fillable = ['nama', 'iddinas', 'idjabatan', 'username', 'status_aktif'];
 
     public function dinas()
     {

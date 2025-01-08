@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\User;
+use Illuminate\Auth\Access\Response;
 
 class PostPolicy
 {
@@ -15,8 +16,8 @@ class PostPolicy
     }
     public function delete(User $user)
     {
-        return ($user->role == "manager") ?
+        return ($user->role == "manager" || $user->role == "admin") ?
             Response::allow() :
-            Response::deny("Only managers are allowed to perform this operation");
+            Response::deny("Only managers and admins are allowed to perform this operation");
     }
 }

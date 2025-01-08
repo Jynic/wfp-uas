@@ -14,10 +14,10 @@ class KategoriFasumSeeder extends Seeder
     public function run(): void
     {
         DB::table('m_kategori_fasum')->insert([
-            ['idkategori_fasum' => 1, 'nama' => 'Trotoar', 'status_aktif' => 0],
-            ['idkategori_fasum' => 4, 'nama' => 'Rumah Sakit', 'status_aktif' => 1],
-            ['idkategori_fasum' => 5, 'nama' => 'Jalan Tol', 'status_aktif' => 1],
-            ['idkategori_fasum' => 6, 'nama' => 'Bangunan Serbaguna', 'status_aktif' => 1],
+            ['idkategori_fasum' => 1, 'nama' => 'Trotoar', 'status_aktif' => 1],
+            ['idkategori_fasum' => 2, 'nama' => 'Rumah Sakit', 'status_aktif' => 1],
+            ['idkategori_fasum' => 3, 'nama' => 'Jalan Tol', 'status_aktif' => 1],
+            ['idkategori_fasum' => 4, 'nama' => 'Bangunan Serbaguna', 'status_aktif' => 1],
         ]);
     }
 }

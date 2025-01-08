@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('m_user', function (Blueprint $table) {
             $table->id('iduser');
-            $table->unsignedBigInteger('idkota_kabupaten');
-            $table->unsignedBigInteger('idjabatan');
+            $table->unsignedBigInteger('idkota_kabupaten')->nullable();
+            $table->unsignedBigInteger('idjabatan')->nullable();
             $table->text('nama')->nullable();
             $table->text('username')->nullable()->unique();
             $table->text('password')->nullable();

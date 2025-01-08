@@ -115,11 +115,6 @@
                                                 <input required type="text" class="form-control" id="username"
                                                     name="username" placeholder="Masukkan Username" required>
                                             </div>
-                                            <div class="col-md-6">
-                                                <label for="password" class="form-label">Password</label>
-                                                <input required type="password" class="form-control" id="password"
-                                                    name="password" placeholder="Masukkan Password" required>
-                                            </div>
                                         </div>
                                     </form>
                                 </div>
@@ -167,15 +162,8 @@
             initializeSelect2('#jabatan', "{{ route('staff.getDataJabatan') }}", 'Pilih Jabatan');
             let map;
             let marker;
-            var customButton = $('<button/>', {
-                text: 'Tambah Staff', // Button text  
-                id: 'myCustomButton', // Button ID
-                class: 'btn btn-primary', // Additional classes for styling if needed
-                click: function() {
-                    tambah_staff(); // Call the function directly here
-                }
-            });
-            $('.custom-button').append(customButton);
+            var judul = $('<h5>Daftar Staf</h5>');
+            $('.custom-button').append(judul);
         });
 
         function tambah_staff() {
@@ -186,8 +174,6 @@
             var option = new Option('', '', true, true);
             $('#jabatan').append(option).trigger('change');
             $("#username").val('');
-            $("#password").val('');
-
             $("#modal-title").text('Tambah Staff');
             $('#modal_form').modal('show');
             $('#btnSave').text('Simpan');
@@ -298,7 +284,6 @@
                     $("#id").val(data.id);
                     $("#nama").val(data.nama);
                     $("#username").val(data.username);
-                    $("#password").val(data.password);
 
                     var option = new Option(data.dinas_nama, data.dinas_id, true, true);
                     $("#dinas").append(option).trigger('change');

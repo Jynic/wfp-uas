@@ -23,6 +23,6 @@ class Pelaporan_model extends Model
     }
     public function  user()
     {
-        return $this->belongsTo(User_model::class, 'iduser', 'iduser');
+        return $this->belongsTo(User::class, 'iduser', 'iduser');
     }
 }

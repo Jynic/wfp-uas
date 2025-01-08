@@ -6,7 +6,7 @@ use App\Models\Fasum_model;
 use App\Models\Jenisfasum_model;
 use App\Models\Kota_model;
 use App\Models\Staff_model;
-use App\Models\User_model;
+use App\Models\User as ModelsUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -72,8 +72,8 @@ class User extends Controller
         kk.nama AS kota_nama,
         j.idjabatan AS jabatan_id,
         j.nama AS jabatan_nama
-        FROM m_user u INNER JOIN m_kota_kabupaten kk ON u.idkota_kabupaten=kk.idkota_kabupaten
-        INNER JOIN m_jabatan j ON u.idjabatan=j.idjabatan
+        FROM m_user u LEFT JOIN m_kota_kabupaten kk ON u.idkota_kabupaten=kk.idkota_kabupaten
+        LEFT JOIN m_jabatan j ON u.idjabatan=j.idjabatan
         WHERE u.status_aktif = 1 and u.iduser = :id", ['id' => $id]);
         return json_encode($result);
     }
@@ -85,7 +85,7 @@ class User extends Controller
     {
         $formData = $request->all();
         $id = $formData['id'];
-        $user = User_model::find($id);
+        $user = ModelsUser::find($id);
         if (!$user) {
             return response()->json(['error' => 'Data tidak ditemukan'], 404);
         }
@@ -93,29 +93,29 @@ class User extends Controller
         $user->idkota_kabupaten = $formData['asal'] ?? $user->idkota_kabupaten;
         $user->idjabatan = $formData['jabatan'] ?? $user->idjabatan;
         $user->username = $formData['username'] ?? $user->username;
-        $user->password = Hash::make($formData['password']) ?? $user->password;
         $user->alamat = $formData['alamat'] ?? $user->alamat;
         $user->no_hp = $formData['no_hp'] ?? $user->no_hp;
         $user->email = $formData['email'] ?? $user->email;
         $user->save();
 
-        $idstaff = $user->idstaff;
+        if ($formData['jabatan'] != 2) {
+            $idstaff = $user->idstaff;
 
-        $staff = Staff_model::find($idstaff);
-        if (!$staff) {
-            return response()->json(['error' => 'Data tidak ditemukan'], 404);
+            $staff = Staff_model::find($idstaff);
+            if (!$staff) {
+                $staff = new Staff_model();
+                $user->idstaff = $staff->id;
+                $user->save();
+            }
+
+            $staff->idjabatan = $formData['jabatan'] ?? $staff->idjabatan;
+            $staff->nama = $formData['nama'] ?? $staff->nama;
+            $staff->username = $formData['username'] ?? $staff->username;
+            $staff->alamat = $formData['alamat'] ?? '';
+            $staff->email = $formData['email'] ?? '';
+            $staff->save();
         }
-        $staff->nama = $formData['nama'] ?? $staff->nama;
-        $staff->iddinas = $formData['dinas'] ?? $staff->iddinas;
-        $staff->idjabatan = $formData['jabatan'] ?? $staff->idjabatan;
-        $staff->username = $formData['username'] ?? $staff->username;
-        $staff->password = Hash::make($formData['password']) ?? $staff->password;
-        $staff->alamat = $formData['alamat'] ?? '';
-        $staff->email = $formData['email'] ?? '';
-        $staff->idkota_kabupaten = $formData['asal'] ?? 1;
-        $staff->save();
 
-        // Berikan respons sukses
         return response()->json(['status' => true, 'message' => 'Data berhasil diperbarui']);
     }
 
@@ -129,19 +129,22 @@ class User extends Controller
     }
     public function getData()
     {
-        $data = DB::select("SELECT u.iduser AS id,
-        u.nama, u.username,
-        u.alamat, 
-        u.no_hp,
-        u.email, 
-        u.status_aktif,
-        kk.idkota_kabupaten AS kota_id,
-        kk.nama AS kota_nama,
-        j.idjabatan AS jabatan_id,
-        j.nama AS jabatan_nama
-        FROM m_user u INNER JOIN m_kota_kabupaten kk ON u.idkota_kabupaten=kk.idkota_kabupaten
-        INNER JOIN m_jabatan j ON u.idjabatan=j.idjabatan
-        WHERE u.status_aktif = 1
+        $data = DB::select("
+            SELECT 
+                u.iduser AS id,
+                COALESCE(u.nama, '') AS nama, 
+                COALESCE(u.username, '') AS username,
+                COALESCE(kk.nama, '-') AS kota_nama,
+                COALESCE(j.nama, '') AS jabatan_nama,
+                COALESCE(u.alamat, '-') AS alamat,
+                COALESCE(u.no_hp, '-') AS no_hp,
+                COALESCE(u.email, '-') AS email, 
+                COALESCE(u.status_aktif, 1) AS status_aktif,
+                COALESCE(kk.idkota_kabupaten, 0) AS kota_id
+            FROM m_user u 
+            LEFT JOIN m_kota_kabupaten kk ON u.idkota_kabupaten = kk.idkota_kabupaten
+            LEFT JOIN m_jabatan j ON u.idjabatan = j.idjabatan
+            WHERE u.status_aktif = 1
         ");
 
         $user = [];
@@ -189,9 +192,9 @@ class User extends Controller
             COUNT(p.idpelaporan) AS pelaporan_count
         FROM 
             m_user u 
-        INNER JOIN 
+        LEFT JOIN 
             m_kota_kabupaten kk ON u.idkota_kabupaten = kk.idkota_kabupaten
-        INNER JOIN 
+        LEFT JOIN 
             m_jabatan j ON u.idjabatan = j.idjabatan
         LEFT JOIN 
             t_pelaporan p ON u.iduser = p.iduser AND p.status_aktif = 1
@@ -272,19 +275,7 @@ class User extends Controller
         $formData = $request->all();
         $password = Hash::make($formData['password']);
 
-        $staff = new Staff_model();
-        $staff->nama = $formData['nama'] ?? '';
-        $staff->iddinas = 1;
-        $staff->idjabatan = $formData['jabatan'] ?? 0;
-        $staff->username = $formData['username'] ?? '';
-        $staff->password = $password ?? '';
-        $staff->alamat = $formData['alamat'] ?? '';
-        $staff->email = $formData['email'] ?? '';
-        $staff->idkota_kabupaten = $formData['asal'] ?? 1;
-        $staff->save();
-        $id = $staff->getKey();
-
-        $user = new User_model();
+        $user = new ModelsUser();
         $user->nama = $formData['nama'] ?? '';
         $user->idkota_kabupaten = $formData['asal'] ?? 1;
         $user->idjabatan = $formData['jabatan'] ?? 0;
@@ -293,11 +284,8 @@ class User extends Controller
         $user->alamat = $formData['alamat'] ?? '';
         $user->no_hp = $formData['no_hp'] ?? '';
         $user->email = $formData['email'] ?? '';
-        $user->idstaff = $id;
         $user->status_aktif = 1;
         $user->save();
-
-
 
         return response()->json(['status' => true, 'message' => 'Data berhasil disimpan']);
     }

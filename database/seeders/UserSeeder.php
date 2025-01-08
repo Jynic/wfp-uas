@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
@@ -15,44 +16,89 @@ class UserSeeder extends Seeder
     {
         DB::table('m_user')->insert([
             [
-                'iduser' => 2,
+                'iduser' => 1,
                 'idkota_kabupaten' => 1,
-                'idjabatan' => 2,
-                'nama' => 'ridwan',
-                'username' => 'ridwan',
-                'password' => '$2y$10$Dnbcdv5v4BMpgcNwHy896OXCgxyDD/DkgGEXpW/kACJfU5SoVGFvq',
+                'idjabatan' => 1,
+                'nama' => 'admin',
+                'username' => 'admin',
+                'password' => Hash::make("admin"),
                 'alamat' => 'Jalan Rungkut No 31',
                 'no_hp' => '12324525345',
-                'email' => 'ridwan@gmail.com',
+                'email' => 'admin@gmail.com',
                 'status_aktif' => 1,
-                'idstaff' => 10
+                'idstaff' => 1
+            ],
+        ]);
+        DB::table('m_user')->insert([
+            [
+                'iduser' => 2,
+                'nama' => 'ryan',
+                'username' => 'ryan',
+                'password' => Hash::make("ryan"),
+                'status_aktif' => 1,
             ],
             [
                 'iduser' => 3,
-                'idkota_kabupaten' => 1,
-                'idjabatan' => 2,
-                'nama' => 'ramli',
-                'username' => 'ramli',
-                'password' => '$2y$10$XkB33y6H1i6yROocZ9/2pu6fqvGKXYFgjNx4T2nt8y6ZrOPVhcM.q',
-                'alamat' => 'Jalan Rungkut No 31',
-                'no_hp' => '12334578',
-                'email' => 'ramli@gmail.com',
+                'nama' => 'ivano',
+                'username' => 'ivano',
+                'password' => Hash::make("ivano"),
                 'status_aktif' => 1,
-                'idstaff' => 11
             ],
             [
                 'iduser' => 4,
-                'idkota_kabupaten' => 1,
-                'idjabatan' => 3,
-                'nama' => 'ivano',
-                'username' => 'ivano',
-                'password' => '$2y$10$XkB33y6H1i6yROocZ9/2pu6fqvGKXYFgjNx4T2nt8y6ZrOPVhcM.q',
-                'alamat' => 'Jalan Rungkut No 31',
-                'no_hp' => '12313425',
-                'email' => 'ivano@gmail.com',
+                'nama' => 'zefa',
+                'username' => 'zefa',
+                'password' => Hash::make("zefa"),
                 'status_aktif' => 1,
-                'idstaff' => 6
-            ]
+            ],
+            [
+                'iduser' => 5,
+                'nama' => 'niko',
+                'username' => 'niko',
+                'password' => Hash::make("niko"),
+                'status_aktif' => 1,
+            ],
         ]);
+        // DB::table('m_user')->insert([
+        //     [
+        //         'iduser' => 2,
+        //         'idkota_kabupaten' => 1,
+        //         'idjabatan' => 2,
+        //         'nama' => 'ridwan',
+        //         'username' => 'ridwan',
+        //         'password' => '$2y$10$Dnbcdv5v4BMpgcNwHy896OXCgxyDD/DkgGEXpW/kACJfU5SoVGFvq',
+        //         'alamat' => 'Jalan Rungkut No 31',
+        //         'no_hp' => '12324525345',
+        //         'email' => 'ridwan@gmail.com',
+        //         'status_aktif' => 1,
+        //         'idstaff' => 10
+        //     ],
+        //     [
+        //         'iduser' => 3,
+        //         'idkota_kabupaten' => 1,
+        //         'idjabatan' => 2,
+        //         'nama' => 'ramli',
+        //         'username' => 'ramli',
+        //         'password' => '$2y$10$XkB33y6H1i6yROocZ9/2pu6fqvGKXYFgjNx4T2nt8y6ZrOPVhcM.q',
+        //         'alamat' => 'Jalan Rungkut No 31',
+        //         'no_hp' => '12334578',
+        //         'email' => 'ramli@gmail.com',
+        //         'status_aktif' => 1,
+        //         'idstaff' => 11
+        //     ],
+        //     [
+        //         'iduser' => 4,
+        //         'idkota_kabupaten' => 1,
+        //         'idjabatan' => 3,
+        //         'nama' => 'ivano',
+        //         'username' => 'ivano',
+        //         'password' => '$2y$10$XkB33y6H1i6yROocZ9/2pu6fqvGKXYFgjNx4T2nt8y6ZrOPVhcM.q',
+        //         'alamat' => 'Jalan Rungkut No 31',
+        //         'no_hp' => '12313425',
+        //         'email' => 'ivano@gmail.com',
+        //         'status_aktif' => 1,
+        //         'idstaff' => 6
+        //     ]
+        // ]);
     }
 }

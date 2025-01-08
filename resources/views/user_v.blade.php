@@ -324,7 +324,7 @@
                     $("#id").val(data.id);
                     $("#nama").val(data.nama);
                     $("#username").val(data.username);
-                    $("#password").val(data.password);
+                    $("#password").prop('disabled', true).removeAttr('required');
                     $("#alamat").val(data.alamat);
                     $("#email").val(data.email);
                     $("#no_hp").val(data.no_hp);

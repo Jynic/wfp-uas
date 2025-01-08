@@ -20,6 +20,12 @@ class ProvinsiSeeder extends Seeder
                 'nama' => "Jawa Timur",
                 'status_aktif' => 1,
             ],
+            [
+                'idprovinsi' => 2,
+                'kode' => "JKT",
+                'nama' => "DKI Jakarta",
+                'status_aktif' => 1,
+            ],
         ]);
     }
 }

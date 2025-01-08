@@ -17,15 +17,20 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $table = 'm_staff';
-    protected $primaryKey = 'idm_staff';
+    protected $table = 'm_user';
+    protected $primaryKey = 'iduser';
     public $timestamps = false;
     protected $fillable = [
         'nama',
+        'idkota_kabupaten',
+        'idjabatan',
         'username',
         'password',
-        'iddinas',
-        'idjabatan'
+        'alamat',
+        'no_hp',
+        'email',
+        'status_aktif',
+        'idstaff',
     ];
 
     /**
@@ -45,4 +50,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function kota()
+    {
+        return $this->belongsTo(Kota_model::class, 'idkota_kabupaten');
+    }
+
+    public function staff()
+    {
+        return $this->belongsTo(Staff_model::class, 'idstaff');
+    }
 }

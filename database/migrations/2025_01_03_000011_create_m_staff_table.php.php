@@ -10,11 +10,10 @@ return new class extends Migration
     {
         Schema::create('m_staff', function (Blueprint $table) {
             $table->id('idm_staff');
-            $table->unsignedBigInteger('iddinas');
-            $table->unsignedBigInteger('idjabatan');
+            $table->unsignedBigInteger('iddinas')->nullable();
+            $table->unsignedBigInteger('idjabatan')->nullable();
             $table->text('nama')->nullable();
             $table->text('username')->nullable();
-            $table->text('password')->nullable();
             $table->integer('status_aktif')->default(1);
             $table->text('alamat')->nullable();
             $table->text('email')->nullable();
