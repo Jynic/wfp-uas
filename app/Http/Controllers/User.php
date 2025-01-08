@@ -170,6 +170,70 @@ class User extends Controller
         // Kirim data dalam format JSON
         echo json_encode($user);
     }
+
+    public function getUserSeringMengadu()
+    {
+        $data = DB::select("
+        SELECT 
+            u.iduser AS id,
+            u.nama, 
+            u.username,
+            u.alamat, 
+            u.no_hp,
+            u.email, 
+            u.status_aktif,
+            kk.idkota_kabupaten AS kota_id,
+            kk.nama AS kota_nama,
+            j.idjabatan AS jabatan_id,
+            j.nama AS jabatan_nama,
+            COUNT(p.idpelaporan) AS pelaporan_count
+        FROM 
+            m_user u 
+        INNER JOIN 
+            m_kota_kabupaten kk ON u.idkota_kabupaten = kk.idkota_kabupaten
+        INNER JOIN 
+            m_jabatan j ON u.idjabatan = j.idjabatan
+        LEFT JOIN 
+            t_pelaporan p ON u.iduser = p.iduser AND p.status_aktif = 1
+        WHERE 
+            u.status_aktif = 1
+        GROUP BY 
+            u.iduser, u.nama, u.username, u.alamat, u.no_hp, u.email, u.status_aktif, kk.idkota_kabupaten, kk.nama, j.idjabatan, j.nama
+        ORDER BY 
+            pelaporan_count DESC
+        LIMIT 5
+    ");
+
+        $user = [];
+        $rank = 1;
+
+        foreach ($data as $key => $value) {
+            $user[] = array(
+                'rank' => $rank++,
+                'name' => $value->nama,
+                'username' => $value->username,
+                'city' => $value->kota_nama,
+                'position' => $value->jabatan_nama,
+                'address' => $value->alamat,
+                'phone' => $value->no_hp,
+                'email' => $value->email,
+                'status' => ($value->status_aktif == 1) ?
+                    '<span class="badge bg-success">Active</span>' :
+                    '<span class="badge bg-danger">Inactive</span>',
+                'report_count' => $value->pelaporan_count,
+                'actions' => '<div class="d-flex justify-content-center">
+                            <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="edit(' . $value->id . ')">
+                                <i class="bx bx-edit-alt"></i>
+                            </a>
+                            <a href="javascript:void(0)" class="btn btn-danger btn-sm ms-3" onclick="hapus(' . $value->id . ')">
+                                <i class="bx bx-trash"></i>
+                            </a>
+                          </div>'
+            );
+        }
+        echo json_encode($user);
+    }
+
     public function getKota(Request $request)
     {
         $search_term = $request->input('search');

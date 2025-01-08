@@ -31,12 +31,20 @@ Auth::routes();
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name(name: 'home');
 
 Route::middleware('auth')->group(function () {
+
+    // route halaman & query untuk dashboard
     Route::get('/', function () {
         return view('dashboard_v');
     });
     Route::get('/home', function () {
         return view('dashboard_v');
     })->name('home');
+    Route::post('fasum/getFasumRusak', [Fasum::class, 'getFasumRusak'])->name('fasum.getFasumRusak');
+    Route::get('get-kategori-fasum', [Fasum::class, 'getKategoriFasum'])->name('fasum.getKategoriFasum');
+    Route::post('pelaporan/belum-selesai', [Pelaporan::class, 'getPelaporanBelumSelesai'])->name('pelaporan.getPelaporanBelumSelesai');
+    Route::post('pelaporan/detailBelumSelesai', [Pelaporan::class, 'detailBelumSelesai'])->name('pelaporan.detailBelumSelesai');
+    Route::post('user/sering-mengadu', [User::class, 'getUserSeringMengadu'])->name('user.getUserSeringMengadu');
+
     Route::get('provinsi', [Provinsi::class, 'index'])->name('provinsi');
     Route::post('provinsi/simpan', [Provinsi::class, 'simpan'])->name('provinsi.simpan');
     Route::post('provinsi/getData', [Provinsi::class, 'getData'])->name('provinsi.getData');
@@ -76,8 +84,6 @@ Route::middleware('auth')->group(function () {
     Route::post('fasum/update', [Fasum::class, 'update'])->name('fasum.update');
     Route::post('fasum/getDataKategori', [Fasum::class, 'getDataKategori'])->name('fasum.getDataKategori');
     Route::post('fasum/getDataDinas', [Fasum::class, 'getDataDinas'])->name('fasum.getDataDinas');
-    Route::post('fasum/getFasumRusak', [Fasum::class, 'getFasumRusak'])->name('fasum.getFasumRusak');
-    Route::get('/get-kategori-fasum', [Fasum::class, 'getKategoriFasum'])->name('fasum.getKategoriFasum');
 
 
     Route::get('staff', [Staff::class, 'index'])->name('staff');

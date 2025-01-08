@@ -8,6 +8,7 @@ use App\Models\Kota_model;
 use App\Models\Pelaporan_model;
 use App\Models\Staff_model;
 use App\Models\User_model;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -215,13 +216,13 @@ class Pelaporan extends Controller
     GROUP_CONCAT(pd.keterangan SEPARATOR ', ') AS keterangan_fasum
     FROM 
         t_pelaporan p
-    INNER JOIN 
+    LEFT JOIN 
         t_pelaporan_detail pd ON p.idpelaporan = pd.t_pelaporan_idpelaporan
-    INNER JOIN 
+    LEFT JOIN 
         m_staff s ON p.idm_staff = s.idm_staff
-    INNER JOIN 
+    LEFT JOIN 
         m_user u ON p.iduser = u.iduser
-    INNER JOIN 
+    LEFT JOIN 
         m_fasum f ON pd.m_fasum_idfasum = f.idfasum
     WHERE 
         p.status_aktif = 1
@@ -268,6 +269,78 @@ class Pelaporan extends Controller
         // Kirim data dalam format JSON
         echo json_encode($pelaporan);
     }
+
+    public function getPelaporanBelumSelesai(Request $request)
+    {
+        $id = $request->input('id');
+        $dateFilter = $request->input('date_filter');
+
+        $query = DB::table('t_pelaporan as p')
+            ->leftJoin('t_pelaporan_detail as pd', 'p.idpelaporan', '=', 'pd.t_pelaporan_idpelaporan')
+            ->leftJoin('m_staff as s', 'p.idm_staff', '=', 's.idm_staff')
+            ->leftJoin('m_user as u', 'p.iduser', '=', 'u.iduser')
+            ->leftJoin('m_fasum as f', 'pd.m_fasum_idfasum', '=', 'f.idfasum')
+            ->where('p.status_aktif', 1)
+            ->where('p.status_pelaporan', '!=', 'Selesai')
+            ->groupBy(
+                'p.idpelaporan',
+                'p.nomor',
+                'p.tgl_pelaporan',
+                'p.status_pelaporan',
+                'p.keterangan',
+                'p.status_aktif',
+                's.nama',
+                's.idm_staff',
+                'u.nama',
+                'u.iduser'
+            );
+
+        if ($dateFilter) {
+            $dateRange = Carbon::now()->subDays((int)$dateFilter);
+            $query->where('p.tgl_pelaporan', '>=', $dateRange);
+        }
+
+        $data = $query->select(
+            'p.idpelaporan as id',
+            'p.nomor',
+            'p.tgl_pelaporan',
+            'p.status_pelaporan',
+            'p.keterangan',
+            'p.status_aktif',
+            's.nama as nama_staff',
+            's.idm_staff as id_staff',
+            'u.nama as nama_user',
+            'u.iduser as id_user',
+            DB::raw('GROUP_CONCAT(f.nama SEPARATOR ", ") AS nama_fasum'),
+            DB::raw('GROUP_CONCAT(f.idfasum SEPARATOR ", ") AS id_fasum'),
+            DB::raw('GROUP_CONCAT(pd.status_perbaikkan SEPARATOR ", ") AS status_perbaikkan'),
+            DB::raw('GROUP_CONCAT(pd.foto_fasum SEPARATOR ", ") AS foto_fasum'),
+            DB::raw('GROUP_CONCAT(pd.keterangan SEPARATOR ", ") AS keterangan_fasum')
+        )->get();
+
+        $pelaporan = [];
+        foreach ($data as $key => $value) {
+            $pelaporan[] = array(
+                $value->nomor,
+                $value->tgl_pelaporan,
+                $value->status_pelaporan,
+                $value->keterangan,
+                $value->nama_user,
+                $value->nama_fasum,
+                ($value->status_aktif == 1) ?
+                    '<span class="badge bg-success">Active</span>' :
+                    '<span class="badge bg-danger">Inactive</span>',
+                '<div class="d-flex justify-content-center">
+                    <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="detail(' . $value->id . ')">
+                        <i class="bx bx-info-circle"></i>
+                    </a>
+                </div>'
+            );
+        }
+
+        echo json_encode($pelaporan);
+    }
+
     public function getKota(Request $request)
     {
         $search_term = $request->input('search');
@@ -464,6 +537,55 @@ class Pelaporan extends Controller
             );
         }
         // Kirim data dalam format JSON
+        echo json_encode($pelaporan);
+    }
+
+    public function detailBelumSelesai(Request $request)
+    {
+        $data = $request->all();
+        $id = $data['id'];
+        $data = DB::select("
+        SELECT 
+        p.idpelaporan AS id,
+        p.nomor,
+        p.tgl_pelaporan,
+        p.status_pelaporan,
+        p.keterangan,
+        p.status_aktif,
+        s.nama AS nama_staff,
+        s.idm_staff AS id_staff,
+        u.nama AS nama_user,
+        u.iduser AS id_user,
+        f.nama AS nama_fasum,
+        f.idfasum AS id_fasum,
+        pd.status_perbaikkan AS status_perbaikkan,
+        pd.foto_fasum AS foto_fasum,
+        pd.keterangan AS keterangan_fasum,
+        s1.idm_staff AS id_staff_detail,
+        s1.nama as nama_staff_detail
+        FROM 
+            t_pelaporan p
+        INNER JOIN 
+            t_pelaporan_detail pd ON p.idpelaporan = pd.t_pelaporan_idpelaporan
+        INNER JOIN 
+            m_staff s ON p.idm_staff = s.idm_staff
+        INNER JOIN 
+            m_user u ON p.iduser = u.iduser
+        INNER JOIN 
+            m_fasum f ON pd.m_fasum_idfasum = f.idfasum
+            INNER JOIN m_staff s1 ON pd.idstaff=s1.idm_staff
+        WHERE 
+            p.status_aktif = 1 and p.idpelaporan = :id;", ['id' => $id]);
+
+        $pelaporan = [];
+        foreach ($data as $key => $value) {
+            $pelaporan[] = array(
+                $value->nama_fasum,
+                $value->status_perbaikkan,
+                '<img src="' . asset($value->foto_fasum) . '" alt="Gambar Fasum" style="max-width: 100px; max-height: 100px;">',
+                $value->keterangan_fasum,
+            );
+        }
         echo json_encode($pelaporan);
     }
 }
