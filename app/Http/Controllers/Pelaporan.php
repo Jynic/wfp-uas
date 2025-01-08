@@ -235,14 +235,13 @@ class Pelaporan extends Controller
                     <a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="detail(' . $value->id . ')">
                         <i class="bx bx-info-circle"></i>
                     </a>' .
-                    // Pengecekan untuk id_user = 3
-                    ($value->id_user == $id ? '
+                    '
                     <a href="javascript:void(0)" class="btn btn-primary btn-sm ms-3" onclick="edit(' . $value->id . ')">
                         <i class="bx bx-edit-alt"></i>
                     </a>
                     <a href="javascript:void(0)" class="btn btn-danger btn-sm ms-3" onclick="hapus(' . $value->id . ')">
                         <i class="bx bx-trash"></i>
-                    </a>' : '') .
+                    </a>' .
                     '</div>'
             );
         }

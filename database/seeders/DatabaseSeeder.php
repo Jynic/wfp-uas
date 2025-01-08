@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call([
-            HakAksesSeeder::class,
             JabatanSeeder::class,
             ProvinsiSeeder::class,
             KotaKabupatenSeeder::class,
@@ -28,7 +27,6 @@ class DatabaseSeeder extends Seeder
             KategoriFasumSeeder::class,
             FasumSeeder::class,
             KategoriFasumHasFasumSeeder::class,
-            HakAksesJabatanSeeder::class,
             StaffSeeder::class,
             UserSeeder::class,
             PelaporanSeeder::class,
